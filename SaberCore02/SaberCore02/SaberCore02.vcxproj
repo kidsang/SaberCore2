@@ -80,12 +80,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scCore.cpp" />
+    <ClCompile Include="scRenderer.cpp" />
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />
+    <ClInclude Include="scRenderer.h" />
     <ClInclude Include="scSingleton.h" />
     <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scTimeLineManager.h" />

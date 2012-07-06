@@ -1,10 +1,12 @@
-#include "scCore.h"
-#include "scTimeLineManager.h"
 #include <Windows.h>
 #include <iostream>
+#include "scCore.h"
+#include "scRenderer.h"
+#include "scTimeLineManager.h"
+#include "scTimeLine.h"
 
 scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
-	: mUseConsole(useConsole), mTimeLineManager(0)
+	: mUseConsole(useConsole), mRenderer(0), mTimeLineManager(0)
 {
 	if (mUseConsole)
 	{
@@ -20,22 +22,23 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	}
 
 	// 初始化渲染子系统
-
+	mRenderer = new scRenderer("resources_d.cfg", "plugins_d.cfg");
 
 	// 创建时间轴管理类
 	mTimeLineManager = new scTimeLineManager();
+	// 创建渲染时间轴，60hz
 	scTimeLinePtr tl = mTimeLineManager->createTimeLine("Render", 60);
+	tl->addRunCallBack("Render", [&](u32 dtms)->bool{return mRenderer->_run(dtms);});
 
 }
 
 scCore::~scCore(void)
 {
-
 	if (mTimeLineManager)
-	{
-		delete mTimeLineManager;
-		mTimeLineManager = 0;
-	}
+	{ delete mTimeLineManager; mTimeLineManager = 0; }
+
+	if (mRenderer)
+	{ delete mRenderer; mRenderer = 0; }
 
 	if (mUseConsole)
 	{
@@ -55,7 +58,7 @@ void scCore::start()
 	u32 dtms;
 
 	// 启动循环
-	while (true)
+	//while (true)
 	{
 		currentTime = clock();
 		dtms = currentTime - mLastTime;

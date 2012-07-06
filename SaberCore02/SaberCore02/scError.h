@@ -36,7 +36,7 @@ enum scDebugLevel
 /// @param _msg 错误信息
 /// @param _level 错误等级
 template <typename T>
-inline void scErrMsg(T const& _msg, u32 _level = DL_NORMAL)
+inline void scErrMsg(T const& _msg, scDebugLevel _level = DL_NORMAL)
 {
 	if (_level >= SC_DEBUG_LEVEL)
 		std::cerr << _msg << std::endl;
@@ -45,7 +45,7 @@ inline void scErrMsg(T const& _msg, u32 _level = DL_NORMAL)
 #else
 
 template <typename T>
-inline void scErrMsg(T const& _msg, u32 _level = DL_NORMAL)
+inline void scErrMsg(T const& _msg, scDebugLevel _level = DL_NORMAL)
 {
 }
 
@@ -58,7 +58,7 @@ inline void scErrMsg(T const& _msg, u32 _level = DL_NORMAL)
 /// @param _msg 附带信息
 /// @param _level 错误等级
 template <typename T>
-inline void scAssert(bool _exp, T _msg, u32 _level = DL_NORMAL)
+inline void scAssert(bool _exp, T _msg, scDebugLevel _level = DL_NORMAL)
 {
 	if (_level >= SC_DEBUG_LEVEL)
 	{
@@ -71,7 +71,7 @@ inline void scAssert(bool _exp, T _msg, u32 _level = DL_NORMAL)
 #else
 
 template <typename T>
-inline void scAssert(bool _exp, T _msg = "", u32 _level = DL_NORMAL)
+inline void scAssert(bool _exp, T _msg = "", scDebugLevel _level = DL_NORMAL)
 {
 }
 

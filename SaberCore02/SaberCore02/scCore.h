@@ -12,6 +12,7 @@
 #include <ctime>
 #include <Windows.h>
 
+class scRenderer;
 class scTimeLineManager;
 
 /// SaberCoreÒıÇæÈë¿Ú
@@ -31,6 +32,8 @@ private:
 	FILE* fpDebugOut; 
 	FILE* fpDebugIn;
 	FILE* fpDebugErr;
+
+	scRenderer* mRenderer;
 
 	clock_t mLastTime;
 	scTimeLineManager* mTimeLineManager;
