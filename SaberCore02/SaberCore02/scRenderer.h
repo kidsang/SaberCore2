@@ -29,8 +29,8 @@ public:
 	/// 仅供内部使用，该函数应该由某个时间轴调用
 	bool _run(u32 dtms)
 	{
-		std::cout<<"asdf"<<std::endl;
-		return mRoot->renderOneFrame();
+		Ogre::WindowEventUtilities::messagePump();
+		return mRoot->renderOneFrame((float)dtms / 1000.f);
 	}
 
 private:

@@ -45,6 +45,33 @@ scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPa
     {
         //return false;
     }
+
+	//////////////////////////////////////////////////////////////////////////
+	// test
+	Ogre::RenderWindow* mWindow = mRoot->getAutoCreatedWindow();
+	Ogre::SceneManager* mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+	
+	Ogre::Camera* mCamera = mSceneMgr->createCamera("PlayerCam");
+    mCamera->setPosition(Ogre::Vector3(0,0,80));
+    mCamera->lookAt(Ogre::Vector3(0,0,-300));
+    mCamera->setNearClipDistance(5);
+
+	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+    mCamera->setAspectRatio(
+        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+	Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+	Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(ogreHead);
+	// Set ambient light
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	// Create a light
+	Ogre::Light* l = mSceneMgr->createLight("MainLight");
+	l->setPosition(20,80,50);
 }
 
 scRenderer::~scRenderer(void)

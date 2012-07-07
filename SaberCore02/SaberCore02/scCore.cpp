@@ -58,13 +58,13 @@ void scCore::start()
 	u32 dtms;
 
 	// Æô¶¯Ñ­»·
-	//while (true)
+	while (true)
 	{
 		currentTime = clock();
 		dtms = currentTime - mLastTime;
 
 		mTimeLineManager->run(dtms);
-		std::cout<<dtms<<std::endl;
+		//std::cout<<dtms<<std::endl;
 
 		mLastTime = currentTime;
 	}
