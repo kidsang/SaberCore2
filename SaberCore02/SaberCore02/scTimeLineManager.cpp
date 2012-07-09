@@ -99,8 +99,17 @@ scTimeLineManager* scTimeLineManager::getSingletonPtr( void )
 	return ms_Singleton;
 }
 
+scTimeLineManager::scTimeLineManager()
+	: mStopRequested(false)
+{
+
+}
+
 scTimeLineManager::~scTimeLineManager()
 {
+	// 结束线程
+	for (auto iter = mThreads.begin(); iter != mThreads.end(); ++iter)
+		(*iter)->join();
 }
 
 void scTimeLineManager::startMain()
@@ -111,7 +120,7 @@ void scTimeLineManager::startMain()
 	u32 dtms;
 
 	// 启动循环
-	while (true)
+	while (!mStopRequested)
 	{
 		currentTime = clock();
 		dtms = currentTime - lastTime;
@@ -146,7 +155,7 @@ void scTimeLineManager::runThread( scTimeLinePtr timeLine )
 	u32 lastTime = clock();
 	u32 currentTime = clock();
 	// 运行时间轴
-	while (true)
+	while (!mStopRequested)
 	{
 		currentTime = clock();
 

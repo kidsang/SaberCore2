@@ -36,6 +36,9 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	// 创建游戏世界时间轴, 60Hz
 	tl = mTimeLineManager->createTimeLine("GameWorld", 60);
 	tl->addRunCallBack("GameWorld", [&](u32 dtms)->bool{return mGameWorldManager->_run(dtms);});
+	// 创建背景加载时间轴，10Hz(新线程)
+	tl = mTimeLineManager->createTimeLine("BackgroundLoading", 10, 0, true);
+
 	// 测试一下
 	scGameWorldPtr gw(new scGameWorld("test"));
 	mGameWorldManager->addGameWorld(gw->getName(), gw);
@@ -67,6 +70,6 @@ scCore::~scCore(void)
 void scCore::start()
 {
 	// 启动循环
-	mTimeLineManager->startMain();
 	mTimeLineManager->startThreads();
+	mTimeLineManager->startMain();
 }

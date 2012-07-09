@@ -27,6 +27,7 @@ class scTimeLineManager : public Ogre::Singleton<scTimeLineManager>
 	typedef std::vector<string> ThreadingTimeLines;
 
 public:
+	scTimeLineManager();
 	~scTimeLineManager();
 
 	/// 创建一条时间轴
@@ -86,6 +87,7 @@ private:
 	void runThread(scTimeLinePtr timeLine);
 
 private:
+	bool mStopRequested;
 	TimeLineMap mTimeLines;
 	ThreadList mThreads;
 	ThreadingTimeLines mThreadingTimeLines;
