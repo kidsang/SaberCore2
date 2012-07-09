@@ -9,10 +9,10 @@
 
 #include "scTypeDefine.h"
 #include <boost/shared_ptr.hpp>
-#include <ctime>
 #include <Windows.h>
 
 class scRenderer;
+class scGameWorldManager;
 class scTimeLineManager;
 
 /// SaberCoreÒıÇæÈë¿Ú
@@ -34,8 +34,8 @@ private:
 	FILE* fpDebugErr;
 
 	scRenderer* mRenderer;
+	scGameWorldManager* mGameWorldManager;
 
-	clock_t mLastTime;
 	scTimeLineManager* mTimeLineManager;
 };
 

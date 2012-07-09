@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <functional>
+#include <boost/thread.hpp>
 
 /// 时间轴
 /// 时间轴控制了挂载在其上物体的调用频率
@@ -20,6 +21,12 @@ class scTimeLine
 	typedef std::function<bool (u32)> FrameCallBack;
 	typedef std::map<string, FrameCallBack> FrameCallBackMap;
 public:
+	
+	enum ThreadStatus
+	{
+		TS_MAIN, TS_THREAD
+	};
+
 	/// 构造函数
 	/// @param name 该时间轴的名称
 	/// @param invokeRate 该时间轴的调用频率。例如：60Hz，就是每秒调用60次。
@@ -95,6 +102,19 @@ public:
 		mInterval = (1000 / rate);
 	}
 
+	/// 获取当前时间轴所在的线程(主/次)
+	ThreadStatus getThreadStatus()
+	{
+		boost::shared_lock<boost::shared_mutex>(mThreadStatusMutex);
+		return mThreadStatus;
+	}
+	/// 设置当前时间轴所在的线程(主/次)
+	void setThreadStatus(ThreadStatus ts)
+	{
+		boost::unique_lock<boost::shared_mutex>(mThreadStatusMutex);
+		mThreadStatus = ts;
+	}
+
 protected:
 	/// 运行逻辑的实现
 	/// 子类可以通过重载此函数以增加运行逻辑
@@ -106,6 +126,8 @@ private:
 	u32 mInterval;
 	u32 mCurrentTime;
 	FrameCallBackMap mCallBackMap;
+	ThreadStatus mThreadStatus;
+	boost::shared_mutex mThreadStatusMutex;
 };
 
 #endif // scTimeLine_h__

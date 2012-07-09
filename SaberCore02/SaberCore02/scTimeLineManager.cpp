@@ -3,7 +3,7 @@
 #include "scError.h"
 
 
-scTimeLinePtr const& scTimeLineManager::createTimeLine( const string& name, u32 invokeRate, int priority /*= 0*/ )
+scTimeLinePtr const& scTimeLineManager::createTimeLine( const string& name, u32 invokeRate, i32 priority /*= 0*/, bool threading /*= false*/ )
 {
 	// 首先检查有没有名字冲突
 	auto iter = mTimeLines.begin();
@@ -14,6 +14,10 @@ scTimeLinePtr const& scTimeLineManager::createTimeLine( const string& name, u32 
 
 	scTimeLinePtr tl = scTimeLinePtr(new scTimeLine(name, invokeRate));
 	auto tliter = mTimeLines.insert(std::make_pair(priority, tl));
+
+	// 如果需要在分支线程中运行，则先把名字加入名单
+	if (threading)
+		mThreadingTimeLines.push_back(name);
 
 	return tliter->second;
 }
@@ -99,9 +103,61 @@ scTimeLineManager::~scTimeLineManager()
 {
 }
 
-bool scTimeLineManager::run( u32 dtms )
+void scTimeLineManager::startMain()
 {
-	for (auto iter = mTimeLines.begin(); iter != mTimeLines.end(); ++iter)
-		iter->second->_run(dtms);
-	return true;
+	// 初始化时间
+	u32 lastTime = clock();
+	u32 currentTime = clock();
+	u32 dtms;
+
+	// 启动循环
+	while (true)
+	{
+		currentTime = clock();
+		dtms = currentTime - lastTime;
+
+		for (auto iter = mTimeLines.begin(); iter != mTimeLines.end(); ++iter)
+		{
+			// 只运行在主线程的时间轴
+			if (iter->second->getThreadStatus() == scTimeLine::TS_MAIN)
+				iter->second->_run(dtms);
+		}
+
+		lastTime = currentTime;
+	}
+}
+
+void scTimeLineManager::startThread( string const& name )
+{
+	scTimeLinePtr tl = getTimeLine(name);
+
+	// 更新对应时间轴线程状态
+	scAssert(tl->getThreadStatus() == scTimeLine::TS_MAIN, "Time line name \"" + name +"\" already running in a thread.");
+	tl->setThreadStatus(scTimeLine::TS_THREAD);
+
+	// 启动线程
+	ThreadPtr thread = ThreadPtr(new boost::thread([=](){this->runThread(tl);}));
+	mThreads.push_back(thread);
+	
+}
+
+void scTimeLineManager::runThread( scTimeLinePtr timeLine )
+{
+	u32 lastTime = clock();
+	u32 currentTime = clock();
+	// 运行时间轴
+	while (true)
+	{
+		currentTime = clock();
+
+		timeLine->_run(currentTime - lastTime);
+
+		lastTime = currentTime;
+	}
+}
+
+void scTimeLineManager::startThreads()
+{
+	for (auto iter = mThreadingTimeLines.begin(); iter != mThreadingTimeLines.end(); ++iter)
+		startThread((*iter));
 }

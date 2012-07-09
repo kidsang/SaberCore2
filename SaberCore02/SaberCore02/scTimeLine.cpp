@@ -3,7 +3,7 @@
 
 scTimeLine::scTimeLine( const string& name, u32 invokeRate )
 	: mName(name), mInterval(1000 / invokeRate), mCurrentTime(0),
-	mScaleFactor(1.0f)
+	mScaleFactor(1.0f), mThreadStatus(TS_MAIN)
 {
 
 }

@@ -63,7 +63,11 @@ inline void scAssert(bool _exp, T _msg, scDebugLevel _level = DL_NORMAL)
 	if (_level >= SC_DEBUG_LEVEL)
 	{
 		if (!_exp)
-			scErrMsg(string("Assertion Failed: ") + _msg, _level);
+		{
+			std::cout<<"-------------------------------------------------------"<<std::endl;
+			scErrMsg(string("| Assertion Failed: ") + _msg, _level);
+			std::cout<<"-------------------------------------------------------"<<std::endl;
+		}
 		assert(_exp);
 	}
 };

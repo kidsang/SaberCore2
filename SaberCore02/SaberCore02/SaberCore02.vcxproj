@@ -56,7 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -80,6 +80,9 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scCore.cpp" />
+    <ClCompile Include="scGameArea.cpp" />
+    <ClCompile Include="scGameWorld.cpp" />
+    <ClCompile Include="scGameWorldManager.cpp" />
     <ClCompile Include="scRenderer.cpp" />
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
@@ -87,6 +90,9 @@
   <ItemGroup>
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />
+    <ClInclude Include="scGameArea.h" />
+    <ClInclude Include="scGameWorld.h" />
+    <ClInclude Include="scGameWorldManager.h" />
     <ClInclude Include="scRenderer.h" />
     <ClInclude Include="scSingleton.h" />
     <ClInclude Include="scTimeLine.h" />

@@ -12,6 +12,9 @@
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
     <ClCompile Include="scRenderer.cpp" />
+    <ClCompile Include="scGameWorld.cpp" />
+    <ClCompile Include="scGameWorldManager.cpp" />
+    <ClCompile Include="scGameArea.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -21,5 +24,8 @@
     <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scSingleton.h" />
     <ClInclude Include="scRenderer.h" />
+    <ClInclude Include="scGameWorld.h" />
+    <ClInclude Include="scGameWorldManager.h" />
+    <ClInclude Include="scGameArea.h" />
   </ItemGroup>
 </Project>
