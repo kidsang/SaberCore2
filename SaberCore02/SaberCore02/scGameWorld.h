@@ -10,6 +10,8 @@
 #include "scTypeDefine.h"
 #include <map>
 #include "Ogre.h"
+class scGameArea;
+typedef shared_ptr<scGameArea> scGameAreaPtr;
 
 /// 游戏世界GameWorld
 /// 一个游戏世界包含有自身的数据以及运行和交互的逻辑
@@ -26,6 +28,8 @@ class scGameWorld
 	typedef std::map<string, Ogre::SceneManager*> SceneManagerMap; 
 	typedef std::map<string, Ogre::Camera*> CameraMap;
 	typedef std::map<i32, Ogre::Viewport*> ViewportMap;
+	// TODO:GUI
+	typedef std::map<string, scGameAreaPtr> GameAreaMap;
 
 public:
 	scGameWorld(string const& name);
@@ -51,6 +55,8 @@ private:
 	SceneManagerMap mSceneManagers;
 	CameraMap mCameras;
 	ViewportMap mViewports;
+	// TODO:GUI
+	GameAreaMap mGameAreas;
 };
 
 #endif // scGameWorld_h__

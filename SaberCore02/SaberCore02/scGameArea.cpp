@@ -2,6 +2,7 @@
 
 
 scGameArea::scGameArea(void)
+	: mCurrentStatus(SLEEP)
 {
 }
 

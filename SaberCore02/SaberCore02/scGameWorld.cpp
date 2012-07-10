@@ -1,6 +1,7 @@
 #include "scGameWorld.h"
-#include "scError.h"
 #include "scGameWorldManager.h"
+#include "scGameArea.h"
+#include "scError.h"
 
 scGameWorld::scGameWorld(string const& name)
 	: mName(name)
@@ -36,6 +37,8 @@ void scGameWorld::initialize()
 
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+	//////////////////////////////////////////////////////////////////////////
+	// 以下的应该移动至GameArea
 	Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
 	Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	headNode->attachObject(ogreHead);
@@ -44,14 +47,6 @@ void scGameWorld::initialize()
 	// Create a light
 	Ogre::Light* l = mSceneMgr->createLight("MainLight");
 	l->setPosition(20,80,50);
-	
-	// clean up
-	/*
-	mWindow->removeAllViewports();
-	mSceneMgr->clearScene();
-	mSceneMgr->destroyCamera(mCamera->getName());
-	mRoot->destroySceneManager(mSceneMgr);
-	*/
 	
 }
 
