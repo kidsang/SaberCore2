@@ -14,6 +14,7 @@
 class scRenderer;
 class scGameWorldManager;
 class scTimeLineManager;
+class scEventRouter;
 
 /// SaberCoreÒıÇæÈë¿Ú
 class scCore
@@ -34,8 +35,8 @@ private:
 	FILE* fpDebugErr;
 
 	scRenderer* mRenderer;
+	scEventRouter* mEventRouter;
 	scGameWorldManager* mGameWorldManager;
-
 	scTimeLineManager* mTimeLineManager;
 };
 

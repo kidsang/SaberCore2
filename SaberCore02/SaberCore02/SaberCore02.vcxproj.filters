@@ -15,6 +15,7 @@
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
     <ClCompile Include="scGameArea.cpp" />
+    <ClCompile Include="scEventRouter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -27,5 +28,7 @@
     <ClInclude Include="scGameWorld.h" />
     <ClInclude Include="scGameWorldManager.h" />
     <ClInclude Include="scGameArea.h" />
+    <ClInclude Include="scEventRouter.h" />
+    <ClInclude Include="scEvent.h" />
   </ItemGroup>
 </Project>

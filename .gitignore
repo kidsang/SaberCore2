@@ -5,3 +5,9 @@
 /SaberCore02/SaberCore02.suo
 /SaberCore02/ipch
 /SaberCore02/SaberCore02/Debug
+/Tests/TestMsgQueue/Debug
+/Tests/TestMsgQueue/ipch
+/Tests/TestMsgQueue/TestMsgQueue.sdf
+/Tests/TestMsgQueue/TestMsgQueue.suo
+/Tests/TestMsgQueue/TestMsgQueue/TestMsgQueue.vcxproj.user
+/Tests/TestMsgQueue/TestMsgQueue/Debug

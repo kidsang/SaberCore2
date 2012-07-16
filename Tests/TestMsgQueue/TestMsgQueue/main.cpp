@@ -31,19 +31,19 @@ class scEventRouter
 	typedef std::map<string, string> EventMap;
 
 public:
-	void createInputQueue(string const& name)
-	{
-		boost::mutex::scoped_lock lock(mInputMutex);
-		// 确保消息队列不存在名字冲突
-		assert(mInputQueues.find(name) == mInputQueues.end());
-		mInputQueues.insert(std::make_pair(name, EventQueuePtr(new EventQueue())));
-	}
+	//void createInputQueue(string const& name)
+	//{
+	//	boost::mutex::scoped_lock lock(mInputMutex);
+	//	// 确保消息队列不存在名字冲突
+	//	assert(mInputQueues.find(name) == mInputQueues.end());
+	//	mInputQueues.insert(std::make_pair(name, EventQueuePtr(new EventQueue())));
+	//}
 
 	void createOutputQueue(string const& name)
 	{
 		boost::mutex::scoped_lock lock(mOutputMutex);
 		// 确保消息队列不存在名字冲突
-		assert(mInputQueues.find(name) == mInputQueues.end());
+		assert(mOutputQueues.find(name) == mOutputQueues.end());
 		mOutputQueues.insert(std::make_pair(name, EventQueuePtr(new EventQueue())));
 	}
 
@@ -60,15 +60,16 @@ public:
 	}
 
 	/// 将事件put到输入队列
-	void putEvent(string const& queName, scEventPtr const& evt)
+	void putEvent(/*string const& queName, */scEventPtr const& evt)
 	{
 		boost::mutex::scoped_lock lock(mInputMutex);
 		// 确保消息类型存在
 		assert(mEventMap.find(evt->name) != mEventMap.end());
 		// 确保消息队列存在
-		auto iter = mInputQueues.find(queName);
-		assert(iter != mInputQueues.end());
-		iter->second->push_back(evt);
+		//auto iter = mInputQueues.find(queName);
+		//assert(iter != mInputQueues.end());
+		//iter->second->push_back(evt);
+		mInputQueue.push_back(evt);
 	}
 
 	/// 从输出队列中fetch
@@ -93,16 +94,19 @@ public:
 	{
 		while (true)
 		{
-			for (auto input = mInputQueues.begin(); input != mInputQueues.end(); ++input)
-			{
+			//for (auto input = mInputQueues.begin(); input != mInputQueues.end(); ++input)
+			//{
 
 				boost::mutex::scoped_lock inlock(mInputMutex);
 				boost::mutex::scoped_lock outlock(mOutputMutex);
-				while (!input->second->empty())
+				//while (!input->second->empty())
+				while (!mInputQueue.empty())
 				{
 					// 从输入队列中fetch
-					scEventPtr evt = input->second->at(0);
-					input->second->pop_front();
+					//scEventPtr evt = input->second->at(0);
+					//input->second->pop_front();
+					scEventPtr evt = mInputQueue.at(0);
+					mInputQueue.pop_front();
 					// put到相应输出队列
 					string outname = mEventMap.find(evt->name)->second;
 					auto output = mOutputQueues.find(outname);
@@ -134,12 +138,13 @@ public:
 					}
 				}
 				*/
-			}
+			//}
 		}
 	}
 
 private:
-	QueueNameMap mInputQueues;
+	//QueueNameMap mInputQueues;
+	EventQueue mInputQueue;
 	QueueNameMap mOutputQueues;
 	EventMap mEventMap;
 
@@ -159,9 +164,9 @@ void main()
 	}
 		);
 
-	r->createInputQueue("ClientInput");
+	//r->createInputQueue("ClientInput");
 	r->createOutputQueue("ClientOutput");
-	r->createInputQueue("ServerInput");
+	//r->createInputQueue("ServerInput");
 	r->createOutputQueue("ServerOutput");
 
 	r->registerEvent("c2s", "ServerOutput");
@@ -176,7 +181,8 @@ void main()
 			scEventPtr evt(new scEvent());
 			evt->name = "c2s";
 			evt->value = i;
-			r->putEvent("ClientInput", evt);
+			//r->putEvent("ClientInput", evt);
+			r->putEvent(evt);
 			r->fetchEvent("ClientOutput", evt);
 		}
 		scEventPtr evt(new scEvent());
@@ -193,7 +199,8 @@ void main()
 			scEventPtr evt(new scEvent());
 			evt->name = "s2c";
 			evt->value = i;
-			r->putEvent("ServerInput", evt);
+			//r->putEvent("ServerInput", evt);
+			r->putEvent(evt);
 			r->fetchEvent("ServerOutput", evt);
 		}
 		scEventPtr evt(new scEvent());

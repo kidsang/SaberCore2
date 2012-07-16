@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scCore.cpp" />
+    <ClCompile Include="scEventRouter.cpp" />
     <ClCompile Include="scGameArea.cpp" />
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
@@ -90,6 +91,8 @@
   <ItemGroup>
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />
+    <ClInclude Include="scEvent.h" />
+    <ClInclude Include="scEventRouter.h" />
     <ClInclude Include="scGameArea.h" />
     <ClInclude Include="scGameWorld.h" />
     <ClInclude Include="scGameWorldManager.h" />
