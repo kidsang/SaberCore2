@@ -33,7 +33,7 @@ class scEventRouter
 public:
 	void createInputQueue(string const& name)
 	{
-		boost::mutex::scoped_lock(mInputMutex);
+		boost::mutex::scoped_lock lock(mInputMutex);
 		// 确保消息队列不存在名字冲突
 		assert(mInputQueues.find(name) == mInputQueues.end());
 		mInputQueues.insert(std::make_pair(name, EventQueuePtr(new EventQueue())));
@@ -41,7 +41,7 @@ public:
 
 	void createOutputQueue(string const& name)
 	{
-		boost::mutex::scoped_lock(mOutputMutex);
+		boost::mutex::scoped_lock lock(mOutputMutex);
 		// 确保消息队列不存在名字冲突
 		assert(mInputQueues.find(name) == mInputQueues.end());
 		mOutputQueues.insert(std::make_pair(name, EventQueuePtr(new EventQueue())));
@@ -49,7 +49,7 @@ public:
 
 	void registerEvent(string const& evtName, string const& queName)
 	{
-		boost::mutex::scoped_lock(mOutputMutex);
+		boost::mutex::scoped_lock lock(mOutputMutex);
 		// 确保消息类型不存在名字冲突
 		assert(mEventMap.find(evtName) == mEventMap.end());
 		// 确保消息队列存在
@@ -62,7 +62,7 @@ public:
 	/// 将事件put到输入队列
 	void putEvent(string const& queName, scEventPtr const& evt)
 	{
-		boost::mutex::scoped_lock(mInputMutex);
+		boost::mutex::scoped_lock lock(mInputMutex);
 		// 确保消息类型存在
 		assert(mEventMap.find(evt->name) != mEventMap.end());
 		// 确保消息队列存在
@@ -74,7 +74,7 @@ public:
 	/// 从输出队列中fetch
 	bool const fetchEvent(string const& queName, scEventPtr & evtOut)
 	{
-		boost::mutex::scoped_lock(mOutputMutex);
+		boost::mutex::scoped_lock lock(mOutputMutex);
 		// 确保消息队列存在
 		auto iter = mOutputQueues.find(queName);
 		assert(iter != mOutputQueues.end());
@@ -93,26 +93,47 @@ public:
 	{
 		while (true)
 		{
-			boost::mutex::scoped_lock(mInputMutex);
 			for (auto input = mInputQueues.begin(); input != mInputQueues.end(); ++input)
 			{
+
+				boost::mutex::scoped_lock inlock(mInputMutex);
+				boost::mutex::scoped_lock outlock(mOutputMutex);
+				while (!input->second->empty())
+				{
+					// 从输入队列中fetch
+					scEventPtr evt = input->second->at(0);
+					input->second->pop_front();
+					// put到相应输出队列
+					string outname = mEventMap.find(evt->name)->second;
+					auto output = mOutputQueues.find(outname);
+					output->second->push_back(evt);
+
+					std::cout << "transfer " << evt->name << " " << evt->value << std::endl;
+					//std::cout << input->first << ": " << input->second->size() << std::endl;
+					//std::cout << output->first << ": " << output->second->size() << std::endl;
+				}
+				/*
 				if (!input->second->empty())
 				{
 					scEventPtr evt;
 					{
+						boost::mutex::scoped_lock lock(mInputMutex);
 						// 从输入队列中fetch
 						evt = input->second->at(0);
 						input->second->pop_front();
-						std::cout << "transfer " << evt->name << " " << evt->value << std::endl;
+						//std::cout << "transfer " << evt->name << " " << evt->value << std::endl;
+						std::cout << input->first << ": " << input->second->size() << std::endl;
 					}
 					{
-						boost::mutex::scoped_lock(mOutputMutex);
+						boost::mutex::scoped_lock lock(mOutputMutex);
 						// put到相应输出队列
 						string outname = mEventMap.find(evt->name)->second;
 						auto output = mOutputQueues.find(outname);
 						output->second->push_back(evt);
+						std::cout << output->first << ": " << output->second->size() << std::endl;
 					}
 				}
+				*/
 			}
 		}
 	}
@@ -142,10 +163,10 @@ void main()
 	r->createOutputQueue("ClientOutput");
 	r->createInputQueue("ServerInput");
 	r->createOutputQueue("ServerOutput");
+
 	r->registerEvent("c2s", "ServerOutput");
 	r->registerEvent("s2c", "ClientOutput");
 
-	boost::this_thread::sleep(boost::);
 
 	boost::thread t2(
 		[&]()
@@ -158,8 +179,11 @@ void main()
 			r->putEvent("ClientInput", evt);
 			r->fetchEvent("ClientOutput", evt);
 		}
+		scEventPtr evt(new scEvent());
+		//while(1)
+			//r->fetchEvent("ClientOutput", evt);
 	}
-		);
+	);
 
 	boost::thread t3(
 		[&]()
@@ -172,8 +196,11 @@ void main()
 			r->putEvent("ServerInput", evt);
 			r->fetchEvent("ServerOutput", evt);
 		}
+		scEventPtr evt(new scEvent());
+		//while(1)
+			//r->fetchEvent("ServerOutput", evt);
 	}
-		);
+	);
 
 	system("pause");
 }
