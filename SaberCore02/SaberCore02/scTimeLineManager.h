@@ -12,6 +12,7 @@
 #include <vector>
 #include "OgreSingleton.h"
 #include "scTypeDefine.h"
+#include <boost/thread.hpp>
 
 class scTimeLine;
 typedef shared_ptr<scTimeLine> scTimeLinePtr;
@@ -22,7 +23,7 @@ typedef shared_ptr<scTimeLine> scTimeLinePtr;
 class scTimeLineManager : public Ogre::Singleton<scTimeLineManager>
 {
 	typedef std::multimap<i32, scTimeLinePtr> TimeLineMap;
-	typedef boost::shared_ptr<boost::thread> ThreadPtr;
+	typedef shared_ptr<boost::thread> ThreadPtr;
 	typedef std::vector<ThreadPtr> ThreadList;
 	typedef std::vector<string> ThreadingTimeLines;
 

@@ -37,7 +37,7 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	// 创建渲染时间轴，60hz
 	scTimeLinePtr tl = mTimeLineManager->createTimeLine("Render", 60);
 	tl->addRunCallBack("Render", [&](u32 dtms)->bool{return mRenderer->_run(dtms);});
-	// 创建事件路由时间轴, 无时间间隔
+	// 创建事件路由时间轴, 无时间间隔(新线程)
 	tl = mTimeLineManager->createTimeLine("Event", 1000, 0, true);
 	tl->addRunCallBack("Event", [&](u32 dtms)->bool{mEventRouter->_run(); return true;});
 	// 创建游戏世界时间轴, 60Hz

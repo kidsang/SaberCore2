@@ -11,3 +11,5 @@
 /Tests/TestMsgQueue/TestMsgQueue.suo
 /Tests/TestMsgQueue/TestMsgQueue/TestMsgQueue.vcxproj.user
 /Tests/TestMsgQueue/TestMsgQueue/Debug
+/SaberCore02\SaberCore02/*.log
+*.log

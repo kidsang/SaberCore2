@@ -27,4 +27,10 @@ typedef std::string string;
 //#define shared_ptr boost::shared_ptr
 using boost::shared_ptr;
 
+// 版本问题，1.80为msSingleton，而之前的为ms_Singleton
+#include "OgrePrerequisites.h"
+#if (OGRE_VERSION == ((1 << 16) | (8 << 8) | 0) )
+#define ms_Singleton msSingleton 
+#endif
+
 #endif // scTypeDefine_h__
