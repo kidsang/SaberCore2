@@ -133,6 +133,7 @@ void scTimeLineManager::startMain()
 		}
 
 		lastTime = currentTime;
+		boost::this_thread::sleep(boost::posix_time::milliseconds(1));
 	}
 }
 
@@ -162,6 +163,7 @@ void scTimeLineManager::runThread( scTimeLinePtr timeLine )
 		timeLine->_run(currentTime - lastTime);
 
 		lastTime = currentTime;
+		boost::this_thread::sleep(boost::posix_time::milliseconds(1));
 	}
 }
 

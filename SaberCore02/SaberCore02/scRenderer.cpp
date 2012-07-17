@@ -30,23 +30,16 @@ scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPa
                 archName, typeName, secName);
         }
     }
-//-------------------------------------------------------------------------------------
-    // configure
-    // Show the configuration dialog and initialise the system
-    // You can skip this and use root.restoreConfig() to load configuration
-    // settings if you were sure there are valid ones saved in ogre.cfg
-    if(mRoot->restoreConfig() || mRoot->showConfigDialog())
-    {
-        // If returned true, user clicked OK so initialise
-        // Here we choose to let the system create a default rendering window by passing 'true'
-        /*mWindow = */mRoot->initialise(true, "TinyOgre Render Window");
-    }
-    else
-    {
-        //return false;
-    }
 
-	// ...
+	// 显示配置窗口
+	// TODO: 改成自己的配置窗口
+    if(!mRoot->restoreConfig())
+		mRoot->showConfigDialog();
+
+	// 创建窗口
+	mRoot->initialise(true, "TinyOgre Render Window");
+
+	// 默认mipmap数量为5
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 }
 
@@ -57,6 +50,19 @@ scRenderer::~scRenderer(void)
 		delete mRoot;
 		mRoot = 0;
 	}
+}
+
+bool scRenderer::_run( u32 dtms )
+{
+	Ogre::WindowEventUtilities::messagePump();
+	// 显示FPS
+	HWND hwnd;
+	Ogre::RenderWindow* window = mRoot->getAutoCreatedWindow();
+	window->getCustomAttribute("WINDOW", (void*)&hwnd);
+	char buff[64];
+	sprintf(buff, "FPS: %f", window->getLastFPS());
+	SetWindowTextA(hwnd, buff);
+	return mRoot->renderOneFrame((float)dtms / 1000.f);
 }
 
 template<> scRenderer* Ogre::Singleton<scRenderer>::ms_Singleton = 0;

@@ -27,18 +27,13 @@ public:
 
 	/// 调用Ogre进行渲染
 	/// 仅供内部使用，该函数应该由某个时间轴调用
-	bool _run(u32 dtms)
-	{
-		Ogre::WindowEventUtilities::messagePump();
-		// 显示FPS
-		HWND hwnd;
-		Ogre::RenderWindow* window = mRoot->getAutoCreatedWindow();
-		window->getCustomAttribute("WINDOW", (void*)&hwnd);
-		char buff[64];
-		sprintf(buff, "FPS: %f", window->getLastFPS());
-		SetWindowTextA(hwnd, buff);
-		return mRoot->renderOneFrame((float)dtms / 1000.f);
-	}
+	bool _run(u32 dtms);
+
+	// get/set
+public:
+	/// 返回OgreRoot
+	Ogre::Root* getOgreRoot()
+	{ return mRoot; }
 
 private:
 	Ogre::Root* mRoot;

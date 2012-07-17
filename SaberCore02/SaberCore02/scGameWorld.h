@@ -26,11 +26,9 @@
 class scGameWorld
 {
 protected:
-	typedef std::map<string, Ogre::SceneManager*> SceneManagerMap; 
 	typedef std::map<string, Ogre::Camera*> CameraMap;
 	typedef std::map<i32, Ogre::Viewport*> ViewportMap;
 	// TODO:GUI
-	//typedef std::map<string, scGameAreaPtr> GameAreaMap;
 
 public:
 	/// ¹¹Ôìº¯Êý
@@ -55,11 +53,11 @@ public:
 
 protected:
 	string mName;
-	SceneManagerMap mSceneManagers;
+	//SceneManagerMap mSceneManagers;
+	Ogre::SceneManager* mSceneManager;
 	CameraMap mCameras;
 	ViewportMap mViewports;
 	// TODO:GUI
-	//GameAreaMap mGameAreas;
 };
 
 #endif // scGameWorld_h__
