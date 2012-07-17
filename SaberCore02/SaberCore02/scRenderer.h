@@ -30,6 +30,13 @@ public:
 	bool _run(u32 dtms)
 	{
 		Ogre::WindowEventUtilities::messagePump();
+		// ÏÔÊ¾FPS
+		HWND hwnd;
+		Ogre::RenderWindow* window = mRoot->getAutoCreatedWindow();
+		window->getCustomAttribute("WINDOW", (void*)&hwnd);
+		char buff[64];
+		sprintf(buff, "FPS: %f", window->getLastFPS());
+		SetWindowTextA(hwnd, buff);
 		return mRoot->renderOneFrame((float)dtms / 1000.f);
 	}
 

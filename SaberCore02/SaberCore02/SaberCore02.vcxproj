@@ -85,6 +85,7 @@
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
     <ClCompile Include="scRenderer.cpp" />
+    <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
   </ItemGroup>
@@ -97,6 +98,7 @@
     <ClInclude Include="scGameWorld.h" />
     <ClInclude Include="scGameWorldManager.h" />
     <ClInclude Include="scRenderer.h" />
+    <ClInclude Include="scServerGameWorld.h" />
     <ClInclude Include="scSingleton.h" />
     <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scTimeLineManager.h" />

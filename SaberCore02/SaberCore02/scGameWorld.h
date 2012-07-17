@@ -10,8 +10,8 @@
 #include "scTypeDefine.h"
 #include <map>
 #include "Ogre.h"
-class scGameArea;
-typedef shared_ptr<scGameArea> scGameAreaPtr;
+//class scGameArea;
+//typedef shared_ptr<scGameArea> scGameAreaPtr;
 
 /// 游戏世界GameWorld
 /// 一个游戏世界包含有自身的数据以及运行和交互的逻辑
@@ -25,38 +25,41 @@ typedef shared_ptr<scGameArea> scGameAreaPtr;
 /// 并在随后加载剩余的
 class scGameWorld
 {
+protected:
 	typedef std::map<string, Ogre::SceneManager*> SceneManagerMap; 
 	typedef std::map<string, Ogre::Camera*> CameraMap;
 	typedef std::map<i32, Ogre::Viewport*> ViewportMap;
 	// TODO:GUI
-	typedef std::map<string, scGameAreaPtr> GameAreaMap;
+	//typedef std::map<string, scGameAreaPtr> GameAreaMap;
 
 public:
+	/// 构造函数
+	/// @param name 游戏世界的名称
 	scGameWorld(string const& name);
-	~scGameWorld(void);
+	virtual ~scGameWorld(void);
 
 	/// 初始化游戏世界
-	void initialize();
+	virtual void initialize();
 
 	/// 释放资源
-	void release();
+	virtual void release();
 
 	/// 运行场景的逻辑
 	/// 仅供内部使用，该函数应该由游戏世界管理类调用
 	/// @param dtms 上一帧到这一帧所经历的时间，单位毫秒
-	bool _run(u32 dtms);
+	virtual bool _run(u32 dtms);
 
 public:
 	string const& getName()
 	{return mName;}
 
-private:
+protected:
 	string mName;
 	SceneManagerMap mSceneManagers;
 	CameraMap mCameras;
 	ViewportMap mViewports;
 	// TODO:GUI
-	GameAreaMap mGameAreas;
+	//GameAreaMap mGameAreas;
 };
 
 #endif // scGameWorld_h__

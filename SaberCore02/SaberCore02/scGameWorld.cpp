@@ -1,6 +1,5 @@
 #include "scGameWorld.h"
 #include "scGameWorldManager.h"
-#include "scGameArea.h"
 #include "scError.h"
 
 scGameWorld::scGameWorld(string const& name)
@@ -30,23 +29,20 @@ void scGameWorld::initialize()
 	mCamera->setAutoAspectRatio(true);
 
 	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    //vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-    //mCamera->setAspectRatio(
-    //    Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
-	vp = mWindow->addViewport(mCamera, 1, 0.5f, .5f, .5f, .5f);
+	//vp = mWindow->addViewport(mCamera, 1, 0.5f, .5f, .5f, .5f);
 
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	//////////////////////////////////////////////////////////////////////////
 	// 以下的应该移动至GameArea
-	Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
-	Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	headNode->attachObject(ogreHead);
-	// Set ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-	// Create a light
-	Ogre::Light* l = mSceneMgr->createLight("MainLight");
-	l->setPosition(20,80,50);
+	//Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+	//Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//headNode->attachObject(ogreHead);
+	//// Set ambient light
+	//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	//// Create a light
+	//Ogre::Light* l = mSceneMgr->createLight("MainLight");
+	//l->setPosition(20,80,50);
 	
 }
 
@@ -82,7 +78,7 @@ void scGameWorld::release()
 
 bool scGameWorld::_run( u32 dtms )
 {
-	std::cout<<"testing jump to..."<<std::endl;
-	scGameWorldManager::getSingletonPtr()->jumpTo("test");
+	//std::cout<<"testing jump to..."<<std::endl;
+	//scGameWorldManager::getSingletonPtr()->jumpTo("test");
 	return true;
 }

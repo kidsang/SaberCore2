@@ -4,6 +4,7 @@
 #include "scRenderer.h"
 #include "scGameWorldManager.h"
 #include "scGameWorld.h"
+#include "scServerGameWorld.h"
 #include "scTimeLineManager.h"
 #include "scTimeLine.h"
 #include "scEventRouter.h"
@@ -48,7 +49,7 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 
 
 	// ²âÊÔÒ»ÏÂ
-	scGameWorldPtr gw(new scGameWorld("test"));
+	scGameWorldPtr gw(new scServerGameWorld("test", ""));
 	mGameWorldManager->addGameWorld(gw->getName(), gw);
 	mGameWorldManager->initializeGameWorld("test");
 	
