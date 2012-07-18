@@ -9,7 +9,12 @@
 
 #include "scTypeDefine.h"
 #include <map>
-#include "Ogre.h"
+//#include "Ogre.h"
+namespace Ogre
+{
+	class Viewport;
+	class SceneManager;
+}
 //class scGameArea;
 //typedef shared_ptr<scGameArea> scGameAreaPtr;
 
@@ -26,7 +31,6 @@
 class scGameWorld
 {
 protected:
-	typedef std::map<string, Ogre::Camera*> CameraMap;
 	typedef std::map<i32, Ogre::Viewport*> ViewportMap;
 	// TODO:GUI
 
@@ -47,15 +51,27 @@ public:
 	/// @param dtms 上一帧到这一帧所经历的时间，单位毫秒
 	virtual bool _run(u32 dtms);
 
+	/// 从lua文件中加载场景
+	/// @param fileName lua文件名
+	/// @param entry lua入口函数名，形如void (scServerGameWorld* )
+	void loadScene(string const& fileName, string const& entry = "createScene");
+
+	// helper functions
+public:
+	/// 增加静态物体
+	/// @param meshName 模型名称
+	void addStatic(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale);
+
+	/// 增加摄像机
+	void addCamera(string const& camName);
+
 public:
 	string const& getName()
 	{return mName;}
 
 protected:
 	string mName;
-	//SceneManagerMap mSceneManagers;
 	Ogre::SceneManager* mSceneManager;
-	CameraMap mCameras;
 	ViewportMap mViewports;
 	// TODO:GUI
 };

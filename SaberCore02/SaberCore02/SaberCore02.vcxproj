@@ -51,13 +51,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OgreSDK\include;F:\boost_1_47_0;D:\OgreSDK\include;D:\boost_1_50_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\OgreSDK\include;F:\boost_1_47_0;D:\OgreSDK\include;D:\boost_1_50_0;D:\luabind-0.9.1;D:\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;D:\OgreSDK\lib\$(Configuration);D:\boost_1_50_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;D:\OgreSDK\lib\$(Configuration);D:\boost_1_50_0\stage\lib;D:\luabind-0.9.1\lib\$(Configuration);D:\Lua\5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;luabind.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>false</Profile>
     </Link>
   </ItemDefinitionGroup>
@@ -91,6 +92,7 @@
     <ClCompile Include="scTimeLineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="luaVectorWrapper.h" />
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />
     <ClInclude Include="scEvent.h" />

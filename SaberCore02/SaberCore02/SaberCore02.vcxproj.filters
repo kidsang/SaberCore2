@@ -32,5 +32,6 @@
     <ClInclude Include="scEventRouter.h" />
     <ClInclude Include="scEvent.h" />
     <ClInclude Include="scServerGameWorld.h" />
+    <ClInclude Include="luaVectorWrapper.h" />
   </ItemGroup>
 </Project>

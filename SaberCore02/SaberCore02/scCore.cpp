@@ -49,7 +49,7 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 
 
 	// ²âÊÔÒ»ÏÂ
-	scGameWorldPtr gw(new scServerGameWorld("test", ""));
+	scGameWorldPtr gw(new scGameWorld("test"));
 	mGameWorldManager->addGameWorld(gw->getName(), gw);
 	mGameWorldManager->initializeGameWorld("test");
 	
