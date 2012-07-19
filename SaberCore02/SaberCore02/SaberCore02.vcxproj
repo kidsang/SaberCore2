@@ -51,13 +51,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OgreSDK\include;F:\boost_1_47_0;D:\OgreSDK\include;D:\boost_1_50_0;D:\luabind-0.9.1;D:\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\OgreSDK\include;F:\boost_1_47_0;F:\Lua\5.1\include;F:\luabind-0.9.1;D:\OgreSDK\include;D:\boost_1_50_0;D:\luabind-0.9.1;D:\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;D:\OgreSDK\lib\$(Configuration);D:\boost_1_50_0\stage\lib;D:\luabind-0.9.1\lib\$(Configuration);D:\Lua\5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;F:\luabind-0.9.1\lib\$(Configuration);F:\Lua\5.1\lib;D:\OgreSDK\lib\$(Configuration);D:\boost_1_50_0\stage\lib;D:\luabind-0.9.1\lib\$(Configuration);D:\Lua\5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;luabind.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>false</Profile>
     </Link>

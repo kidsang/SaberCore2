@@ -72,7 +72,8 @@ void scGameWorld::loadScene( string const& fileName, string const& entry /*= "cr
 		luabind::open(L);
 
 		// 导出Ogre向量和四元数
-		exportVectorAndQuaternion(L);
+		//exportVectorAndQuaternion(L);
+		exportOgreMath(L);
 
 		// 导出类
 		module(L)
