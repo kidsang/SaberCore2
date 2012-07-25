@@ -86,7 +86,8 @@
     <ClCompile Include="scGameArea.cpp" />
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
-    <ClCompile Include="scLuaWrapper.cpp" />
+    <ClCompile Include="scLuaWrapperCamera.cpp" />
+    <ClCompile Include="scLuaWrapperMath.cpp" />
     <ClCompile Include="scRenderer.cpp" />
     <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scTimeLine.cpp" />

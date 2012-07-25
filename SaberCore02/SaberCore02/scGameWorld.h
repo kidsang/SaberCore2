@@ -31,7 +31,7 @@ namespace Ogre
 class scGameWorld
 {
 protected:
-	typedef std::map<i32, Ogre::Viewport*> ViewportMap;
+	typedef std::map<string, Ogre::Viewport*> ViewportMap;
 	// TODO:GUI
 
 public:
@@ -60,10 +60,45 @@ public:
 public:
 	/// 增加静态物体
 	/// @param meshName 模型名称
+	/// @param position 物体位置
+	/// @param orientation 物体朝向
+	/// @param scale 物体缩放
 	void addStatic(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale);
 
 	/// 增加摄像机
-	void addCamera(string const& camName);
+	/// @param camName摄像机名称
+	/// @return 创建好的摄像机
+	Ogre::Camera* addCamera(string const& camName);
+
+	/// 返回指定名称的摄像机
+	/// @param camName摄像机名称
+	/// @return 摄像机
+	Ogre::Camera* getCamera(string const& camName);
+
+	/// 销毁指定名称的摄像机
+	void removeCamera(string const& camName);
+
+	/// 增加视口,并为其指定摄像机
+	/// 后创建的视口永远覆盖之前创建的视口
+	/// 默认占据整个屏幕
+	/// @param vpName 视口名称
+	/// @param camName 摄像机名称
+	void addViewport(string const& vpName, string const& camName);
+
+	/// 增加视口,并为其指定摄像机
+	/// 后创建的视口永远覆盖之前创建的视口
+	/// 自定义大小位置
+	/// @param vpName 视口名称
+	/// @param camName 摄像机名称
+	/// @param left 视口左上角x坐标(0.0 - 1.0)
+	/// @param top 视口左上角y坐标(0.0 - 1.0)
+	/// @param width 视口宽(0.0 - 1.0)
+	/// @param height 视口高(0.0 - 1.0)
+	void addViewport(string const& vpName, string const& camName, float left, float top, float width, float height);
+
+	/// 移除指定名称的视口
+	/// @param vpName 视口名称
+	void removeViewport(string const& vpName);
 
 public:
 	string const& getName()
@@ -73,6 +108,7 @@ protected:
 	string mName;
 	Ogre::SceneManager* mSceneManager;
 	ViewportMap mViewports;
+	static u32 sNextViewportZOder;
 	// TODO:GUI
 };
 

@@ -95,5 +95,7 @@ Ogre::Quaternion makeQuaternion()
 
 void exportOgreMath(lua_State* L);
 
+void exportOgreCamera(lua_State* L);
+
 
 #endif // luaVectorWrapper_h__

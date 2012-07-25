@@ -1,10 +1,12 @@
 #include "scGameWorld.h"
+#include <lua.hpp>
+#include <luabind/luabind.hpp>
 #include "scGameWorldManager.h"
 #include "scError.h"
 #include "scRenderer.h"
-#include <lua.hpp>
-#include <luabind/luabind.hpp>
 #include "scLuaWrapper.h"
+
+u32 scGameWorld::sNextViewportZOder = 0;
 
 scGameWorld::scGameWorld(string const& name)
 	: mName(name), mSceneManager(0)
@@ -22,27 +24,25 @@ void scGameWorld::initialize()
 	mSceneManager = Ogre::Root::getSingletonPtr()->createSceneManager(Ogre::ST_GENERIC);
 	//////////////////////////////////////////////////////////////////////////
 	// test
-	Ogre::Root* mRoot = Ogre::Root::getSingletonPtr();
-	Ogre::RenderWindow* mWindow = mRoot->getAutoCreatedWindow();
-	
-	Ogre::Camera* mCamera = mSceneManager->createCamera("PlayerCam");
-	//mCameras.insert(std::make_pair("test", mCamera));
-    mCamera->setPosition(Ogre::Vector3(0,0,80));
-    mCamera->lookAt(Ogre::Vector3(0,0,-300));
-    mCamera->setNearClipDistance(1);
-	mCamera->setAutoAspectRatio(true);
+	//Ogre::Root* mRoot = scRenderer::getSingleton().getOgreRoot();
+	//Ogre::RenderWindow* mWindow = mRoot->getAutoCreatedWindow();
+	//
+	//Ogre::Camera* mCamera = mSceneManager->createCamera("PlayerCam");
+    //mCamera->setPosition(Ogre::Vector3(0,0,80));
+    //mCamera->lookAt(Ogre::Vector3(0,0,-300));
+    //mCamera->setNearClipDistance(1);
+	//mCamera->setAutoAspectRatio(true);
 
-	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-	vp = mWindow->addViewport(mCamera, vp->getZOrder() + 1, 0.5f, .5f, .5f, .5f);
+	//Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+	//vp = mWindow->addViewport(mCamera, vp->getZOrder() + 1, 0.5f, .5f, .5f, .5f);
 
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
+	// 测试装载场景
 	loadScene("../../Media/lua/testscene.lua");
 }
 
 void scGameWorld::release()
 {
-	Ogre::Root* ogreRoot = Ogre::Root::getSingletonPtr();
+	Ogre::Root* ogreRoot= scRenderer::getSingleton().getOgreRoot();
 	// 清理视口
 	ogreRoot->getAutoCreatedWindow()->removeAllViewports();
 	mViewports.clear();
@@ -72,14 +72,21 @@ void scGameWorld::loadScene( string const& fileName, string const& entry /*= "cr
 		luabind::open(L);
 
 		// 导出Ogre向量和四元数
-		//exportVectorAndQuaternion(L);
 		exportOgreMath(L);
+		// 导出Ogre Camera
+		exportOgreCamera(L);
 
 		// 导出类
 		module(L)
 			[
 				class_<scGameWorld>("World")
-				.def("placeStatic", &scGameWorld::addStatic)
+				.def("addStatic", (void (scGameWorld::*)(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale))&scGameWorld::addStatic)
+				.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
+				.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
+				.def("removeCamera", (void (scGameWorld::*)(const string &))&scGameWorld::removeCamera)
+				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
+				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
+				.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
 			];
 
 		// 加载地图文件
@@ -104,9 +111,42 @@ void scGameWorld::addStatic(string const& meshName, Ogre::Vector3 const& positio
 	sg->build();
 }
 
-void scGameWorld::addCamera( string const& camName )
+Ogre::Camera* scGameWorld::addCamera( string const& camName )
 {
 	Ogre::Camera* camera = mSceneManager->createCamera(camName);
     camera->setNearClipDistance(1);
 	camera->setAutoAspectRatio(true);
+	return camera;
+}
+
+Ogre::Camera* scGameWorld::getCamera( string const& camName )
+{
+	return mSceneManager->getCamera(camName);
+}
+
+void scGameWorld::removeCamera( string const& camName )
+{
+	mSceneManager->destroyCamera(camName);
+}
+
+void scGameWorld::addViewport( string const& vpName, string const& camName )
+{
+	addViewport(vpName, camName, 0.0f, 0.0f, 1.0f, 1.0f);
+}
+
+void scGameWorld::addViewport( string const& vpName, string const& camName, float left, float top, float width, float height )
+{
+	Ogre::RenderWindow* window = scRenderer::getSingleton().getOgreRoot()->getAutoCreatedWindow();
+	scAssert(mViewports.find(vpName) == mViewports.end(), "Viewport named \"" + vpName + "\" already exist!");
+	Ogre::Viewport* vp = window->addViewport(mSceneManager->getCamera(camName), sNextViewportZOder++, left, top, width, height);
+	mViewports.insert(std::make_pair(vpName, vp));
+}
+
+void scGameWorld::removeViewport( string const& vpName )
+{
+	auto iter = mViewports.find(vpName);
+	scAssert(iter != mViewports.end(), "Viewport named \"" + vpName + "\" do not exist!");
+	Ogre::RenderWindow* window = scRenderer::getSingleton().getOgreRoot()->getAutoCreatedWindow();
+	window->removeViewport(iter->second->getZOrder());
+	mViewports.erase(iter);
 }

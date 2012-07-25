@@ -41,6 +41,9 @@ scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPa
 
 	// 默认mipmap数量为5
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+	// 初始化所有资源(并非load进内存)
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
 }
 
 scRenderer::~scRenderer(void)
