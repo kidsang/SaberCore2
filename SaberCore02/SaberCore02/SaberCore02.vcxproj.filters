@@ -17,6 +17,7 @@
     <ClCompile Include="scGameArea.cpp" />
     <ClCompile Include="scEventRouter.cpp" />
     <ClCompile Include="scServerGameWorld.cpp" />
+    <ClCompile Include="scLuaWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -32,6 +33,6 @@
     <ClInclude Include="scEventRouter.h" />
     <ClInclude Include="scEvent.h" />
     <ClInclude Include="scServerGameWorld.h" />
-    <ClInclude Include="luaVectorWrapper.h" />
+    <ClInclude Include="scLuaWrapper.h" />
   </ItemGroup>
 </Project>

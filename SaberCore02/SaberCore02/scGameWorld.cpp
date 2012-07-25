@@ -4,7 +4,7 @@
 #include "scRenderer.h"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
-#include "luaVectorWrapper.h"
+#include "scLuaWrapper.h"
 
 scGameWorld::scGameWorld(string const& name)
 	: mName(name), mSceneManager(0)
