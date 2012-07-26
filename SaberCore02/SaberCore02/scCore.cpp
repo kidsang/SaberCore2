@@ -2,6 +2,7 @@
 #include <iostream>
 #include "scCore.h"
 #include "scRenderer.h"
+#include "scInputManager.h"
 #include "scGameWorldManager.h"
 #include "scGameWorld.h"
 #include "scServerGameWorld.h"
@@ -28,16 +29,25 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 
 	// 初始化渲染子系统
 	mRenderer = new scRenderer("resources_d.cfg", "plugins_d.cfg");
+	// 初始化输入子系统
+	u32 windowHnd = 0;
+	mRenderer->getOgreRoot()->getAutoCreatedWindow()->getCustomAttribute("WINDOW", &windowHnd);
+	u32 winWidth, winHeight, colDepth;
+	i32 winLeft, winTop;
+	mRenderer->getOgreRoot()->getAutoCreatedWindow()->getMetrics(winWidth, winHeight, colDepth, winLeft, winTop);
+	mInputManager = new scInputManager(windowHnd, winWidth, winHeight);
 	// 初始化事件路由器
 	mEventRouter = new scEventRouter();
 	// 初始化游戏世界管理类
 	mGameWorldManager = new scGameWorldManager();
+
+
 	// 创建时间轴管理类
 	mTimeLineManager = new scTimeLineManager();
-
-	// 创建渲染时间轴，60hz
+	// 创建渲染和输入时间轴，60hz
 	scTimeLinePtr tl = mTimeLineManager->createTimeLine("Render", 60);
 	tl->addRunCallBack("Render", [&](u32 dtms)->bool{return mRenderer->_run(dtms);});
+	tl->addRunCallBack("Input", [&](u32 dtms)->bool{mInputManager->_run(); return true;});
 	// 创建事件路由时间轴, 无时间间隔(新线程)
 	tl = mTimeLineManager->createTimeLine("Event", 1000, 0, true);
 	tl->addRunCallBack("Event", [&](u32 dtms)->bool{mEventRouter->_run(); return true;});
@@ -65,6 +75,9 @@ scCore::~scCore(void)
 
 	if (mEventRouter)
 	{ delete mEventRouter; mEventRouter = 0; }
+
+	if (mInputManager)
+	{ delete mInputManager; mInputManager = 0; }
 
 	if (mRenderer)
 	{ delete mRenderer; mRenderer = 0; }

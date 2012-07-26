@@ -19,6 +19,7 @@
     <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scLuaWrapperMath.cpp" />
     <ClCompile Include="scLuaWrapperCamera.cpp" />
+    <ClCompile Include="scInputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -35,5 +36,6 @@
     <ClInclude Include="scEvent.h" />
     <ClInclude Include="scServerGameWorld.h" />
     <ClInclude Include="scLuaWrapper.h" />
+    <ClInclude Include="scInputManager.h" />
   </ItemGroup>
 </Project>

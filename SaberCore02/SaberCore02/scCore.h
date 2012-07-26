@@ -12,6 +12,7 @@
 #include <Windows.h>
 
 class scRenderer;
+class scInputManager;
 class scGameWorldManager;
 class scTimeLineManager;
 class scEventRouter;
@@ -35,6 +36,7 @@ private:
 	FILE* fpDebugErr;
 
 	scRenderer* mRenderer;
+	scInputManager *mInputManager;
 	scEventRouter* mEventRouter;
 	scGameWorldManager* mGameWorldManager;
 	scTimeLineManager* mTimeLineManager;

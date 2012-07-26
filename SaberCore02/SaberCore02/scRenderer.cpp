@@ -1,6 +1,5 @@
 #include "scRenderer.h"
-#include <assert.h>
-
+#include "scError.h"
 
 scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPath )
 	: mRoot(0)
@@ -43,7 +42,6 @@ scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPa
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 	// 初始化所有资源(并非load进内存)
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
 }
 
 scRenderer::~scRenderer(void)

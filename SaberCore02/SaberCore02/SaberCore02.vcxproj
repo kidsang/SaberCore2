@@ -58,7 +58,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;F:\luabind-0.9.1\lib\$(Configuration);F:\Lua\5.1\lib;D:\OgreSDK\lib\$(Configuration);D:\boost_1_50_0\stage\lib;D:\luabind-0.9.1\lib\$(Configuration);D:\Lua\5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;luabind.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OgreMain_d.lib;luabind.lib;lua51.lib;OIS_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>false</Profile>
     </Link>
   </ItemDefinitionGroup>
@@ -86,6 +86,7 @@
     <ClCompile Include="scGameArea.cpp" />
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
+    <ClCompile Include="scInputManager.cpp" />
     <ClCompile Include="scLuaWrapperCamera.cpp" />
     <ClCompile Include="scLuaWrapperMath.cpp" />
     <ClCompile Include="scRenderer.cpp" />
@@ -94,6 +95,7 @@
     <ClCompile Include="scTimeLineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scInputManager.h" />
     <ClInclude Include="scLuaWrapper.h" />
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />
