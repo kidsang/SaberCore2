@@ -93,6 +93,8 @@ void scGameWorld::loadScene( string const& fileName, string const& entry /*= "cr
 		luaL_dofile(L, fileName.c_str());
 		// ´´½¨³¡¾°
 		call_function<void>(L, entry.c_str(), this);
+
+		lua_close(L);
 	}
 	catch (luabind::error& e)
 	{

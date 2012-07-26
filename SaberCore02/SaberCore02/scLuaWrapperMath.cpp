@@ -29,8 +29,6 @@ class_<Ogre::Quaternion>("DummyQuaternion")
 using namespace Ogre;
 }
 }*/
-#include <luabind/luabind.hpp>
-#include <luabind/operator.hpp>
 #include "Ogre.h"
 #include "scError.h"
 

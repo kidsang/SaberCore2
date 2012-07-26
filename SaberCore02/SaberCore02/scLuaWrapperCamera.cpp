@@ -1,6 +1,4 @@
 #include "scLuaWrapper.h"
-#include <luabind/luabind.hpp>
-#include <luabind/operator.hpp>
 #include "Ogre.h"
 #include "scError.h"
 

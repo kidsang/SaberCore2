@@ -20,6 +20,7 @@
     <ClCompile Include="scLuaWrapperMath.cpp" />
     <ClCompile Include="scLuaWrapperCamera.cpp" />
     <ClCompile Include="scInputManager.cpp" />
+    <ClCompile Include="scLuaWrapperInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />

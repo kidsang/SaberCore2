@@ -90,12 +90,17 @@ Ogre::Quaternion makeQuaternion()
 //////////////////////////////////////////////////////////////////////////
 */
 #include <lua.hpp>
+#include <luabind/luabind.hpp>
+#include <luabind/operator.hpp>
 
 //void exportVectorAndQuaternion(lua_State* L);
 
 void exportOgreMath(lua_State* L);
 
 void exportOgreCamera(lua_State* L);
+
+void exportOISMouseEvent(lua_State* L);
+void exportOISKeyboardEvent(lua_State* L);
 
 
 #endif // luaVectorWrapper_h__
