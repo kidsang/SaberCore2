@@ -63,6 +63,8 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	mGameWorldManager->addGameWorld(gw->getName(), gw);
 	mGameWorldManager->initializeGameWorld("test");
 	mInputManager->registerMouseMoved("../../Media/lua/testinput.lua", "onMouseMoved");
+	mInputManager->registerMousePressed("../../Media/lua/testinput.lua", "onMousePressed");
+	mInputManager->registerKeyReleased("../../Media/lua/testinput.lua", "onKeyPressed");
 }
 
 scCore::~scCore(void)

@@ -114,7 +114,7 @@ private:
 /// 其实是为了解决luabind里面无法绑定const成员的问题
 struct scMouseEventWrapper
 {
-	scMouseEventWrapper(OIS::MouseState ms)
+	scMouseEventWrapper(OIS::MouseState const& ms)
 		: state(ms)
 	{
 	}
