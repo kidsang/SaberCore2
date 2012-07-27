@@ -1,6 +1,8 @@
 #include "scInputManager.h"
 #include "scError.h"
 #include "scLuaWrapper.h"
+//TODO：解除MyGUI和OIS的耦合
+#include "MyGUI/MyGUI.h"
 
 /// 辅助方法，输出lua错误信息
 void printLuaError(luabind::error& e)
@@ -57,7 +59,7 @@ void unregisterScript(lua_State*& L)
 
 
 scInputManager::scInputManager( u32 handle, u32 width, u32 height, bool isExclusive /*= false*/ )
-	: mInputMgr(0), mKeyboard(0), mMouse(0),
+	: mInputMgr(0), mKeyboard(0), mMouse(0), mGuiInput(0),
 	mKeyPressedLuaState(0), mKeyReleasedLuaState(0),
 	mMouseMovedLuaState(0), mMousePressedLuaState(0), mMouseReleasedLuaState(0)
 {
@@ -90,6 +92,7 @@ scInputManager::~scInputManager(void)
 {
 	unregisterAll();
 
+	MyGUI::InputManager::getInstancePtr();
 	if( mInputMgr )
 	{
 		if (mMouse)
@@ -115,6 +118,9 @@ scInputManager* scInputManager::getSingletonPtr( void )
 
 bool scInputManager::keyPressed( const OIS::KeyEvent &arg )
 {
+	if (mGuiInput && mGuiInput->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text))
+		return true;
+
 	if (mKeyPressedLuaState)
 	{
 		try
@@ -132,6 +138,9 @@ bool scInputManager::keyPressed( const OIS::KeyEvent &arg )
 
 bool scInputManager::keyReleased( const OIS::KeyEvent &arg )
 {
+	if (mGuiInput && mGuiInput->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key)))
+		return true;
+
 	if (mKeyReleasedLuaState)
 	{
 		try
@@ -149,6 +158,9 @@ bool scInputManager::keyReleased( const OIS::KeyEvent &arg )
 
 bool scInputManager::mouseMoved( const OIS::MouseEvent &arg )
 {
+	if (mGuiInput && mGuiInput->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs))
+		return true;
+
 	if (mMouseMovedLuaState)
 	{
 		try
@@ -166,6 +178,9 @@ bool scInputManager::mouseMoved( const OIS::MouseEvent &arg )
 
 bool scInputManager::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
+	if (mGuiInput && mGuiInput->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id)))
+		return true;
+
 	if (mMousePressedLuaState)
 	{
 		try
@@ -183,6 +198,9 @@ bool scInputManager::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonI
 
 bool scInputManager::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
+	if (mGuiInput && mGuiInput->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id)))
+		return true;
+
 	if (mMouseReleasedLuaState)
 	{
 		try
@@ -265,4 +283,9 @@ void scInputManager::unregisterAll()
 	unregisterMouseMoved();
 	unregisterMousePressed();
 	unregisterMouseReleased();
+}
+
+void scInputManager::registerGuiEvents( MyGUI::InputManager* guiInput )
+{
+	mGuiInput = guiInput;
 }

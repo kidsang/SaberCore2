@@ -1,8 +1,7 @@
 #include "scRenderer.h"
-#include "scError.h"
 
 scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPath )
-	: mRoot(0)
+	: mRoot(0),mPlatform(0), mGui(0), mIsGuiInitialized(false)
 {
 	mRoot = new Ogre::Root(pluginCfgPath);
 
@@ -42,15 +41,21 @@ scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPa
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 	// 初始化所有资源(并非load进内存)
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+	//--------------------------
+	//MyGUI
+	mPlatform = new MyGUI::OgrePlatform();
+	mGui = new MyGUI::Gui();
 }
 
 scRenderer::~scRenderer(void)
 {
+	if (mGui)
+	{ delete mGui; mGui = 0; }
+	if (mPlatform)
+	{ delete mPlatform; mPlatform = 0; }
 	if (mRoot)
-	{
-		delete mRoot;
-		mRoot = 0;
-	}
+	{ delete mRoot; mRoot = 0; }
 }
 
 bool scRenderer::_run( u32 dtms )
@@ -74,4 +79,20 @@ scRenderer& scRenderer::getSingleton( void )
 scRenderer* scRenderer::getSingletonPtr( void )
 {
 	return ms_Singleton;
+}
+
+void scRenderer::initializeGui( Ogre::SceneManager* mgr )
+{
+	scAssert(!mIsGuiInitialized, "GUI has already be initialized!");
+	mPlatform->initialise(mRoot->getAutoCreatedWindow(), mgr);
+	mGui->initialise();
+	mIsGuiInitialized = true;
+}
+
+void scRenderer::shutdownGui()
+{
+	scAssert(mIsGuiInitialized, "GUI not initialized! You must first call initializeGui()");
+	mGui->shutdown(); 
+	mPlatform->shutdown();
+	mIsGuiInitialized = false;
 }

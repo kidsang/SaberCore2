@@ -35,7 +35,7 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	u32 winWidth, winHeight, colDepth;
 	i32 winLeft, winTop;
 	mRenderer->getOgreRoot()->getAutoCreatedWindow()->getMetrics(winWidth, winHeight, colDepth, winLeft, winTop);
-	mInputManager = new scInputManager(windowHnd, winWidth, winHeight);
+	mInputManager = new scInputManager(windowHnd, winWidth, winHeight, MyGUI::InputManager::getInstancePtr());
 	// 初始化事件路由器
 	mEventRouter = new scEventRouter();
 	// 初始化游戏世界管理类

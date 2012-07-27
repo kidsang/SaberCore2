@@ -20,29 +20,26 @@ scGameWorld::~scGameWorld(void)
 
 void scGameWorld::initialize()
 {
+	scRenderer* renderer = scRenderer::getSingletonPtr();
 	// 创建场景管理器
-	mSceneManager = Ogre::Root::getSingletonPtr()->createSceneManager(Ogre::ST_GENERIC);
-	//////////////////////////////////////////////////////////////////////////
-	// test
-	//Ogre::Root* mRoot = scRenderer::getSingleton().getOgreRoot();
-	//Ogre::RenderWindow* mWindow = mRoot->getAutoCreatedWindow();
-	//
-	//Ogre::Camera* mCamera = mSceneManager->createCamera("PlayerCam");
-    //mCamera->setPosition(Ogre::Vector3(0,0,80));
-    //mCamera->lookAt(Ogre::Vector3(0,0,-300));
-    //mCamera->setNearClipDistance(1);
-	//mCamera->setAutoAspectRatio(true);
-
-	//Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-	//vp = mWindow->addViewport(mCamera, vp->getZOrder() + 1, 0.5f, .5f, .5f, .5f);
+	mSceneManager = renderer->getOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
 
 	// 测试装载场景
 	loadScene("../../Media/lua/testscene.lua");
+
+	// 测试GUI
+	//renderer->initializeGui(mSceneManager);
+	//MyGUI::Gui* gui = renderer->getGui();
+	//MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main");
+	//button->setCaption("exit");
 }
 
 void scGameWorld::release()
 {
 	Ogre::Root* ogreRoot= scRenderer::getSingleton().getOgreRoot();
+	// 清理GUI
+	scRenderer::getSingleton().shutdownGui();
+
 	// 清理视口
 	ogreRoot->getAutoCreatedWindow()->removeAllViewports();
 	mViewports.clear();

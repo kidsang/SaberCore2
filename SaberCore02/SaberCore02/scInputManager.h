@@ -11,6 +11,10 @@
 #include "OgreSingleton.h"
 #include "lua.hpp"
 
+namespace MyGUI {
+	class InputManager;
+}
+
 /// 输入管理类
 /// 负责处理鼠标及键盘响应事件
 /// 实际上它会把事件转交给对应的lua脚本处理
@@ -35,6 +39,9 @@ public:
 		mMouse->capture();
 		mKeyboard->capture();
 	}
+
+	/// 
+	void registerGuiEvents(MyGUI::InputManager* guiInput);
 
 	/// 为键盘按下事件注册处理脚本
 	/// 输入事件全部转移给lua脚本处理
@@ -96,6 +103,7 @@ private:
 	OIS::InputManager* mInputMgr;
 	OIS::Keyboard* mKeyboard;
 	OIS::Mouse* mMouse;
+	MyGUI::InputManager* mGuiInput;
 
 	string mKeyPressedEntry;
 	string mKeyReleasedEntry;
