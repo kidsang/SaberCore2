@@ -4,6 +4,7 @@
 #include "scGameWorldManager.h"
 #include "scError.h"
 #include "scRenderer.h"
+#include "scInputManager.h"
 #include "scLuaWrapper.h"
 
 u32 scGameWorld::sNextViewportZOder = 0;
@@ -21,23 +22,33 @@ scGameWorld::~scGameWorld(void)
 void scGameWorld::initialize()
 {
 	scRenderer* renderer = scRenderer::getSingletonPtr();
+	scInputManager* inputMgr = scInputManager::getSingletonPtr();
+
 	// 创建场景管理器
 	mSceneManager = renderer->getOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
+
+	// 测试输入系统绑定
+	inputMgr->registerMouseMoved("../../Media/lua/testinput.lua", "onMouseMoved");
+	inputMgr->registerMousePressed("../../Media/lua/testinput.lua", "onMousePressed");
+	inputMgr->registerKeyReleased("../../Media/lua/testinput.lua", "onKeyPressed");
 
 	// 测试装载场景
 	loadScene("../../Media/lua/testscene.lua");
 
+	// 初始化GUI
+	renderer->initializeGui(mSceneManager);
+	inputMgr->registerGuiEvents(MyGUI::InputManager::getInstancePtr());
 	// 测试GUI
-	//renderer->initializeGui(mSceneManager);
-	//MyGUI::Gui* gui = renderer->getGui();
-	//MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main");
-	//button->setCaption("exit");
+	MyGUI::Gui* gui = renderer->getGui();
+	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main");
+	button->setCaption("exit");
 }
 
 void scGameWorld::release()
 {
 	Ogre::Root* ogreRoot= scRenderer::getSingleton().getOgreRoot();
 	// 清理GUI
+	scInputManager::getSingleton().unregisterGuiEvents();
 	scRenderer::getSingleton().shutdownGui();
 
 	// 清理视口

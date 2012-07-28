@@ -40,8 +40,12 @@ public:
 		mKeyboard->capture();
 	}
 
-	/// 
+	/// 向输入系统注册GUI事件
+	/// @param guiInput GUI系统的inputManager
 	void registerGuiEvents(MyGUI::InputManager* guiInput);
+
+	/// 解除GUI事件的注册
+	void unregisterGuiEvents();
 
 	/// 为键盘按下事件注册处理脚本
 	/// 输入事件全部转移给lua脚本处理

@@ -39,6 +39,10 @@ public:
 	/// ¹Ø±ÕGUI
 	void shutdownGui();
 
+	//void loadGuiEventConfig(string const& fileName);
+
+	//void registerGuiEvent(string const& widgetName, string const& eventName, string const& callbackName);
+
 	// get/set
 public:
 	/// ·µ»ØOgreRoot

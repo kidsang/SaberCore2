@@ -283,9 +283,15 @@ void scInputManager::unregisterAll()
 	unregisterMouseMoved();
 	unregisterMousePressed();
 	unregisterMouseReleased();
+	unregisterGuiEvents();
 }
 
 void scInputManager::registerGuiEvents( MyGUI::InputManager* guiInput )
 {
 	mGuiInput = guiInput;
+}
+
+void scInputManager::unregisterGuiEvents()
+{
+	mGuiInput = 0;
 }

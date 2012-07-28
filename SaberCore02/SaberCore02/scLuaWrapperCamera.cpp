@@ -95,9 +95,9 @@ void exportOgreCamera( lua_State* L )
 			.def("synchroniseBaseSettingsWith", (void (Camera::*)(const Ogre::Camera *))&Camera::synchroniseBaseSettingsWith)
 			.def("getPositionForViewUpdate", (const Vector3& (Camera::*)())&Camera::getPositionForViewUpdate)
 			.def("getOrientationForViewUpdate", (const Quaternion& (Camera::*)())&Camera::getOrientationForViewUpdate)
-			.def("setUseMinPixelSize", (void (Camera::*)(bool))&Camera::setUseMinPixelSize)
-			.def("getUseMinPixelSize", (bool (Camera::*)())&Camera::getUseMinPixelSize)
-			.def("getPixelDisplayRatio", (Real (Camera::*)())&Camera::getPixelDisplayRatio)
+			//高版本才支持.def("setUseMinPixelSize", (void (Camera::*)(bool))&Camera::setUseMinPixelSize)
+			//高版本才支持.def("getUseMinPixelSize", (bool (Camera::*)())&Camera::getUseMinPixelSize)
+			//高版本才支持.def("getPixelDisplayRatio", (Real (Camera::*)())&Camera::getPixelDisplayRatio)
 		];
 	//<<----include/OgreCamera.h
 }
