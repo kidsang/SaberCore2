@@ -14,3 +14,5 @@
 /SaberCore02\SaberCore02/*.log
 *.log
 AutoWrapLuaApi
+
+/SaberCore02/SaberCore02/LuabindAutoWrap/

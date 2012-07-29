@@ -117,12 +117,7 @@ void scGameWorld::loadScene( string const& fileName, string const& entry /*= "cr
 		lua_close(L);
 	}
 	catch (luabind::error& e)
-	{
-		scErrMsg("---------------------------------------------");
-		scErrMsg(e.what());
-		scErrMsg(lua_tostring(e.state(), -1));
-		scErrMsg("---------------------------------------------");
-	}
+	{ scPrintLuaError(e); }
 }
 
 void scGameWorld::addStatic(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale)

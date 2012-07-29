@@ -101,8 +101,11 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackSc
 		int err;
 		err = luaL_dofile(mGuiL, callbackScript.c_str());
 		if (err) throw luabind::error(mGuiL);
-		err = luaL_dofile(mGuiL, registerScript.c_str());
-		if (err) throw luabind::error(mGuiL);
+		if (callbackScript != registerScript)
+		{
+			err = luaL_dofile(mGuiL, registerScript.c_str());
+			if (err) throw luabind::error(mGuiL);
+		}
 	}
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
