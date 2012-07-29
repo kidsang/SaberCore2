@@ -36,12 +36,16 @@ void scGameWorld::initialize()
 	loadScene("../../Media/lua/testscene.lua");
 
 	// ³õÊ¼»¯GUI
-	renderer->initializeGui(mSceneManager);
+	renderer->initializeGui(mSceneManager, "../../Media/lua/testguievent.lua", "../../Media/lua/testguievent.lua");
 	inputMgr->registerGuiEvents(MyGUI::InputManager::getInstancePtr());
 	// ²âÊÔGUI
 	MyGUI::Gui* gui = renderer->getGui();
-	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main");
-	button->setCaption("exit");
+	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main", "testbutton");
+	button->setCaption("button");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_PRESSED, "onMousePressed");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_RELEASED, "onMouseReleased");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_CLICK, "onMouseClick");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
 }
 
 void scGameWorld::release()

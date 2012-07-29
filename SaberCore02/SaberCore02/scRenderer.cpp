@@ -1,7 +1,9 @@
 #include "scRenderer.h"
+#include "scUtils.h"
+#include "scLuaWrapper.h"
 
 scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPath )
-	: mRoot(0),mPlatform(0), mGui(0), mIsGuiInitialized(false)
+	: mRoot(0),mPlatform(0), mGui(0), mIsGuiInitialized(false), mGuiL(0)
 {
 	mRoot = new Ogre::Root(pluginCfgPath);
 
@@ -81,18 +83,109 @@ scRenderer* scRenderer::getSingletonPtr( void )
 	return ms_Singleton;
 }
 
-void scRenderer::initializeGui( Ogre::SceneManager* mgr )
+void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackScript, string const& registerScript)
 {
 	scAssert(!mIsGuiInitialized, "GUI has already be initialized!");
 	mPlatform->initialise(mRoot->getAutoCreatedWindow(), mgr);
 	mGui->initialise();
+
+	try
+	{
+		using namespace luabind;
+		mGuiL = lua_open();
+		luaL_openlibs(mGuiL);
+		luabind::open(mGuiL);
+
+		exportScError(mGuiL);
+
+		int err;
+		err = luaL_dofile(mGuiL, callbackScript.c_str());
+		if (err) throw luabind::error(mGuiL);
+		err = luaL_dofile(mGuiL, registerScript.c_str());
+		if (err) throw luabind::error(mGuiL);
+	}
+	catch (luabind::error& e)
+	{
+		scPrintLuaError(e);
+	}
 	mIsGuiInitialized = true;
 }
 
 void scRenderer::shutdownGui()
 {
 	scAssert(mIsGuiInitialized, "GUI not initialized! You must first call initializeGui()");
+	if (mGuiL)
+	{ lua_close(mGuiL); mGuiL = 0; }
 	mGui->shutdown(); 
 	mPlatform->shutdown();
 	mIsGuiInitialized = false;
+}
+
+void scRenderer::registerGuiEvent(string const& widgetName, GuiEventType eventType, string const& callbackName)
+{
+	using namespace MyGUI;
+	Widget* widget = mGui->findWidgetT(widgetName);
+	
+	switch (eventType)
+	{
+	case UI_MOUSE_PRESSED:
+		widget->eventMouseButtonPressed += newDelegate(this, &scRenderer::onGuiMousePressed);
+		break;
+	case UI_MOUSE_RELEASED:
+		widget->eventMouseButtonReleased += newDelegate(this, &scRenderer::onGuiMouseReleased);
+		break;
+	case UI_MOUSE_CLICK:
+		widget->eventMouseButtonClick += newDelegate(this, &scRenderer::onGuiMouseClick);
+		break;
+	case UI_MOUSE_DOUBLE_CLICK:
+		widget->eventMouseButtonDoubleClick += newDelegate(this, &scRenderer::onGuiMouseDoubleClick);
+		break;
+	default:
+		scAssert(0, "Gui event type do not exist!");
+	}
+
+	string name = widgetName + scToString(eventType);
+	scAssert(mUIEventCallbackMap.find(name) == mUIEventCallbackMap.end(), "UI widget " + widgetName + "has already register event " + scToString(eventType));
+	mUIEventCallbackMap.insert(std::make_pair(name, callbackName));
+}
+
+void scRenderer::onGuiMousePressed( MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id )
+{
+	string name = sender->getName() + scToString(UI_MOUSE_PRESSED);
+	auto iter = mUIEventCallbackMap.find(name);
+	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_PRESSED));
+	scAssert(mGuiL, "Gui lua state not initialized!");
+	try
+	{
+		using namespace luabind;
+		//call_function<void>(mGuiL, iter->second.c_str(), scMouseEventWrapper(arg.state));
+	}
+	catch (luabind::error& e)
+	{
+		scPrintLuaError(e);
+	}
+}
+
+void scRenderer::onGuiMouseReleased( MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id )
+{
+	string name = sender->getName() + scToString(UI_MOUSE_RELEASED);
+	auto iter = mUIEventCallbackMap.find(name);
+	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_RELEASED));
+	scErrMsg("Gui Mouse Released" + iter->second);
+}
+
+void scRenderer::onGuiMouseClick( MyGUI::Widget* sender )
+{
+	string name = sender->getName() + scToString(UI_MOUSE_CLICK);
+	auto iter = mUIEventCallbackMap.find(name);
+	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_CLICK));
+	scErrMsg("Gui Mouse Click" + iter->second);
+}
+
+void scRenderer::onGuiMouseDoubleClick( MyGUI::Widget* sender )
+{
+	string name = sender->getName() + scToString(UI_MOUSE_DOUBLE_CLICK);
+	auto iter = mUIEventCallbackMap.find(name);
+	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_DOUBLE_CLICK));
+	scErrMsg("Gui Mouse Double Click" + iter->second);
 }

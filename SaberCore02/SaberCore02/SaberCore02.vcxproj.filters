@@ -5,6 +5,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="LuaWrapper">
+      <UniqueIdentifier>{af8938ad-2a12-4624-9bd3-64b8f06129bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -17,10 +20,19 @@
     <ClCompile Include="scGameArea.cpp" />
     <ClCompile Include="scEventRouter.cpp" />
     <ClCompile Include="scServerGameWorld.cpp" />
-    <ClCompile Include="scLuaWrapperMath.cpp" />
-    <ClCompile Include="scLuaWrapperCamera.cpp" />
     <ClCompile Include="scInputManager.cpp" />
-    <ClCompile Include="scLuaWrapperInput.cpp" />
+    <ClCompile Include="scLuaWrapperMath.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="scLuaWrapperCamera.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="scLuaWrapperInput.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="scLuaWrapperError.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -36,7 +48,10 @@
     <ClInclude Include="scEventRouter.h" />
     <ClInclude Include="scEvent.h" />
     <ClInclude Include="scServerGameWorld.h" />
-    <ClInclude Include="scLuaWrapper.h" />
     <ClInclude Include="scInputManager.h" />
+    <ClInclude Include="scUtils.h" />
+    <ClInclude Include="scLuaWrapper.h">
+      <Filter>LuaWrapper</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

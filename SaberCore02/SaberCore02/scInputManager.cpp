@@ -4,20 +4,6 @@
 //TODO：解除MyGUI和OIS的耦合
 #include "MyGUI/MyGUI.h"
 
-/// 辅助方法，输出lua错误信息
-void printLuaError(luabind::error& e)
-{
-	scErrMsg("---------------------------------------------");
-	scErrMsg(e.what());
-	scErrMsg(lua_tostring(e.state(), -1));
-	scErrMsg("---------------------------------------------");
-}
-	
-void testPrint(string const& str)
-{
-	scErrMsg(str);
-}
-
 typedef void(*ExportFunc)(lua_State*);
 /// 辅助方法，将输入事件与对应脚本绑定
 /// @param L 对应的lua虚拟机
@@ -32,12 +18,7 @@ void registerScript(lua_State*& L, string const& fileName, ExportFunc exportFunc
 		luaL_openlibs(L);
 		luabind::open(L);
 
-		// TODO: 该段为测试代码，需要被删除
-		module(L)
-			[
-				def("testPrint", &testPrint)
-			];
-
+		exportScError(L);
 		exportFunc(L);
 		int i = luaL_dofile(L, fileName.c_str());
 		if (i)
@@ -45,7 +26,7 @@ void registerScript(lua_State*& L, string const& fileName, ExportFunc exportFunc
 	}
 	catch (luabind::error& e)
 	{
-		printLuaError(e);
+		scPrintLuaError(e);
 	}
 }
 
@@ -130,7 +111,7 @@ bool scInputManager::keyPressed( const OIS::KeyEvent &arg )
 		}
 		catch (luabind::error& e)
 		{
-			printLuaError(e);
+			scPrintLuaError(e);
 		}
 	}
 	return true;
@@ -150,7 +131,7 @@ bool scInputManager::keyReleased( const OIS::KeyEvent &arg )
 		}
 		catch (luabind::error& e)
 		{
-			printLuaError(e);
+			scPrintLuaError(e);
 		}
 	}
 	return true;
@@ -170,7 +151,7 @@ bool scInputManager::mouseMoved( const OIS::MouseEvent &arg )
 		}
 		catch (luabind::error& e)
 		{
-			printLuaError(e);
+			scPrintLuaError(e);
 		}
 	}
 	return true;
@@ -190,7 +171,7 @@ bool scInputManager::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonI
 		}
 		catch (luabind::error& e)
 		{
-			printLuaError(e);
+			scPrintLuaError(e);
 		}
 	}
 	return true;
@@ -210,7 +191,7 @@ bool scInputManager::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButton
 		}
 		catch (luabind::error& e)
 		{
-			printLuaError(e);
+			scPrintLuaError(e);
 		}
 	}
 	return true;
