@@ -1,5 +1,4 @@
 #include "scRenderer.h"
-#include "scUtils.h"
 #include "scLuaWrapper.h"
 
 scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPath )
@@ -97,6 +96,7 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackSc
 		luabind::open(mGuiL);
 
 		exportScError(mGuiL);
+		exportMyGuiWidget(mGuiL);
 
 		int err;
 		err = luaL_dofile(mGuiL, callbackScript.c_str());
@@ -105,9 +105,7 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackSc
 		if (err) throw luabind::error(mGuiL);
 	}
 	catch (luabind::error& e)
-	{
-		scPrintLuaError(e);
-	}
+	{ scPrintLuaError(e); }
 	mIsGuiInitialized = true;
 }
 
@@ -128,6 +126,33 @@ void scRenderer::registerGuiEvent(string const& widgetName, GuiEventType eventTy
 	
 	switch (eventType)
 	{
+	case UI_KEY_GET_FOCUS:
+		widget->eventKeySetFocus += newDelegate(this, &scRenderer::onGuiKeyGetFocus);
+		break;
+	case UI_KEY_LOSE_FOCUS:
+		widget->eventKeyLostFocus += newDelegate(this, &scRenderer::onGuiKeyLoseFocus);
+		break;
+	case UI_KEY_PRESSED:
+		widget->eventKeyButtonPressed += newDelegate(this, &scRenderer::onGuiKeyPressed);
+		break;
+	case UI_KEY_RELEASED:
+		widget->eventKeyButtonReleased += newDelegate(this, &scRenderer::onGuiKeyReleased);
+		break;
+	case UI_MOUSE_GET_FOCUS:
+		widget->eventMouseSetFocus += newDelegate(this, &scRenderer::onGuiMouseGetFocus);
+		break;
+	case UI_MOUSE_LOSE_FOCUS:
+		widget->eventMouseLostFocus += newDelegate(this, &scRenderer::onGuiMouseLoseFocus);
+		break;
+	case UI_MOUSE_MOVE:
+		widget->eventMouseMove += newDelegate(this, &scRenderer::onGuiMouseMove);
+		break;
+	case UI_MOUSE_WHEEL:
+		widget->eventMouseWheel += newDelegate(this, &scRenderer::onGuiMouseWheel);
+		break;
+	case UI_MOUSE_DRAG:
+		widget->eventMouseDrag += newDelegate(this, &scRenderer::onGuiMouseDrag);
+		break;
 	case UI_MOUSE_PRESSED:
 		widget->eventMouseButtonPressed += newDelegate(this, &scRenderer::onGuiMousePressed);
 		break;
@@ -149,43 +174,120 @@ void scRenderer::registerGuiEvent(string const& widgetName, GuiEventType eventTy
 	mUIEventCallbackMap.insert(std::make_pair(name, callbackName));
 }
 
+void scRenderer::onGuiMouseMove( MyGUI::Widget* sender, int left, int top )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_MOVE);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, left, top);	}
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
 void scRenderer::onGuiMousePressed( MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id )
 {
-	string name = sender->getName() + scToString(UI_MOUSE_PRESSED);
-	auto iter = mUIEventCallbackMap.find(name);
-	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_PRESSED));
-	scAssert(mGuiL, "Gui lua state not initialized!");
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_PRESSED);
 	try
-	{
-		using namespace luabind;
-		//call_function<void>(mGuiL, iter->second.c_str(), scMouseEventWrapper(arg.state));
-	}
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, left, top, id); }
 	catch (luabind::error& e)
-	{
-		scPrintLuaError(e);
-	}
+	{ scPrintLuaError(e); }
 }
 
 void scRenderer::onGuiMouseReleased( MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id )
 {
-	string name = sender->getName() + scToString(UI_MOUSE_RELEASED);
-	auto iter = mUIEventCallbackMap.find(name);
-	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_RELEASED));
-	scErrMsg("Gui Mouse Released" + iter->second);
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_RELEASED);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, left, top, id); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
 }
 
 void scRenderer::onGuiMouseClick( MyGUI::Widget* sender )
 {
-	string name = sender->getName() + scToString(UI_MOUSE_CLICK);
-	auto iter = mUIEventCallbackMap.find(name);
-	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_CLICK));
-	scErrMsg("Gui Mouse Click" + iter->second);
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_CLICK);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
 }
 
 void scRenderer::onGuiMouseDoubleClick( MyGUI::Widget* sender )
 {
-	string name = sender->getName() + scToString(UI_MOUSE_DOUBLE_CLICK);
-	auto iter = mUIEventCallbackMap.find(name);
-	scAssert(iter != mUIEventCallbackMap.end(), "UI widget " + sender->getName() + "did not register event " + scToString(UI_MOUSE_DOUBLE_CLICK));
-	scErrMsg("Gui Mouse Double Click" + iter->second);
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_DOUBLE_CLICK);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
 }
+
+void scRenderer::onGuiKeyPressed( MyGUI::Widget* sender, MyGUI::KeyCode key, MyGUI::Char ch )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_KEY_PRESSED);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, key, ch); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiKeyReleased( MyGUI::Widget* sender, MyGUI::KeyCode key )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_KEY_RELEASED);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, key); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiKeyGetFocus( MyGUI::Widget* sender, MyGUI::Widget* old )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_KEY_GET_FOCUS);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, old); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiKeyLoseFocus( MyGUI::Widget* sender, MyGUI::Widget* _new )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_KEY_LOSE_FOCUS);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, _new); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiMouseGetFocus( MyGUI::Widget* sender, MyGUI::Widget* old )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_GET_FOCUS);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, old); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiMouseLoseFocus( MyGUI::Widget* sender, MyGUI::Widget* _new )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_LOSE_FOCUS);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, _new); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiMouseWheel( MyGUI::Widget* sender, int rel )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_WHEEL);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, rel); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+
+void scRenderer::onGuiMouseDrag( MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id )
+{
+	string cb = findWidgetCallback(sender->getName(), UI_MOUSE_DRAG);
+	try
+	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, left, top, id); }
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+}
+

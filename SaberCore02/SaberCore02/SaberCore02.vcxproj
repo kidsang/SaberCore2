@@ -89,6 +89,7 @@
     <ClCompile Include="scInputManager.cpp" />
     <ClCompile Include="scLuaWrapperCamera.cpp" />
     <ClCompile Include="scLuaWrapperError.cpp" />
+    <ClCompile Include="scLuaWrapperGui.cpp" />
     <ClCompile Include="scLuaWrapperInput.cpp" />
     <ClCompile Include="scLuaWrapperMath.cpp" />
     <ClCompile Include="scRenderer.cpp" />

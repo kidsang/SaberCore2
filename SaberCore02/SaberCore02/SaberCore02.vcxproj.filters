@@ -33,6 +33,9 @@
     <ClCompile Include="scLuaWrapperError.cpp">
       <Filter>LuaWrapper</Filter>
     </ClCompile>
+    <ClCompile Include="scLuaWrapperGui.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />

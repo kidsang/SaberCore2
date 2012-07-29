@@ -35,13 +35,21 @@ void scGameWorld::initialize()
 	// ²âÊÔ×°ÔØ³¡¾°
 	loadScene("../../Media/lua/testscene.lua");
 
-	// ³õÊ¼»¯GUI
+	// ²âÊÔ³õÊ¼»¯GUI
 	renderer->initializeGui(mSceneManager, "../../Media/lua/testguievent.lua", "../../Media/lua/testguievent.lua");
 	inputMgr->registerGuiEvents(MyGUI::InputManager::getInstancePtr());
 	// ²âÊÔGUI
 	MyGUI::Gui* gui = renderer->getGui();
 	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main", "testbutton");
 	button->setCaption("button");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_GET_FOCUS, "onKeyGetFocus");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_LOSE_FOCUS, "onKeyLoseFocus");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_PRESSED, "onKeyPressed");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_RELEASED, "onKeyReleased");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_GET_FOCUS, "onMouseGetFocus");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_LOSE_FOCUS, "onMouseLoseFocus");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_MOVE, "onMouseMove");
+	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DRAG, "onMouseDrag");
 	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_PRESSED, "onMousePressed");
 	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_RELEASED, "onMouseReleased");
 	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_CLICK, "onMouseClick");

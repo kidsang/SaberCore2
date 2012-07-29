@@ -18,6 +18,6 @@ void exportOgreMath(lua_State* L);
 void exportOgreCamera(lua_State* L);
 void exportOISMouseEvent(lua_State* L);
 void exportOISKeyboardEvent(lua_State* L);
-
+void exportMyGuiWidget(lua_State* L);
 
 #endif // luaVectorWrapper_h__
