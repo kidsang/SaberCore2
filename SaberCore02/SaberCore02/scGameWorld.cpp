@@ -6,6 +6,8 @@
 #include "scRenderer.h"
 #include "scInputManager.h"
 #include "scLuaWrapper.h"
+#include "scEventRouter.h"
+#include "scEvent.h"
 
 u32 scGameWorld::sNextViewportZOder = 0;
 
@@ -77,8 +79,13 @@ void scGameWorld::release()
 
 bool scGameWorld::_run( u32 dtms )
 {
-	//std::cout<<"testing jump to..."<<std::endl;
-	//scGameWorldManager::getSingletonPtr()->jumpTo("test");
+	// ²âÊÔ
+	scEventPtr evt;
+	while (scEventRouter::getSingleton().fetchEvent("apple", evt))
+		scErrMsg(evt->name);
+	while (scEventRouter::getSingleton().fetchEvent("orange", evt))
+		scErrMsg(evt->name);
+
 	return true;
 }
 

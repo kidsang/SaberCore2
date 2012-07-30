@@ -11,7 +11,10 @@
 
 struct scEvent
 {
-	virtual ~scEvent();
+	virtual ~scEvent()
+	{
+
+	}
 	string name;
 };
 

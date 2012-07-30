@@ -36,6 +36,7 @@
     <ClCompile Include="scLuaWrapperGui.cpp">
       <Filter>LuaWrapper</Filter>
     </ClCompile>
+    <ClCompile Include="scEventQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -56,5 +57,6 @@
     <ClInclude Include="scLuaWrapper.h">
       <Filter>LuaWrapper</Filter>
     </ClInclude>
+    <ClInclude Include="scEventQueue.h" />
   </ItemGroup>
 </Project>

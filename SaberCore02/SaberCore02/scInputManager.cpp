@@ -3,6 +3,8 @@
 #include "scLuaWrapper.h"
 //TODO：解除MyGUI和OIS的耦合
 #include "MyGUI/MyGUI.h"
+#include "scEventRouter.h"
+#include "scEvent.h"
 
 typedef void(*ExportFunc)(lua_State*);
 /// 辅助方法，将输入事件与对应脚本绑定
@@ -139,6 +141,13 @@ bool scInputManager::keyReleased( const OIS::KeyEvent &arg )
 
 bool scInputManager::mouseMoved( const OIS::MouseEvent &arg )
 {
+	// 测试
+	scEventPtr evt = scEventPtr(new scEvent());
+	if (arg.state.X.rel < 0)
+		evt->name = "toA";
+	else
+		evt->name = "toO";
+	scEventRouter::getSingleton().putEvent(evt);
 	if (mGuiInput && mGuiInput->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs))
 		return true;
 
