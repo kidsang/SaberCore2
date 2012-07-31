@@ -28,7 +28,7 @@ void scEventRouter::putEvent( scEventPtr const& evt )
 {
 	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息类型存在
-	scAssert(mEventMap.find(evt->name) != mEventMap.end(), "Event name \""+ evt->name +"\" do not exist.");
+	scAssert(mEventMap.find(evt->getName()) != mEventMap.end(), "Event name \""+ evt->getName()+"\" do not exist.");
 
 	mInputQueue->putEvent(evt);
 }
@@ -59,7 +59,7 @@ void scEventRouter::_run()
 	for (auto iter = mEvents.begin(); iter != mEvents.end(); ++iter)
 	{
 		// put到相应输出队列
-		string outname = mEventMap.find((*iter)->name)->second;
+		string outname = mEventMap.find((*iter)->getName())->second;
 		auto output = mOutputQueues.find(outname);
 		output->second->putEvent(*iter);
 	}

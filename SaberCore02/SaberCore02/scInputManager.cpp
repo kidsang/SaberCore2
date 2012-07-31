@@ -5,6 +5,7 @@
 #include "MyGUI/MyGUI.h"
 #include "scEventRouter.h"
 #include "scEvent.h"
+#include "scAnEvent.h"
 
 typedef void(*ExportFunc)(lua_State*);
 /// 辅助方法，将输入事件与对应脚本绑定
@@ -142,12 +143,20 @@ bool scInputManager::keyReleased( const OIS::KeyEvent &arg )
 bool scInputManager::mouseMoved( const OIS::MouseEvent &arg )
 {
 	// 测试
-	scEventPtr evt = scEventPtr(new scEvent());
+	scEventPtr evt;
 	if (arg.state.X.rel < 0)
-		evt->name = "toA";
+		evt = scEventPtr(new scEvent("toA"));
 	else
-		evt->name = "toO";
+		evt = scEventPtr(new scEvent("toO"));
 	scEventRouter::getSingleton().putEvent(evt);
+	scAnEvent* ane = new scAnEvent("t");
+	ane->putString("des", "鼠标坐标:");
+	ane->putI32("x", arg.state.X.abs);
+	ane->putI32("y", arg.state.Y.abs);
+	evt = scEventPtr(ane);
+	scEventRouter::getSingleton().putEvent(evt);
+	
+
 	if (mGuiInput && mGuiInput->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs))
 		return true;
 

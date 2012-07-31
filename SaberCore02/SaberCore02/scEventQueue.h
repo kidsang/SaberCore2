@@ -11,7 +11,7 @@
 #include <deque>
 #include <vector>
 #include "scTypeDefine.h"
-struct scEvent;
+class scEvent;
 
 typedef shared_ptr<scEvent> scEventPtr;
 

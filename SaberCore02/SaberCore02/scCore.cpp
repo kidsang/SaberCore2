@@ -59,26 +59,6 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	//tl = mTimeLineManager->createTimeLine("BackgroundLoading", 10, 0, true);
 
 	// 测试一下
-	mEventRouter->createEventQueue("apple");
-	mEventRouter->createEventQueue("orange");
-	mEventRouter->registerEvent("toA", "apple");
-	mEventRouter->registerEvent("toO", "orange");
-	tl = mTimeLineManager->createTimeLine("test", 1000, true);
-	tl->addRunCallBack("test", [&](u32 dtms)->bool{
-		scEventPtr evt = scEventPtr(new scEvent());
-		evt->name = "toO";
-		mEventRouter->putEvent(evt);
-		return true;
-	});
-	tl = mTimeLineManager->createTimeLine("test2", 1000, true);
-	tl->addRunCallBack("test2", [&](u32 dtms)->bool{
-		scEventPtr evt = scEventPtr(new scEvent());
-		evt->name = "toA";
-		mEventRouter->putEvent(evt);
-		return true;
-	});
-
-	// 测试一下
 	scGameWorldPtr gw(new scGameWorld("test"));
 	mGameWorldManager->addGameWorld(gw->getName(), gw);
 	mGameWorldManager->initializeGameWorld("test");

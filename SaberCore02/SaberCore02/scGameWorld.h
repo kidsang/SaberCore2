@@ -15,6 +15,7 @@ namespace Ogre
 	class Viewport;
 	class SceneManager;
 }
+class scEventQueue;
 //class scGameArea;
 //typedef shared_ptr<scGameArea> scGameAreaPtr;
 
@@ -110,6 +111,9 @@ protected:
 	ViewportMap mViewports;
 	static u32 sNextViewportZOder;
 	// TODO:GUI
+	// 测试事件路由
+	shared_ptr<scEventQueue> apple;
+	shared_ptr<scEventQueue> orange;
 };
 
 #endif // scGameWorld_h__

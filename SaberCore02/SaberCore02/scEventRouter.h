@@ -12,7 +12,7 @@
 #include "OgreSingleton.h"
 #include "scTypeDefine.h"
 class scEventQueue;
-struct scEvent;
+class scEvent;
 
 typedef shared_ptr<scEvent> scEventPtr;
 typedef shared_ptr<scEventQueue> scEventQueuePtr;

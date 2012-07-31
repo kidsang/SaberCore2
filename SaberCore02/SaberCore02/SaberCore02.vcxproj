@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scAnEvent.cpp" />
     <ClCompile Include="scCore.cpp" />
     <ClCompile Include="scEventQueue.cpp" />
     <ClCompile Include="scEventRouter.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="scTimeLineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scAnEvent.h" />
     <ClInclude Include="scEventQueue.h" />
     <ClInclude Include="scInputManager.h" />
     <ClInclude Include="scLuaWrapper.h" />
@@ -112,6 +114,7 @@
     <ClInclude Include="scRenderer.h" />
     <ClInclude Include="scServerGameWorld.h" />
     <ClInclude Include="scSingleton.h" />
+    <ClInclude Include="scTestEvent.h" />
     <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scTimeLineManager.h" />
     <ClInclude Include="scTypeDefine.h" />

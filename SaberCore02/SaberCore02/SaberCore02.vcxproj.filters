@@ -8,6 +8,9 @@
     <Filter Include="LuaWrapper">
       <UniqueIdentifier>{af8938ad-2a12-4624-9bd3-64b8f06129bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EventSystem">
+      <UniqueIdentifier>{680906c6-2574-4671-a58a-c3eef95376d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -18,7 +21,6 @@
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
     <ClCompile Include="scGameArea.cpp" />
-    <ClCompile Include="scEventRouter.cpp" />
     <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scInputManager.cpp" />
     <ClCompile Include="scLuaWrapperMath.cpp">
@@ -36,7 +38,13 @@
     <ClCompile Include="scLuaWrapperGui.cpp">
       <Filter>LuaWrapper</Filter>
     </ClCompile>
-    <ClCompile Include="scEventQueue.cpp" />
+    <ClCompile Include="scEventQueue.cpp">
+      <Filter>EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="scEventRouter.cpp">
+      <Filter>EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="scAnEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -49,14 +57,24 @@
     <ClInclude Include="scGameWorld.h" />
     <ClInclude Include="scGameWorldManager.h" />
     <ClInclude Include="scGameArea.h" />
-    <ClInclude Include="scEventRouter.h" />
-    <ClInclude Include="scEvent.h" />
     <ClInclude Include="scServerGameWorld.h" />
     <ClInclude Include="scInputManager.h" />
     <ClInclude Include="scUtils.h" />
     <ClInclude Include="scLuaWrapper.h">
       <Filter>LuaWrapper</Filter>
     </ClInclude>
-    <ClInclude Include="scEventQueue.h" />
+    <ClInclude Include="scEvent.h">
+      <Filter>EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="scEventRouter.h">
+      <Filter>EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="scEventQueue.h">
+      <Filter>EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="scTestEvent.h">
+      <Filter>EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="scAnEvent.h" />
   </ItemGroup>
 </Project>

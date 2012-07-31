@@ -9,13 +9,25 @@
 
 #include "scTypeDefine.h"
 
-struct scEvent
+/// 事件基类
+class scEvent
 {
+public:
+
+	/// 构造函数
+	/// @param name 名字相当于是事件的类型
+	scEvent(string const& name)
+		: mName(name)
+	{}
 	virtual ~scEvent()
 	{
-
 	}
-	string name;
+
+	string const& getName()
+	{ return mName; }
+
+private:
+	string mName;
 };
 
 #endif // scEvent_h__

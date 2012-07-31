@@ -9,6 +9,7 @@
 #include "scEventRouter.h"
 #include "scEvent.h"
 #include "scEventQueue.h"
+#include "scAnEvent.h"
 
 u32 scGameWorld::sNextViewportZOder = 0;
 
@@ -29,6 +30,14 @@ void scGameWorld::initialize()
 
 	// 创建场景管理器
 	mSceneManager = renderer->getOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
+
+	// 测试一下事件路由
+	scEventRouter* er = scEventRouter::getSingletonPtr();
+	apple = er->createEventQueue("apple");
+	orange = er->createEventQueue("orange");
+	er->registerEvent("toA", "apple");
+	er->registerEvent("toO", "orange");
+	er->registerEvent("t", "orange");
 
 	// 测试输入系统绑定
 	inputMgr->registerMouseMoved("../../Media/lua/testinput.lua", "onMouseMoved");
@@ -82,21 +91,24 @@ bool scGameWorld::_run( u32 dtms )
 {
 	// 测试
 	std::vector<scEventPtr> evts;
-	scEventQueuePtr apple, orange;
-	apple = scEventRouter::getSingleton().getEventQueue("apple");
-	orange = scEventRouter::getSingleton().getEventQueue("orange");
 	apple->fetchEvents(evts);
 	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
-		scErrMsg((*iter)->name);
+		scErrMsg((*iter)->getName());
 	evts.clear();
 	orange->fetchEvents(evts);
 	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
-		scErrMsg((*iter)->name);
-	//scEventPtr evt;
-	//while (scEventRouter::getSingleton().fetchEvent("apple", evt))
-	//	scErrMsg(evt->name);
-	//while (scEventRouter::getSingleton().fetchEvent("orange", evt))
-	//	scErrMsg(evt->name);
+	{
+		if ((*iter)->getName() == "t")
+		{
+			//shared_ptr<scTestEvent> e = shared_ptr<scTestEvent>(static_cast<scTestEvent*>((*iter).get()));
+			scAnEvent* e = static_cast<scAnEvent*>((*iter).get());
+			e->getI32("x");
+			//e->getString("des");
+			scErrMsg(e->getString("des")+ scToString(e->getI32("x")) + "," + scToString(e->getI32("y")));
+		}
+		else
+			scErrMsg((*iter)->getName());
+	}
 
 	return true;
 }
