@@ -3,12 +3,13 @@
 #include "scEvent.h"
 #include "scEventQueue.h"
 
-void scEventRouter::createOutputQueue( string const& name )
+scEventQueuePtr scEventRouter::createEventQueue( string const& name )
 {
 	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息队列不存在名字冲突
 	scAssert(mOutputQueues.find(name) == mOutputQueues.end(), "Output queue name \"" + name + "\" already exist.");
-	mOutputQueues.insert(std::make_pair(name, EventQueuePtr(new scEventQueue(name))));
+	auto iter = mOutputQueues.insert(std::make_pair(name, scEventQueuePtr(new scEventQueue(name))));
+	return iter.first->second;
 }
 
 void scEventRouter::registerEvent( string const& evtName, string const& queName )
@@ -32,13 +33,22 @@ void scEventRouter::putEvent( scEventPtr const& evt )
 	mInputQueue->putEvent(evt);
 }
 
-void scEventRouter::fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut)
+//void scEventRouter::fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut)
+//{
+//	boost::mutex::scoped_lock lock(mQueueMutex);
+//	// 确保消息队列存在
+//	auto iter = mOutputQueues.find(queName);
+//	scAssert(iter != mOutputQueues.end(), "Output queue named \"" + queName + "\" do not exist.");
+//	iter->second->fetchEvents(eventsOut);
+//}
+
+scEventQueuePtr scEventRouter::getEventQueue( string const& queName )
 {
 	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息队列存在
 	auto iter = mOutputQueues.find(queName);
 	scAssert(iter != mOutputQueues.end(), "Output queue named \"" + queName + "\" do not exist.");
-	iter->second->fetchEvents(eventsOut);
+	return iter->second;
 }
 
 void scEventRouter::_run()

@@ -59,8 +59,8 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	//tl = mTimeLineManager->createTimeLine("BackgroundLoading", 10, 0, true);
 
 	// ²âÊÔÒ»ÏÂ
-	mEventRouter->createOutputQueue("apple");
-	mEventRouter->createOutputQueue("orange");
+	mEventRouter->createEventQueue("apple");
+	mEventRouter->createEventQueue("orange");
 	mEventRouter->registerEvent("toA", "apple");
 	mEventRouter->registerEvent("toO", "orange");
 	tl = mTimeLineManager->createTimeLine("test", 1000, true);

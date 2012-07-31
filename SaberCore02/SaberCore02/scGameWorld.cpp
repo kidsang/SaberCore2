@@ -8,6 +8,7 @@
 #include "scLuaWrapper.h"
 #include "scEventRouter.h"
 #include "scEvent.h"
+#include "scEventQueue.h"
 
 u32 scGameWorld::sNextViewportZOder = 0;
 
@@ -81,11 +82,14 @@ bool scGameWorld::_run( u32 dtms )
 {
 	// ≤‚ ‘
 	std::vector<scEventPtr> evts;
-	scEventRouter::getSingleton().fetchEvents("apple", evts);
+	scEventQueuePtr apple, orange;
+	apple = scEventRouter::getSingleton().getEventQueue("apple");
+	orange = scEventRouter::getSingleton().getEventQueue("orange");
+	apple->fetchEvents(evts);
 	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
 		scErrMsg((*iter)->name);
 	evts.clear();
-	scEventRouter::getSingleton().fetchEvents("orange", evts);
+	orange->fetchEvents(evts);
 	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
 		scErrMsg((*iter)->name);
 	//scEventPtr evt;

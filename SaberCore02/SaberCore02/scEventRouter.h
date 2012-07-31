@@ -15,6 +15,7 @@ class scEventQueue;
 struct scEvent;
 
 typedef shared_ptr<scEvent> scEventPtr;
+typedef shared_ptr<scEventQueue> scEventQueuePtr;
 
 /// 事件路由器
 /// 用户将事件放入输入队列中
@@ -22,15 +23,15 @@ typedef shared_ptr<scEvent> scEventPtr;
 /// 用户而后可以从指定的输出队列中提取消息
 class scEventRouter : public Ogre::Singleton<scEventRouter>
 {
-	typedef shared_ptr<scEventQueue> EventQueuePtr;
-	typedef std::map<string, EventQueuePtr> QueueNameMap;
+	typedef std::map<string, scEventQueuePtr> QueueNameMap;
 	/// 用以指示哪种事件应该去到哪个outputQueue
 	typedef std::map<string, string> EventMap;
 
 public:
 	/// 创建输出队列
 	/// @param name 输出队列的名称
-	void createOutputQueue(string const& name);
+	/// @return 创建好的事件输出队列
+	scEventQueuePtr createEventQueue(string const& name);
 
 	/// 注册事件
 	/// @param evtName 事件的名称，也就是事件的类型
@@ -44,8 +45,12 @@ public:
 	/// 从输出队列中一次过fetch出所有的事件,被取出的事件将会放在eventsOut中
 	/// @param queName 输出队列的名称
 	/// @param eventsOut 被取出的事件列表
-	void fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut);
+	//void fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut);
 
+	/// 获取一个输出队列
+	/// @param queName 输出队列的名称
+	/// @return 事件输出队列
+	scEventQueuePtr getEventQueue(string const& queName);
 	
 	// 执行路由工作
 	// 不停地从input queue中fetch，并put到output queue中
