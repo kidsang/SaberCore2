@@ -7,10 +7,11 @@
  * 作者：kid
  */
 
-#include "scTypeDefine.h"
-#include "OgreSingleton.h"
 #include <boost/thread.hpp>
 #include <queue>
+#include "OgreSingleton.h"
+#include "scTypeDefine.h"
+class scEventQueue;
 struct scEvent;
 
 typedef shared_ptr<scEvent> scEventPtr;
@@ -21,8 +22,7 @@ typedef shared_ptr<scEvent> scEventPtr;
 /// 用户而后可以从指定的输出队列中提取消息
 class scEventRouter : public Ogre::Singleton<scEventRouter>
 {
-	typedef std::deque<scEventPtr> EventQueue;
-	typedef shared_ptr<EventQueue> EventQueuePtr;
+	typedef shared_ptr<scEventQueue> EventQueuePtr;
 	typedef std::map<string, EventQueuePtr> QueueNameMap;
 	/// 用以指示哪种事件应该去到哪个outputQueue
 	typedef std::map<string, string> EventMap;
@@ -41,11 +41,11 @@ public:
 	/// @param evt 要被放入队列的事件
 	void putEvent(scEventPtr const& evt);
 
-	/// 从输出队列中fetch,被取出的事件将会放在evtOut中
+	/// 从输出队列中一次过fetch出所有的事件,被取出的事件将会放在eventsOut中
 	/// @param queName 输出队列的名称
-	/// @param evtOut 被取出的事件
-	/// @return 如果取出事件成功(即输出队列中有事件)则返回true
-	bool const fetchEvent(string const& queName, scEventPtr & evtOut);
+	/// @param eventsOut 被取出的事件列表
+	void fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut);
+
 	
 	// 执行路由工作
 	// 不停地从input queue中fetch，并put到output queue中
@@ -60,12 +60,11 @@ public:
 	~scEventRouter();
 
 private:
-	EventQueue mInputQueue;
+	shared_ptr<scEventQueue> mInputQueue;
+	std::vector<scEventPtr> mEvents;
 	QueueNameMap mOutputQueues;
 	EventMap mEventMap;
-
-	boost::mutex mInputMutex;
-	boost::mutex mOutputMutex;
+	boost::mutex mQueueMutex;
 
 };
 

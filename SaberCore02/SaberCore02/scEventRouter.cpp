@@ -1,18 +1,19 @@
 #include "scEventRouter.h"
 #include "scError.h"
 #include "scEvent.h"
+#include "scEventQueue.h"
 
 void scEventRouter::createOutputQueue( string const& name )
 {
-	boost::mutex::scoped_lock lock(mOutputMutex);
+	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息队列不存在名字冲突
 	scAssert(mOutputQueues.find(name) == mOutputQueues.end(), "Output queue name \"" + name + "\" already exist.");
-	mOutputQueues.insert(std::make_pair(name, EventQueuePtr(new EventQueue())));
+	mOutputQueues.insert(std::make_pair(name, EventQueuePtr(new scEventQueue(name))));
 }
 
 void scEventRouter::registerEvent( string const& evtName, string const& queName )
 {
-	boost::mutex::scoped_lock lock(mOutputMutex);
+	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息类型不存在名字冲突
 	scAssert(mEventMap.find(evtName) == mEventMap.end(), "Event name \""+ evtName +"\" already exist.");
 	// 确保消息队列存在
@@ -24,42 +25,35 @@ void scEventRouter::registerEvent( string const& evtName, string const& queName 
 
 void scEventRouter::putEvent( scEventPtr const& evt )
 {
-	boost::mutex::scoped_lock lock(mInputMutex);
+	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息类型存在
 	scAssert(mEventMap.find(evt->name) != mEventMap.end(), "Event name \""+ evt->name +"\" do not exist.");
 
-	mInputQueue.push_back(evt);
+	mInputQueue->putEvent(evt);
 }
 
-bool const scEventRouter::fetchEvent( string const& queName, scEventPtr & evtOut )
+void scEventRouter::fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut)
 {
-	boost::mutex::scoped_lock lock(mOutputMutex);
+	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息队列存在
 	auto iter = mOutputQueues.find(queName);
 	scAssert(iter != mOutputQueues.end(), "Output queue named \"" + queName + "\" do not exist.");
-
-	if (iter->second->empty())
-		return false;
-
-	evtOut = iter->second->at(0);
-	iter->second->pop_front();
-	return true;
+	iter->second->fetchEvents(eventsOut);
 }
 
 void scEventRouter::_run()
 {
-	boost::mutex::scoped_lock inlock(mInputMutex);
-	boost::mutex::scoped_lock outlock(mOutputMutex);
-	while (!mInputQueue.empty())
+	boost::mutex::scoped_lock lock(mQueueMutex);
+	// 从输入队列中fetch
+	mInputQueue->fetchEvents(mEvents);
+	for (auto iter = mEvents.begin(); iter != mEvents.end(); ++iter)
 	{
-		// 从输入队列中fetch
-		scEventPtr evt = mInputQueue.at(0);
-		mInputQueue.pop_front();
 		// put到相应输出队列
-		string outname = mEventMap.find(evt->name)->second;
+		string outname = mEventMap.find((*iter)->name)->second;
 		auto output = mOutputQueues.find(outname);
-		output->second->push_back(evt);
+		output->second->putEvent(*iter);
 	}
+	mEvents.clear();
 }
 
 template<> scEventRouter* Ogre::Singleton<scEventRouter>::ms_Singleton = 0;
@@ -74,8 +68,8 @@ scEventRouter* scEventRouter::getSingletonPtr( void )
 }
 
 scEventRouter::scEventRouter()
+	: mInputQueue(shared_ptr<scEventQueue>(new scEventQueue()))
 {
-
 }
 
 scEventRouter::~scEventRouter()

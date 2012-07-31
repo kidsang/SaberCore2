@@ -80,11 +80,19 @@ void scGameWorld::release()
 bool scGameWorld::_run( u32 dtms )
 {
 	// ²âÊÔ
-	scEventPtr evt;
-	while (scEventRouter::getSingleton().fetchEvent("apple", evt))
-		scErrMsg(evt->name);
-	while (scEventRouter::getSingleton().fetchEvent("orange", evt))
-		scErrMsg(evt->name);
+	std::vector<scEventPtr> evts;
+	scEventRouter::getSingleton().fetchEvents("apple", evts);
+	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
+		scErrMsg((*iter)->name);
+	evts.clear();
+	scEventRouter::getSingleton().fetchEvents("orange", evts);
+	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
+		scErrMsg((*iter)->name);
+	//scEventPtr evt;
+	//while (scEventRouter::getSingleton().fetchEvent("apple", evt))
+	//	scErrMsg(evt->name);
+	//while (scEventRouter::getSingleton().fetchEvent("orange", evt))
+	//	scErrMsg(evt->name);
 
 	return true;
 }
