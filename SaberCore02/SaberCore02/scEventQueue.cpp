@@ -1,5 +1,5 @@
 #include "scEventQueue.h"
-#include "scEvent.h"
+//#include "scEvent.h"
 
 
 scEventQueue::scEventQueue(string const& name)
@@ -17,25 +17,13 @@ scEventQueue::~scEventQueue(void)
 {
 }
 
-void scEventQueue::putEvent( scEventPtr const& evt )
+void scEventQueue::putEvent( scEvent const& evt )
 {
 	boost::mutex::scoped_lock lock(mMutex);
 	mEvents.push_back(evt);
 }
 
-//bool const scEventQueue::fetchEvent( scEventPtr & evtOut )
-//{
-//	boost::mutex::scoped_lock lock(mMutex);
-//
-//	if (mEvents.empty())
-//		return false;
-//
-//	evtOut = mEvents.at(0);
-//	mEvents.pop_front();
-//	return true;
-//}
-
-void scEventQueue::fetchEvents( std::vector<scEventPtr> & eventsOut )
+void scEventQueue::fetchEvents( std::vector<scEvent> & eventsOut )
 {
 	boost::mutex::scoped_lock lock(mMutex);
 	eventsOut.resize(mEvents.size());

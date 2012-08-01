@@ -2,24 +2,12 @@
 #include "scTypeDefine.h"
 #include "scEventRouter.h"
 #include "scEventQueue.h"
-#include "scAnEvent.h"
+#include "scEvent.h"
 
 void exportScEvent(lua_State* L)
 {
 	using namespace luabind;
 
-	//---->>../scEventQueue.h 
-	module(L)
-		[
-			//--scEventQueue
-			class_<scEventQueue>("scEventQueue")
-			.def(constructor<const string &>())
-			.def(constructor<>())
-			.def("putEvent", (void (scEventQueue::*)(int))&scEventQueue::putEvent)
-			.def("fetchEvents", (void (scEventQueue::*)(int &))&scEventQueue::fetchEvents)
-			.def("getName", (string const& (scEventQueue::*)())&scEventQueue::getName)
-		];
-	//<<----../scEventQueue.h
 	//---->>../scEventRouter.h 
 	module(L)
 		[
@@ -31,13 +19,9 @@ void exportScEvent(lua_State* L)
 			.def("registerEvent", (void (scEventRouter::*)(const string &,  const string &))&scEventRouter::registerEvent)
 			.def("unregisterEvent", (void (scEventRouter::*)(const string &))&scEventRouter::unregisterEvent)
 			.def("unregisterEvents", (void (scEventRouter::*)(const string &))&scEventRouter::unregisterEvents)
-			.def("putEvent", (void (scEventRouter::*)(int))&scEventRouter::putEvent)
+			.def("putEvent", (void (scEventRouter::*)(scEvent const&))&scEventRouter::putEvent)
 			,
 			def("getEventRouter", &scEventRouter::getSingletonPtr)
-			//.scope
-			//[
-			//	def("getSingletonPtr", &scEventRouter::getSingletonPtr)
-			//]
 			//.def("getEventQueue", (scEventQueuePtr (scEventRouter::*)(const string &))&scEventRouter::getEventQueue)
 			//.def("_run", (void (scEventRouter::*)())&scEventRouter::_run)
 		];
@@ -46,16 +30,17 @@ void exportScEvent(lua_State* L)
 	module(L)
 		[
 			//--scAnEvent
-			class_<scAnEvent>("scAnEvent")
+			class_<scEvent>("scEvent")
 			.def(constructor<const string &>())
-			.def("putBool", (void (scAnEvent::*)(const string &,  bool))&scAnEvent::putBool)
-			.def("putI32", (void (scAnEvent::*)(const string &,  i32))&scAnEvent::putI32)
-			.def("putF32", (void (scAnEvent::*)(const string &,  f32))&scAnEvent::putF32)
-			.def("putString", (void (scAnEvent::*)(const string &,  const string &))&scAnEvent::putString)
-			.def("getBool", (bool (scAnEvent::*)(const string &))&scAnEvent::getBool)
-			.def("getI32", (i32 (scAnEvent::*)(const string &))&scAnEvent::getI32)
-			.def("getF32", (f32 (scAnEvent::*)(const string &))&scAnEvent::getF32)
-			.def("getString", (const string (scAnEvent::*)(const string &))&scAnEvent::getString)
+			.def("getName", (const string &(scEvent::*)())&scEvent::getName)
+			.def("putBool", (void (scEvent::*)(const string &,  bool))&scEvent::putBool)
+			.def("putI32", (void (scEvent::*)(const string &,  i32))&scEvent::putI32)
+			.def("putF32", (void (scEvent::*)(const string &,  f32))&scEvent::putF32)
+			.def("putString", (void (scEvent::*)(const string &,  const string &))&scEvent::putString)
+			.def("getBool", (bool (scEvent::*)(const string &))&scEvent::getBool)
+			.def("getI32", (i32 (scEvent::*)(const string &))&scEvent::getI32)
+			.def("getF32", (f32 (scEvent::*)(const string &))&scEvent::getF32)
+			.def("getString", (const string (scEvent::*)(const string &))&scEvent::getString)
 		];
-	//<<----../scAnEvent.h
+	//<<----../scEvent.h
 }

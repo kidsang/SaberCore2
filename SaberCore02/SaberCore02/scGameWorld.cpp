@@ -7,7 +7,6 @@
 #include "scEventRouter.h"
 #include "scEvent.h"
 #include "scEventQueue.h"
-#include "scAnEvent.h"
 
 u32 scGameWorld::sNextViewportZOder = 0;
 
@@ -33,6 +32,9 @@ void scGameWorld::initialize()
 	mEventQueue = scEventRouter::getSingleton().createEventQueue(mName);
 	// 测试一下事件路由
 	iniEvent("../../Media/lua/testevent.lua", "callbackEntry", "../../Media/lua/testevent.lua", "registerEntry");
+	
+	// 测试鼠标按键事件
+	inputMgr->registerMouseMoved("../../Media/lua/testinput.lua", "onMouseMoved");
 
 	// 测试装载场景
 	iniScene("../../Media/lua/testscene.lua");
@@ -87,7 +89,11 @@ void scGameWorld::release()
 
 bool scGameWorld::_run( u32 dtms )
 {
-	std::vector<scEventPtr> evts;
+	//scEvent evt("test2");
+	//evt.putI32("time", dtms);
+	//scEventRouter::getSingleton().putEvent(evt);
+
+	std::vector<scEvent> evts;
 	mEventQueue->fetchEvents(evts);
 	if (mEventL)
 	{
@@ -95,35 +101,12 @@ bool scGameWorld::_run( u32 dtms )
 		{
 			for (auto iter = evts.begin(); iter != evts.end(); ++iter)
 			{
-				// TODO:这里直接强转为anEvent貌似有些不妥
-				scAnEvent* evt = static_cast<scAnEvent*>(iter->get());
-				luabind::call_function<void>(mEventL, mEventCallbackEntry.c_str(), evt);
+				luabind::call_function<void>(mEventL, mEventCallbackEntry.c_str(), (*iter));
 			}
 		}
 		catch (luabind::error& e)
 		{ scPrintLuaError(e); }
 	}
-	// 测试
-	//std::vector<scEventPtr> evts;
-	//apple->fetchEvents(evts);
-	//for (auto iter = evts.begin(); iter != evts.end(); ++iter)
-	//	scErrMsg((*iter)->getName());
-	//evts.clear();
-	//orange->fetchEvents(evts);
-	//for (auto iter = evts.begin(); iter != evts.end(); ++iter)
-	//{
-	//	if ((*iter)->getName() == "t")
-	//	{
-	//		//shared_ptr<scTestEvent> e = shared_ptr<scTestEvent>(static_cast<scTestEvent*>((*iter).get()));
-	//		scAnEvent* e = static_cast<scAnEvent*>((*iter).get());
-	//		e->getI32("x");
-	//		//e->getString("des");
-	//		scErrMsg(e->getString("des")+ scToString(e->getI32("x")) + "," + scToString(e->getI32("y")));
-	//	}
-	//	else
-	//		scErrMsg((*iter)->getName());
-	//}
-
 	return true;
 }
 

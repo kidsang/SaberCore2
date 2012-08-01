@@ -100,7 +100,6 @@
     <ClCompile Include="scTimeLineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="scAnEvent.h" />
     <ClInclude Include="scEventQueue.h" />
     <ClInclude Include="scInputManager.h" />
     <ClInclude Include="scLuaWrapper.h" />

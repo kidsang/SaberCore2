@@ -4,7 +4,12 @@ function toString(num)
 end
 
 function onMouseMoved( arg )
-	scErrMsg(toString(arg.state.X.abs)..','..toString(arg.state.Y.abs))
+	evt = scEvent("test")
+	evt:putString("msg", "From Lua: Mouse")
+	evt:putI32("x", arg.state.X.abs)
+	evt:putI32("y", arg.state.Y.abs)
+	getEventRouter():putEvent(evt)
+	--scErrMsg(toString(arg.state.X.abs)..','..toString(arg.state.Y.abs))
 end
 
 function onMousePressed( arg )

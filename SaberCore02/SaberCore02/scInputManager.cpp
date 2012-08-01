@@ -5,7 +5,6 @@
 #include "MyGUI/MyGUI.h"
 #include "scEventRouter.h"
 #include "scEvent.h"
-#include "scAnEvent.h"
 
 typedef void(*ExportFunc)(lua_State*);
 /// 辅助方法，将输入事件与对应脚本绑定
@@ -21,8 +20,13 @@ void registerScript(lua_State*& L, string const& fileName, ExportFunc exportFunc
 		luaL_openlibs(L);
 		luabind::open(L);
 
+		// 导出错误
 		exportScError(L);
+		// 导出指定的(鼠标或键盘)事件api
 		exportFunc(L);
+		// 导出事件系统
+		exportScEvent(L);
+
 		int i = luaL_dofile(L, fileName.c_str());
 		if (i)
 			throw luabind::error(L);
@@ -52,6 +56,7 @@ scInputManager::scInputManager( u32 handle, u32 width, u32 height, bool isExclus
     windowHndStr << handle;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
+	// 鼠标键盘非独占模式
 	if (!isExclusive)
 	{
 		pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));

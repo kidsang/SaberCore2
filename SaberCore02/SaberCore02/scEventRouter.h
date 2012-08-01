@@ -11,10 +11,9 @@
 #include <queue>
 #include "OgreSingleton.h"
 #include "scTypeDefine.h"
+#include "scEvent.h"
 class scEventQueue;
-class scEvent;
 
-typedef shared_ptr<scEvent> scEventPtr;
 typedef shared_ptr<scEventQueue> scEventQueuePtr;
 
 /// 事件路由器
@@ -52,7 +51,8 @@ public:
 
 	/// 将事件put到输入队列
 	/// @param evt 要被放入队列的事件
-	void putEvent(scEventPtr const& evt);
+	void putEvent(scEvent const& evt);
+
 
 	/// 获取一个输出队列
 	/// @param queName 输出队列的名称
@@ -73,7 +73,7 @@ public:
 
 private:
 	shared_ptr<scEventQueue> mInputQueue;
-	std::vector<scEventPtr> mEvents;
+	std::vector<scEvent> mEvents;
 	QueueNameMap mOutputQueues;
 	EventMap mEventMap;
 	boost::mutex mQueueMutex;

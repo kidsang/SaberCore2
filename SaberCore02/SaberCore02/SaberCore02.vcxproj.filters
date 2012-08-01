@@ -74,8 +74,5 @@
     <ClInclude Include="scEventQueue.h">
       <Filter>EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="scAnEvent.h">
-      <Filter>EventSystem</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

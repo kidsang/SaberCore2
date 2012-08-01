@@ -1,6 +1,5 @@
 #include "scEventRouter.h"
 #include "scError.h"
-#include "scEvent.h"
 #include "scEventQueue.h"
 
 scEventQueuePtr scEventRouter::createEventQueue( string const& name )
@@ -60,11 +59,11 @@ void scEventRouter::unregisterEvents( string const& queName )
 	}
 }
 
-void scEventRouter::putEvent( scEventPtr const& evt )
+void scEventRouter::putEvent( scEvent const& evt )
 {
 	boost::mutex::scoped_lock lock(mQueueMutex);
 	// 确保消息类型存在
-	scAssert(mEventMap.find(evt->getName()) != mEventMap.end(), "Event name \""+ evt->getName()+"\" do not exist.");
+	//scAssert(mEventMap.find(evt.getName()) != mEventMap.end(), "Event name \""+ evt.getName()+"\" do not exist.");
 
 	mInputQueue->putEvent(evt);
 }
@@ -86,7 +85,7 @@ void scEventRouter::_run()
 	for (auto iter = mEvents.begin(); iter != mEvents.end(); ++iter)
 	{
 		// put到相应输出队列
-		auto outNameIter = mEventMap.find((*iter)->getName());
+		auto outNameIter = mEventMap.find((*iter).getName());
 		if (outNameIter == mEventMap.end()) // 防止注销事件后事件队列中有残留事件
 			continue;
 		string outname = outNameIter->second;

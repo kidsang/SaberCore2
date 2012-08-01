@@ -95,8 +95,12 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackSc
 		luaL_openlibs(mGuiL);
 		luabind::open(mGuiL);
 
+		// 导出错误
 		exportScError(mGuiL);
+		// 导出gui
 		exportMyGuiWidget(mGuiL);
+		// 导出事件
+		exportScEvent(mGuiL);
 
 		int err;
 		err = luaL_dofile(mGuiL, callbackScript.c_str());
