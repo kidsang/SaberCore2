@@ -12,6 +12,15 @@ scEventQueuePtr scEventRouter::createEventQueue( string const& name )
 	return iter.first->second;
 }
 
+void scEventRouter::destroyEventQueue( string const& name )
+{
+	boost::mutex::scoped_lock lock(mQueueMutex);
+	// 确保消息队列存在
+	auto iter = mOutputQueues.find(name);
+	scAssert(iter != mOutputQueues.end(), "Output queue named \"" + name + "\" do not exist.");
+	mOutputQueues.erase(iter);
+}
+
 void scEventRouter::registerEvent( string const& evtName, string const& queName )
 {
 	boost::mutex::scoped_lock lock(mQueueMutex);
@@ -22,6 +31,33 @@ void scEventRouter::registerEvent( string const& evtName, string const& queName 
 	scAssert(iter != mOutputQueues.end(), "Output queue named \"" + queName + "\" do not exist.");
 
 	mEventMap.insert(std::make_pair(evtName, queName));
+	scErrMsg("Register event " + evtName + " into queue " + queName);
+}
+
+void scEventRouter::unregisterEvent( string const& evtName )
+{
+	boost::mutex::scoped_lock lock(mQueueMutex);
+	// 确保消息类型存在
+	auto iter = mEventMap.find(evtName);
+	scAssert(iter != mEventMap.end(), "Event name \""+ evtName +"\" do not exist.");
+	scErrMsg("Unregister event " + evtName);
+	mEventMap.erase(iter);
+}
+
+void scEventRouter::unregisterEvents( string const& queName )
+{
+	boost::mutex::scoped_lock lock(mQueueMutex);
+	auto evtIter = mEventMap.begin();
+	while (evtIter != mEventMap.end())
+	{
+		if (evtIter->second == queName)
+		{
+			scErrMsg("Unregister event " + evtIter->first);
+			evtIter = mEventMap.erase(evtIter);
+		}
+		else
+			++evtIter;
+	}
 }
 
 void scEventRouter::putEvent( scEventPtr const& evt )
@@ -32,15 +68,6 @@ void scEventRouter::putEvent( scEventPtr const& evt )
 
 	mInputQueue->putEvent(evt);
 }
-
-//void scEventRouter::fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut)
-//{
-//	boost::mutex::scoped_lock lock(mQueueMutex);
-//	// 确保消息队列存在
-//	auto iter = mOutputQueues.find(queName);
-//	scAssert(iter != mOutputQueues.end(), "Output queue named \"" + queName + "\" do not exist.");
-//	iter->second->fetchEvents(eventsOut);
-//}
 
 scEventQueuePtr scEventRouter::getEventQueue( string const& queName )
 {
@@ -59,9 +86,13 @@ void scEventRouter::_run()
 	for (auto iter = mEvents.begin(); iter != mEvents.end(); ++iter)
 	{
 		// put到相应输出队列
-		string outname = mEventMap.find((*iter)->getName())->second;
+		auto outNameIter = mEventMap.find((*iter)->getName());
+		if (outNameIter == mEventMap.end()) // 防止注销事件后事件队列中有残留事件
+			continue;
+		string outname = outNameIter->second;
 		auto output = mOutputQueues.find(outname);
-		output->second->putEvent(*iter);
+		if (output != mOutputQueues.end()) // 防止注销输出队列后输入队列中有残留事件
+			output->second->putEvent(*iter);
 	}
 	mEvents.clear();
 }

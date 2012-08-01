@@ -24,7 +24,7 @@ class scEventQueue : boost::noncopyable
 public:
 	/// 构造函数
 	/// @param name 该队列的名称
-	scEventQueue(string const& name);
+	explicit scEventQueue(string const& name);
 	scEventQueue();
 	~scEventQueue(void);
 

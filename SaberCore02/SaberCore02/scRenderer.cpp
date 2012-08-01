@@ -115,6 +115,7 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackSc
 void scRenderer::shutdownGui()
 {
 	scAssert(mIsGuiInitialized, "GUI not initialized! You must first call initializeGui()");
+	mUIEventCallbackMap.clear();
 	if (mGuiL)
 	{ lua_close(mGuiL); mGuiL = 0; }
 	mGui->shutdown(); 

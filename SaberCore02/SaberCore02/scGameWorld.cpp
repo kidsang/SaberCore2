@@ -1,6 +1,4 @@
 #include "scGameWorld.h"
-#include <lua.hpp>
-#include <luabind/luabind.hpp>
 #include "scGameWorldManager.h"
 #include "scError.h"
 #include "scRenderer.h"
@@ -14,7 +12,7 @@
 u32 scGameWorld::sNextViewportZOder = 0;
 
 scGameWorld::scGameWorld(string const& name)
-	: mName(name), mSceneManager(0)
+	: mName(name), mSceneManager(0), mEventL(0)
 {
 }
 
@@ -31,25 +29,17 @@ void scGameWorld::initialize()
 	// 创建场景管理器
 	mSceneManager = renderer->getOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
 
+	// 初始化事件队列
+	mEventQueue = scEventRouter::getSingleton().createEventQueue(mName);
 	// 测试一下事件路由
-	scEventRouter* er = scEventRouter::getSingletonPtr();
-	apple = er->createEventQueue("apple");
-	orange = er->createEventQueue("orange");
-	er->registerEvent("toA", "apple");
-	er->registerEvent("toO", "orange");
-	er->registerEvent("t", "orange");
-
-	// 测试输入系统绑定
-	inputMgr->registerMouseMoved("../../Media/lua/testinput.lua", "onMouseMoved");
-	inputMgr->registerMousePressed("../../Media/lua/testinput.lua", "onMousePressed");
-	inputMgr->registerKeyReleased("../../Media/lua/testinput.lua", "onKeyPressed");
+	iniEvent("../../Media/lua/testevent.lua", "callbackEntry", "../../Media/lua/testevent.lua", "registerEntry");
 
 	// 测试装载场景
-	loadScene("../../Media/lua/testscene.lua");
+	iniScene("../../Media/lua/testscene.lua");
 
 	// 测试初始化GUI
-	renderer->initializeGui(mSceneManager, "../../Media/lua/testguievent.lua", "../../Media/lua/testguievent.lua");
-	inputMgr->registerGuiEvents(MyGUI::InputManager::getInstancePtr());
+	iniGui("../../Media/lua/testguievent.lua", "../../Media/lua/testguievent.lua");
+
 	// 测试GUI
 	MyGUI::Gui* gui = renderer->getGui();
 	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main", "testbutton");
@@ -66,6 +56,8 @@ void scGameWorld::initialize()
 	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_RELEASED, "onMouseReleased");
 	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_CLICK, "onMouseClick");
 	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
+
+
 }
 
 void scGameWorld::release()
@@ -74,6 +66,12 @@ void scGameWorld::release()
 	// 清理GUI
 	scInputManager::getSingleton().unregisterGuiEvents();
 	scRenderer::getSingleton().shutdownGui();
+
+	// 清理事件系统
+	if (mEventL)
+	{ lua_close(mEventL); mEventL = 0; }
+	scEventRouter::getSingleton().unregisterEvents(mEventQueue->getName());
+	scEventRouter::getSingleton().destroyEventQueue(mEventQueue->getName());
 
 	// 清理视口
 	ogreRoot->getAutoCreatedWindow()->removeAllViewports();
@@ -89,31 +87,47 @@ void scGameWorld::release()
 
 bool scGameWorld::_run( u32 dtms )
 {
-	// 测试
 	std::vector<scEventPtr> evts;
-	apple->fetchEvents(evts);
-	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
-		scErrMsg((*iter)->getName());
-	evts.clear();
-	orange->fetchEvents(evts);
-	for (auto iter = evts.begin(); iter != evts.end(); ++iter)
+	mEventQueue->fetchEvents(evts);
+	if (mEventL)
 	{
-		if ((*iter)->getName() == "t")
+		try
 		{
-			//shared_ptr<scTestEvent> e = shared_ptr<scTestEvent>(static_cast<scTestEvent*>((*iter).get()));
-			scAnEvent* e = static_cast<scAnEvent*>((*iter).get());
-			e->getI32("x");
-			//e->getString("des");
-			scErrMsg(e->getString("des")+ scToString(e->getI32("x")) + "," + scToString(e->getI32("y")));
+			for (auto iter = evts.begin(); iter != evts.end(); ++iter)
+			{
+				// TODO:这里直接强转为anEvent貌似有些不妥
+				scAnEvent* evt = static_cast<scAnEvent*>(iter->get());
+				luabind::call_function<void>(mEventL, mEventCallbackEntry.c_str(), evt);
+			}
 		}
-		else
-			scErrMsg((*iter)->getName());
+		catch (luabind::error& e)
+		{ scPrintLuaError(e); }
 	}
+	// 测试
+	//std::vector<scEventPtr> evts;
+	//apple->fetchEvents(evts);
+	//for (auto iter = evts.begin(); iter != evts.end(); ++iter)
+	//	scErrMsg((*iter)->getName());
+	//evts.clear();
+	//orange->fetchEvents(evts);
+	//for (auto iter = evts.begin(); iter != evts.end(); ++iter)
+	//{
+	//	if ((*iter)->getName() == "t")
+	//	{
+	//		//shared_ptr<scTestEvent> e = shared_ptr<scTestEvent>(static_cast<scTestEvent*>((*iter).get()));
+	//		scAnEvent* e = static_cast<scAnEvent*>((*iter).get());
+	//		e->getI32("x");
+	//		//e->getString("des");
+	//		scErrMsg(e->getString("des")+ scToString(e->getI32("x")) + "," + scToString(e->getI32("y")));
+	//	}
+	//	else
+	//		scErrMsg((*iter)->getName());
+	//}
 
 	return true;
 }
 
-void scGameWorld::loadScene( string const& fileName, string const& entry /*= "createScene"*/ )
+void scGameWorld::iniScene( string const& fileName, string const& entry /*= "createScene"*/ )
 {
 	try
 	{
@@ -124,24 +138,31 @@ void scGameWorld::loadScene( string const& fileName, string const& entry /*= "cr
 
 		// 导出Ogre向量和四元数
 		exportOgreMath(L);
-		// 导出Ogre Camera
+		// 导出Ogre Camera 
 		exportOgreCamera(L);
 
 		// 导出类
 		module(L)
 			[
 				class_<scGameWorld>("World")
-				.def("addStatic", (void (scGameWorld::*)(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale))&scGameWorld::addStatic)
+				.def("iniScene", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniScene)
+				.def("iniGui", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniGui)
+				.def("iniEvent", (void (scGameWorld::*)(const string &,  const string &,  const string &,  const string &))&scGameWorld::iniEvent)
+				.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
 				.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
 				.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
 				.def("removeCamera", (void (scGameWorld::*)(const string &))&scGameWorld::removeCamera)
 				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
 				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
 				.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
+				.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
+				.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
 			];
 
 		// 加载地图文件
-		luaL_dofile(L, fileName.c_str());
+		int i = luaL_dofile(L, fileName.c_str());
+		if (i)
+			throw luabind::error(L);
 		// 创建场景
 		call_function<void>(L, entry.c_str(), this);
 
@@ -149,6 +170,57 @@ void scGameWorld::loadScene( string const& fileName, string const& entry /*= "cr
 	}
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
+}
+
+void scGameWorld::iniGui( string const& callbackScript, string const& registerScript )
+{
+	scRenderer::getSingleton().initializeGui(mSceneManager, callbackScript, registerScript);
+	scInputManager::getSingleton().registerGuiEvents(MyGUI::InputManager::getInstancePtr());
+}
+
+void scGameWorld::iniEvent(string const& callbackScript, string const& callbackEntry,
+		string const& registerScript, string const& registerEntry)
+{
+	try
+	{
+		using namespace luabind;
+		mEventL = lua_open();
+		luaL_openlibs(mEventL);
+		luabind::open(mEventL);
+		// 导出类
+		module(mEventL)
+			[
+				class_<scGameWorld>("World")
+				.def("iniScene", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniScene)
+				.def("iniGui", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniGui)
+				.def("iniEvent", (void (scGameWorld::*)(const string &,  const string &,  const string &,  const string &))&scGameWorld::iniEvent)
+				.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
+				.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
+				.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
+				.def("removeCamera", (void (scGameWorld::*)(const string &))&scGameWorld::removeCamera)
+				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
+				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
+				.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
+				.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
+				.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
+			];
+		// 导出事件系统
+		exportScEvent(mEventL);
+		// 导出错误
+		exportScError(mEventL);
+
+		int i;
+		i = luaL_dofile(mEventL, registerScript.c_str());
+		if (i) throw luabind::error(mEventL);
+		call_function<void>(mEventL, registerEntry.c_str(), this);
+
+		i = luaL_dofile(mEventL, callbackScript.c_str());
+		if (i) throw luabind::error(mEventL);
+		mEventCallbackEntry = callbackEntry;
+	}
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+
 }
 
 void scGameWorld::addStatic(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale)
@@ -197,4 +269,9 @@ void scGameWorld::removeViewport( string const& vpName )
 	Ogre::RenderWindow* window = scRenderer::getSingleton().getOgreRoot()->getAutoCreatedWindow();
 	window->removeViewport(iter->second->getZOrder());
 	mViewports.erase(iter);
+}
+
+string const& scGameWorld::getEventQueueName()
+{
+	return mEventQueue->getName();
 }

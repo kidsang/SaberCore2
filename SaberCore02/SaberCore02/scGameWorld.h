@@ -9,7 +9,7 @@
 
 #include "scTypeDefine.h"
 #include <map>
-//#include "Ogre.h"
+#include "lua.hpp"
 namespace Ogre
 {
 	class Viewport;
@@ -33,7 +33,6 @@ class scGameWorld
 {
 protected:
 	typedef std::map<string, Ogre::Viewport*> ViewportMap;
-	// TODO:GUI
 
 public:
 	/// 构造函数
@@ -52,10 +51,25 @@ public:
 	/// @param dtms 上一帧到这一帧所经历的时间，单位毫秒
 	virtual bool _run(u32 dtms);
 
-	/// 从lua文件中加载场景
+	/// 从lua文件中初始化场景
 	/// @param fileName lua文件名
 	/// @param entry lua入口函数名，形如void (scServerGameWorld* )
-	void loadScene(string const& fileName, string const& entry = "createScene");
+	void iniScene(string const& fileName, string const& entry = "createScene");
+
+	/// 从lua文件中初始化UI系统,主要是为UI注册事件响应函数
+	/// @param callbackScript 处理UI事件的lua脚本
+	/// @param registerScript 注册UI事件回调函数的lua脚本
+	void iniGui(string const& callbackScript, string const& registerScript);
+
+	/// 从lua文件中初始化事件系统
+	/// @param callbackScript 处理事件的lua脚本
+	/// @param callbackEntry 处理事件的函数入口
+	/// 函数签名：void(*func)(scAnEvent*)
+	/// @param registerScript 注册事件类型的lua脚本
+	/// @param registerEntry 注册事件的函数入口
+	/// 函数签名：void(*func)(scGameWorld*)
+	void iniEvent(string const& callbackScript, string const& callbackEntry,
+		string const& registerScript, string const& registerEntry);
 
 	// helper functions
 public:
@@ -102,18 +116,21 @@ public:
 	void removeViewport(string const& vpName);
 
 public:
+	/// 返回游戏世界的名称
 	string const& getName()
 	{return mName;}
+
+	/// 返回游戏世界所拥有的事件队列的名称
+	string const& getEventQueueName();
 
 protected:
 	string mName;
 	Ogre::SceneManager* mSceneManager;
 	ViewportMap mViewports;
-	static u32 sNextViewportZOder;
-	// TODO:GUI
-	// 测试事件路由
-	shared_ptr<scEventQueue> apple;
-	shared_ptr<scEventQueue> orange;
+	static u32 sNextViewportZOder; // 下一个视口的高度
+	shared_ptr<scEventQueue> mEventQueue; // 事件队列
+	lua_State* mEventL; // 负责事件处理的lua虚拟机
+	string mEventCallbackEntry; // lua中事件处理入口函数名
 };
 
 #endif // scGameWorld_h__

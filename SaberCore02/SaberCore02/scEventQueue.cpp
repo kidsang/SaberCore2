@@ -38,8 +38,9 @@ void scEventQueue::putEvent( scEventPtr const& evt )
 void scEventQueue::fetchEvents( std::vector<scEventPtr> & eventsOut )
 {
 	boost::mutex::scoped_lock lock(mMutex);
-	//std::copy(mEvents.begin(), mEvents.end(), eventsOut.begin());
-	for (auto iter = mEvents.begin(); iter != mEvents.end(); ++iter)
-		eventsOut.push_back(*iter);
+	eventsOut.resize(mEvents.size());
+	std::copy(mEvents.begin(), mEvents.end(), eventsOut.begin());
+	//for (auto iter = mEvents.begin(); iter != mEvents.end(); ++iter)
+	//	eventsOut.push_back(*iter);
 	mEvents.clear();
 }

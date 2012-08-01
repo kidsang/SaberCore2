@@ -44,7 +44,9 @@
     <ClCompile Include="scEventRouter.cpp">
       <Filter>EventSystem</Filter>
     </ClCompile>
-    <ClCompile Include="scAnEvent.cpp" />
+    <ClCompile Include="scLuaWrapperEvent.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -72,9 +74,8 @@
     <ClInclude Include="scEventQueue.h">
       <Filter>EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="scTestEvent.h">
+    <ClInclude Include="scAnEvent.h">
       <Filter>EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="scAnEvent.h" />
   </ItemGroup>
 </Project>

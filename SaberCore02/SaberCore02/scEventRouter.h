@@ -28,24 +28,31 @@ class scEventRouter : public Ogre::Singleton<scEventRouter>
 	typedef std::map<string, string> EventMap;
 
 public:
-	/// 创建输出队列
+	/// 创建事件队列
 	/// @param name 输出队列的名称
 	/// @return 创建好的事件输出队列
 	scEventQueuePtr createEventQueue(string const& name);
+
+	/// 销毁事件队列
+	/// @param name 输出队列的名称
+	void destroyEventQueue(string const& name);
 
 	/// 注册事件
 	/// @param evtName 事件的名称，也就是事件的类型
 	/// @param queName 事件的目的地名称，也就是将要被路由到的输出队列的名称
 	void registerEvent(string const& evtName, string const& queName);
 
+	/// 取消注册事件
+	/// @param evtName 事件的名称，也就是事件的类型
+	void unregisterEvent(string const& evtName);
+
+	/// 取消注册某个队列对应的所有事件
+	/// @param queName 事件的目的地名称，也就是将要被路由到的输出队列的名称
+	void unregisterEvents(string const& queName);
+
 	/// 将事件put到输入队列
 	/// @param evt 要被放入队列的事件
 	void putEvent(scEventPtr const& evt);
-
-	/// 从输出队列中一次过fetch出所有的事件,被取出的事件将会放在eventsOut中
-	/// @param queName 输出队列的名称
-	/// @param eventsOut 被取出的事件列表
-	//void fetchEvents(string const& queName, std::vector<scEventPtr> & eventsOut);
 
 	/// 获取一个输出队列
 	/// @param queName 输出队列的名称

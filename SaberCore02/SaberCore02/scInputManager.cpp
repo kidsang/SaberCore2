@@ -142,21 +142,6 @@ bool scInputManager::keyReleased( const OIS::KeyEvent &arg )
 
 bool scInputManager::mouseMoved( const OIS::MouseEvent &arg )
 {
-	// ≤‚ ‘
-	scEventPtr evt;
-	if (arg.state.X.rel < 0)
-		evt = scEventPtr(new scEvent("toA"));
-	else
-		evt = scEventPtr(new scEvent("toO"));
-	scEventRouter::getSingleton().putEvent(evt);
-	scAnEvent* ane = new scAnEvent("t");
-	ane->putString("des", " Û±Í◊¯±Í:");
-	ane->putI32("x", arg.state.X.abs);
-	ane->putI32("y", arg.state.Y.abs);
-	evt = scEventPtr(ane);
-	scEventRouter::getSingleton().putEvent(evt);
-	
-
 	if (mGuiInput && mGuiInput->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs))
 		return true;
 

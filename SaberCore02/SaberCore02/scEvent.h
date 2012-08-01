@@ -16,7 +16,7 @@ public:
 
 	/// 构造函数
 	/// @param name 名字相当于是事件的类型
-	scEvent(string const& name)
+	explicit scEvent(string const& name)
 		: mName(name)
 	{}
 	virtual ~scEvent()

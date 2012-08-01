@@ -22,8 +22,9 @@ class scAnEvent : public scEvent
 public:
 	/// 构造函数
 	/// @param name 名字相当于是事件的类型
-	scAnEvent(string const& name);
-	~scAnEvent(void);
+	explicit scAnEvent(string const& name)
+		: scEvent(name)
+	{}
 
 	// 之所以写这么多不同名称是为了方便导出到lua
 	/// 在事件中放入布尔型内容
