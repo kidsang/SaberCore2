@@ -10,8 +10,9 @@
 
 u32 scGameWorld::sNextViewportZOder = 0;
 
-scGameWorld::scGameWorld(string const& name)
-	: mName(name), mSceneManager(0), mEventL(0)
+scGameWorld::scGameWorld(string const& name, string const& scriptName, string const& scriptEntry)
+	: mName(name), mScriptName(scriptName), mScriptEntry(scriptEntry),
+	mSceneManager(0), mL(0)
 {
 }
 
@@ -27,38 +28,67 @@ void scGameWorld::initialize()
 
 	// 创建场景管理器
 	mSceneManager = renderer->getOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
-
 	// 初始化事件队列
 	mEventQueue = scEventRouter::getSingleton().createEventQueue(mName);
+	// 初始化lua
+	try
+	{
+		using namespace luabind;
+		mL = lua_open();
+		luaL_openlibs(mL);
+		luabind::open(mL);
+
+		// 导出Ogre向量和四元数
+		exportOgreMath(mL);
+		// 导出Ogre Camera 
+		exportOgreCamera(mL);
+		// 导出事件系统
+		exportScEvent(mL);
+		// 导出错误
+		exportScError(mL);
+		// 导出类
+		exportSelf(mL);
+
+		// 加载地图文件
+		int i = luaL_dofile(mL, mScriptName.c_str());
+		if (i) throw luabind::error(mL);
+		// 创建场景
+		call_function<void>(mL, mScriptEntry.c_str(), this);
+	}
+	catch (luabind::error& e)
+	{ scPrintLuaError(e); }
+
+
+
 	// 测试一下事件路由
-	iniEvent("../../Media/lua/testevent.lua", "callbackEntry", "../../Media/lua/testevent.lua", "registerEntry");
+	//iniEvent(getScriptPath("testevent.lua"), "callbackEntry", getScriptPath("testevent.lua"), "registerEntry");
 	
 	// 测试鼠标按键事件
-	inputMgr->registerMouseMoved("../../Media/lua/testinput.lua", "onMouseMoved");
+	//inputMgr->registerMouseMoved(getScriptPath("testinput.lua"), "onMouseMoved");
 
 	// 测试装载场景
-	iniScene("../../Media/lua/testscene.lua");
+	//iniScene(getScriptPath("testscene.lua"));
 
 	// 测试初始化GUI
-	iniGui("../../Media/lua/testguievent.lua", "../../Media/lua/testguievent.lua");
-
+	//iniGui(getScriptPath("testguievent.lua"), getScriptPath("testguievent.lua"));
+	
 	// 测试GUI
-	MyGUI::Gui* gui = renderer->getGui();
-	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main", "testbutton");
-	button->setCaption("button");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_GET_FOCUS, "onKeyGetFocus");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_LOSE_FOCUS, "onKeyLoseFocus");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_PRESSED, "onKeyPressed");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_RELEASED, "onKeyReleased");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_GET_FOCUS, "onMouseGetFocus");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_LOSE_FOCUS, "onMouseLoseFocus");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_MOVE, "onMouseMove");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DRAG, "onMouseDrag");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_PRESSED, "onMousePressed");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_RELEASED, "onMouseReleased");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_CLICK, "onMouseClick");
-	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
-
+//	MyGUI::Gui* gui = renderer->getGui();
+//	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main", "testbutton");
+//	button->setCaption("button");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_GET_FOCUS, "onKeyGetFocus");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_LOSE_FOCUS, "onKeyLoseFocus");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_PRESSED, "onKeyPressed");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_RELEASED, "onKeyReleased");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_GET_FOCUS, "onMouseGetFocus");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_LOSE_FOCUS, "onMouseLoseFocus");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_MOVE, "onMouseMove");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DRAG, "onMouseDrag");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_PRESSED, "onMousePressed");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_RELEASED, "onMouseReleased");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_CLICK, "onMouseClick");
+//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
+//
 
 }
 
@@ -70,8 +100,8 @@ void scGameWorld::release()
 	scRenderer::getSingleton().shutdownGui();
 
 	// 清理事件系统
-	if (mEventL)
-	{ lua_close(mEventL); mEventL = 0; }
+	if (mL)
+	{ lua_close(mL); mL = 0; }
 	scEventRouter::getSingleton().unregisterEvents(mEventQueue->getName());
 	scEventRouter::getSingleton().destroyEventQueue(mEventQueue->getName());
 
@@ -95,13 +125,14 @@ bool scGameWorld::_run( u32 dtms )
 
 	std::vector<scEvent> evts;
 	mEventQueue->fetchEvents(evts);
-	if (mEventL)
+	if (mL)
 	{
 		try
 		{
 			for (auto iter = evts.begin(); iter != evts.end(); ++iter)
 			{
-				luabind::call_function<void>(mEventL, mEventCallbackEntry.c_str(), (*iter));
+				// TODO 修改名字
+				luabind::call_function<void>(mL, "callbackEntry", (*iter));
 			}
 		}
 		catch (luabind::error& e)
@@ -123,24 +154,8 @@ void scGameWorld::iniScene( string const& fileName, string const& entry /*= "cre
 		exportOgreMath(L);
 		// 导出Ogre Camera 
 		exportOgreCamera(L);
-
 		// 导出类
-		module(L)
-			[
-				class_<scGameWorld>("World")
-				.def("iniScene", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniScene)
-				.def("iniGui", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniGui)
-				.def("iniEvent", (void (scGameWorld::*)(const string &,  const string &,  const string &,  const string &))&scGameWorld::iniEvent)
-				.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
-				.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
-				.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
-				.def("removeCamera", (void (scGameWorld::*)(const string &))&scGameWorld::removeCamera)
-				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
-				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
-				.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
-				.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
-				.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
-			];
+		exportSelf(L);
 
 		// 加载地图文件
 		int i = luaL_dofile(L, fileName.c_str());
@@ -167,38 +182,23 @@ void scGameWorld::iniEvent(string const& callbackScript, string const& callbackE
 	try
 	{
 		using namespace luabind;
-		mEventL = lua_open();
-		luaL_openlibs(mEventL);
-		luabind::open(mEventL);
+		mL = lua_open();
+		luaL_openlibs(mL);
+		luabind::open(mL);
 		// 导出类
-		module(mEventL)
-			[
-				class_<scGameWorld>("World")
-				.def("iniScene", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniScene)
-				.def("iniGui", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniGui)
-				.def("iniEvent", (void (scGameWorld::*)(const string &,  const string &,  const string &,  const string &))&scGameWorld::iniEvent)
-				.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
-				.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
-				.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
-				.def("removeCamera", (void (scGameWorld::*)(const string &))&scGameWorld::removeCamera)
-				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
-				.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
-				.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
-				.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
-				.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
-			];
+		exportSelf(mL);
 		// 导出事件系统
-		exportScEvent(mEventL);
+		exportScEvent(mL);
 		// 导出错误
-		exportScError(mEventL);
+		exportScError(mL);
 
 		int i;
-		i = luaL_dofile(mEventL, registerScript.c_str());
-		if (i) throw luabind::error(mEventL);
-		call_function<void>(mEventL, registerEntry.c_str(), this);
+		i = luaL_dofile(mL, registerScript.c_str());
+		if (i) throw luabind::error(mL);
+		call_function<void>(mL, registerEntry.c_str(), this);
 
-		i = luaL_dofile(mEventL, callbackScript.c_str());
-		if (i) throw luabind::error(mEventL);
+		i = luaL_dofile(mL, callbackScript.c_str());
+		if (i) throw luabind::error(mL);
 		mEventCallbackEntry = callbackEntry;
 	}
 	catch (luabind::error& e)
@@ -257,4 +257,44 @@ void scGameWorld::removeViewport( string const& vpName )
 string const& scGameWorld::getEventQueueName()
 {
 	return mEventQueue->getName();
+}
+
+void scGameWorld::exportSelf( lua_State* L )
+{
+	using namespace luabind;
+	module(L)
+		[
+			class_<scGameWorld>("World")
+			.def("import", (void (scGameWorld::*)(string const&))&scGameWorld::luaImport)
+			//.def("iniscene", (void (scgameworld::*)(const string &,  const string &))&scgameworld::iniscene)
+			//.def("inigui", (void (scgameworld::*)(const string &,  const string &))&scgameworld::inigui)
+			//.def("inievent", (void (scgameworld::*)(const string &,  const string &,  const string &,  const string &))&scgameworld::inievent)
+			.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
+			.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
+			.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
+			.def("removeCamera", (void (scGameWorld::*)(const string &))&scGameWorld::removeCamera)
+			.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
+			.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
+			.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
+			.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
+			.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
+		];
+}
+
+string const scGameWorld::getScriptPath(string const& name )
+{
+	Ogre::ResourceGroupManager* mgr = Ogre::ResourceGroupManager::getSingletonPtr();
+	string group;
+	try
+	{ group = mgr->findGroupContainingResource(name); }
+	catch (...)
+	{ scAssert(0, "Can not locate lua script \"" + name + "\" in any group.");}
+	Ogre::FileInfoListPtr infos = mgr->findResourceFileInfo(group, name);
+	return infos->at(0).archive->getName() + "/" + name;
+}
+
+void scGameWorld::luaImport( string const& moduleName )
+{
+	using namespace luabind;
+	luaL_dofile(mL, getScriptPath(moduleName + ".lua").c_str());
 }

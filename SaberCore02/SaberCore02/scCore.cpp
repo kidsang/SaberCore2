@@ -59,7 +59,7 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	//tl = mTimeLineManager->createTimeLine("BackgroundLoading", 10, 0, true);
 
 	// ²âÊÔÒ»ÏÂ
-	scGameWorldPtr gw(new scGameWorld("test"));
+	scGameWorldPtr gw(new scGameWorld("test", "../../Media/lua/testini.lua", "iniScene"));
 	mGameWorldManager->addGameWorld(gw->getName(), gw);
 	mGameWorldManager->initializeGameWorld("test");
 }

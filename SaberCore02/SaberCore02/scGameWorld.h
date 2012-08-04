@@ -37,7 +37,9 @@ protected:
 public:
 	/// 构造函数
 	/// @param name 游戏世界的名称
-	scGameWorld(string const& name);
+	/// @param scriptName 创建游戏世界的lua脚本名
+	/// @param scriptEntry 脚本的入口函数名
+	scGameWorld(string const& name, string const& scriptName, string const& scriptEntry);
 	virtual ~scGameWorld(void);
 
 	/// 初始化游戏世界
@@ -115,6 +117,10 @@ public:
 	/// @param vpName 视口名称
 	void removeViewport(string const& vpName);
 
+	/// 辅助方法，导入某个lua模块(文件)
+	/// 不需要带.lua后缀名
+	void luaImport(string const& moduleName);
+
 public:
 	/// 返回游戏世界的名称
 	string const& getName()
@@ -123,13 +129,22 @@ public:
 	/// 返回游戏世界所拥有的事件队列的名称
 	string const& getEventQueueName();
 
+private:
+	/// 辅助方法，导出自身类
+	void exportSelf(lua_State* L);
+
+	/// 辅助方法，查找对应名称脚本的路径
+	string const getScriptPath(string const& name);
+
 protected:
 	string mName;
 	Ogre::SceneManager* mSceneManager;
 	ViewportMap mViewports;
 	static u32 sNextViewportZOder; // 下一个视口的高度
 	shared_ptr<scEventQueue> mEventQueue; // 事件队列
-	lua_State* mEventL; // 负责事件处理的lua虚拟机
+	lua_State* mL; // 负责事件处理的lua虚拟机
+	string mScriptName;
+	string mScriptEntry;
 	string mEventCallbackEntry; // lua中事件处理入口函数名
 };
 
