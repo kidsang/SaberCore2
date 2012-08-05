@@ -50,7 +50,7 @@ void scGameWorld::initialize()
 		exportSelf(mL);
 
 		// 加载地图文件
-		int i = luaL_dofile(mL, mScriptName.c_str());
+		int i = luaL_dofile(mL, getScriptPath(mScriptName).c_str());
 		if (i) throw luabind::error(mL);
 		// 创建场景
 		call_function<void>(mL, mScriptEntry.c_str(), this);
@@ -262,13 +262,11 @@ string const& scGameWorld::getEventQueueName()
 void scGameWorld::exportSelf( lua_State* L )
 {
 	using namespace luabind;
+	//---->>../scGameWorld.h 
 	module(L)
 		[
-			class_<scGameWorld>("World")
-			.def("import", (void (scGameWorld::*)(string const&))&scGameWorld::luaImport)
-			//.def("iniscene", (void (scgameworld::*)(const string &,  const string &))&scgameworld::iniscene)
-			//.def("inigui", (void (scgameworld::*)(const string &,  const string &))&scgameworld::inigui)
-			//.def("inievent", (void (scgameworld::*)(const string &,  const string &,  const string &,  const string &))&scgameworld::inievent)
+			//--scGameWorld
+			class_<scGameWorld>("scGameWorld")
 			.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
 			.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
 			.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
@@ -276,9 +274,16 @@ void scGameWorld::exportSelf( lua_State* L )
 			.def("addViewport", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::addViewport)
 			.def("addViewport", (void (scGameWorld::*)(const string &,  const string &,  float,  float,  float,  float))&scGameWorld::addViewport)
 			.def("removeViewport", (void (scGameWorld::*)(const string &))&scGameWorld::removeViewport)
+			.def("import", (void (scGameWorld::*)(const string &))&scGameWorld::luaImport)
+			.def("registerKeyPressed", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::registerKeyPressed)
+			.def("registerKeyReleased", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::registerKeyReleased)
+			.def("registerMouseMoved", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::registerMouseMoved)
+			.def("registerMousePressed", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::registerMousePressed)
+			.def("registerMouseReleased", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::registerMouseReleased)
 			.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
 			.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
 		];
+	//<<----../scGameWorld.h
 }
 
 string const scGameWorld::getScriptPath(string const& name )
@@ -297,4 +302,29 @@ void scGameWorld::luaImport( string const& moduleName )
 {
 	using namespace luabind;
 	luaL_dofile(mL, getScriptPath(moduleName + ".lua").c_str());
+}
+
+void scGameWorld::registerKeyPressed( string const& moduleName, string const& entry )
+{
+	scInputManager::getSingleton().registerKeyPressed(getScriptPath(moduleName + ".lua"), entry);
+}
+
+void scGameWorld::registerKeyReleased( string const& moduleName, string const& entry )
+{
+	scInputManager::getSingleton().registerKeyReleased(getScriptPath(moduleName + ".lua"), entry);
+}
+
+void scGameWorld::registerMouseMoved( string const& moduleName, string const& entry )
+{ 
+	scInputManager::getSingleton().registerMouseMoved(getScriptPath(moduleName + ".lua"), entry);
+}
+
+void scGameWorld::registerMousePressed( string const& moduleName, string const& entry )
+{
+	scInputManager::getSingleton().registerMousePressed(getScriptPath(moduleName + ".lua"), entry);
+}
+
+void scGameWorld::registerMouseReleased( string const& moduleName, string const& entry )
+{
+	scInputManager::getSingleton().registerMouseReleased(getScriptPath(moduleName + ".lua"), entry);
 }

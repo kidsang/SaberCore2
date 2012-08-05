@@ -4,6 +4,9 @@ function iniScene(s)
     registerEntry(s)
     s:import "testscene"
     createScene(s)
+    --s:import "testinput"
+    s:registerMouseMoved("testinput", "onMouseMoved")
+    s:registerMousePressed("testinput", "onMousePressed")
 end
 
 

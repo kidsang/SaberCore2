@@ -119,7 +119,38 @@ public:
 
 	/// 辅助方法，导入某个lua模块(文件)
 	/// 不需要带.lua后缀名
+	/// @param moduleName lua模块名
 	void luaImport(string const& moduleName);
+
+	/// 为键盘按下事件注册处理脚本
+	/// 同一时刻仅能有一个脚本被注册，后注册的会覆盖新注册的
+	/// @param moduleName lua模块名称
+	/// @param entry 入口函数名称
+	void registerKeyPressed(string const& moduleName, string const& entry);
+
+	/// 为键盘弹起事件注册处理脚本
+	/// 同一时刻仅能有一个脚本被注册，后注册的会覆盖新注册的
+	/// @param moduleName lua模块名称
+	/// @param entry 入口函数名称
+	void registerKeyReleased(string const& moduleName, string const& entry);
+
+	/// 为鼠标移动事件注册处理脚本
+	/// 同一时刻仅能有一个脚本被注册，后注册的会覆盖新注册的
+	/// @param moduleName lua模块名称
+	/// @param entry 入口函数名称
+	void registerMouseMoved(string const& moduleName, string const& entry);
+
+	/// 为鼠标按下事件注册处理脚本
+	/// 同一时刻仅能有一个脚本被注册，后注册的会覆盖新注册的
+	/// @param moduleName lua模块名称
+	/// @param entry 入口函数名称
+	void registerMousePressed(string const& moduleName, string const& entry);
+
+	/// 为鼠标弹起事件注册处理脚本
+	/// 同一时刻仅能有一个脚本被注册，后注册的会覆盖新注册的
+	/// @param moduleName lua模块名称
+	/// @param entry 入口函数名称
+	void registerMouseReleased(string const& moduleName, string const& entry);
 
 public:
 	/// 返回游戏世界的名称
