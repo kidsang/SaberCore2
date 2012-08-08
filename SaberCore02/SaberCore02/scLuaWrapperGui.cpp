@@ -1,11 +1,38 @@
 #include "scLuaWrapper.h"
 #include "MyGUI/MyGUI.h"
 
+void myguiExportDefines(lua_State* L);
+void myguiExportInputs(lua_State*);
+void myguiExportMangers(lua_State*);
+void myguiExportWidgets(lua_State*);
+
+
 void exportMyGuiWidget(lua_State* L)
 {
 	using namespace MyGUI;
 	using namespace luabind;
+	myguiExportDefines(L);
+	myguiExportInputs(L);
+	myguiExportMangers(L);
+	myguiExportWidgets(L);
+}
 
+void myguiExportDefines(lua_State* L)
+{
+	using namespace luabind;
+	using namespace MyGUI;
+	module(L)
+		[
+			class_<VectorWidgetPtr>("VectorWidgetPtr"),
+			class_<MapWidgetPtr>("MapWidgetPtr"),
+			class_<EnumeratorWidgetPtr>("EnumeratorWidgetPtr")
+		];
+}
+
+void myguiExportInputs(lua_State* L)
+{
+	using namespace luabind;
+	using namespace MyGUI;
 	//---->>include/MyGUI/MyGUI_KeyCode.h 
 	module(L)
 		[
@@ -194,13 +221,18 @@ void exportMyGuiWidget(lua_State* L)
 			//<---- Enum
 		];
 	//<<----include/MyGUI/MyGUI_MouseButton.h
+}
+
+void myguiExportWidgets(lua_State* L)
+{
+	using namespace luabind;
+	using namespace MyGUI;
 
 	//---->>include/MyGUI/MyGUI_Widget.h 
 	module(L)
 		[
 			//--Widget
 			class_<Widget>("Widget")
-			//.def(constructor<>())
 			.def("createWidgetT", (Widget* (Widget::*)(const std::string &,  const std::string &,  const IntCoord &,  MyGUI::Align,  const std::string &))&Widget::createWidgetT)
 			.def("createWidgetT", (Widget* (Widget::*)(const std::string &,  const std::string &,  int,  int,  int,  int,  MyGUI::Align,  const std::string &))&Widget::createWidgetT)
 			.def("createWidgetRealT", (Widget* (Widget::*)(const std::string &,  const std::string &,  const FloatCoord &,  MyGUI::Align,  const std::string &))&Widget::createWidgetRealT)
@@ -251,4 +283,132 @@ void exportMyGuiWidget(lua_State* L)
 			.def("setProperty", (void (Widget::*)(const std::string &,  const std::string &))&Widget::setProperty)
 		];
 	//<<----include/MyGUI/MyGUI_Widget.h
+	//---->>include/MyGUI/MyGUI_TextBox.h 
+	module(L)
+		[
+			//--TextBox
+			class_<TextBox, Widget>("TextBox")
+			.def("getTextRegion", (IntCoord (TextBox::*)())&TextBox::getTextRegion)
+			.def("getTextSize", (IntSize (TextBox::*)())&TextBox::getTextSize)
+			.def("setCaption", (void (TextBox::*)(const MyGUI::UString &))&TextBox::setCaption)
+			.def("getCaption", (const UString& (TextBox::*)())&TextBox::getCaption)
+			.def("setFontName", (void (TextBox::*)(const std::string &))&TextBox::setFontName)
+			.def("getFontName", (const std::string& (TextBox::*)())&TextBox::getFontName)
+			.def("setFontHeight", (void (TextBox::*)(int))&TextBox::setFontHeight)
+			.def("getFontHeight", (int (TextBox::*)())&TextBox::getFontHeight)
+			.def("setTextAlign", (void (TextBox::*)(MyGUI::Align))&TextBox::setTextAlign)
+			.def("getTextAlign", (Align (TextBox::*)())&TextBox::getTextAlign)
+			.def("setTextColour", (void (TextBox::*)(const MyGUI::Colour &))&TextBox::setTextColour)
+			.def("getTextColour", (const Colour& (TextBox::*)())&TextBox::getTextColour)
+			.def("setCaptionWithReplacing", (void (TextBox::*)(const std::string &))&TextBox::setCaptionWithReplacing)
+			.def("setTextShadowColour", (void (TextBox::*)(const MyGUI::Colour &))&TextBox::setTextShadowColour)
+			.def("getTextShadowColour", (const Colour& (TextBox::*)())&TextBox::getTextShadowColour)
+			.def("setTextShadow", (void (TextBox::*)(bool))&TextBox::setTextShadow)
+			.def("getTextShadow", (bool (TextBox::*)())&TextBox::getTextShadow)
+		];
+	//<<----include/MyGUI/MyGUI_TextBox.h
+	//---->>include/MyGUI/MyGUI_Button.h 
+	module(L)
+		[
+			//--Button
+			class_<Button, TextBox>("Button")
+			.def("setStateSelected", (void (Button::*)(bool))&Button::setStateSelected)
+			.def("getStateSelected", (bool (Button::*)())&Button::getStateSelected)
+			.def("setModeImage", (void (Button::*)(bool))&Button::setModeImage)
+			.def("getModeImage", (bool (Button::*)())&Button::getModeImage)
+			.def("setImageResource", (void (Button::*)(const std::string &))&Button::setImageResource)
+			.def("setImageGroup", (void (Button::*)(const std::string &))&Button::setImageGroup)
+			.def("setImageName", (void (Button::*)(const std::string &))&Button::setImageName)
+		];
+	//<<----include/MyGUI/MyGUI_Button.h
+	//---->>include/MyGUI/MyGUI_ImageBox.h 
+	module(L)
+		[
+			//--ImageBox
+			class_<ImageBox, Widget>("ImageBox")
+			.def("setImageInfo", (void (ImageBox::*)(const std::string &,  const IntCoord &,  const IntSize &))&ImageBox::setImageInfo)
+			.def("setImageTexture", (void (ImageBox::*)(const std::string &))&ImageBox::setImageTexture)
+			.def("setImageRect", (void (ImageBox::*)(const IntRect &))&ImageBox::setImageRect)
+			.def("setImageCoord", (void (ImageBox::*)(const IntCoord &))&ImageBox::setImageCoord)
+			.def("setImageTile", (void (ImageBox::*)(const IntSize &))&ImageBox::setImageTile)
+			.def("setImageIndex", (void (ImageBox::*)(size_t))&ImageBox::setImageIndex)
+			.def("getImageIndex", (size_t (ImageBox::*)())&ImageBox::getImageIndex)
+			.def("getItemCount", (size_t (ImageBox::*)())&ImageBox::getItemCount)
+			.def("setItemSelect", (void (ImageBox::*)(size_t))&ImageBox::setItemSelect)
+			.def("getItemSelect", (size_t (ImageBox::*)())&ImageBox::getItemSelect)
+			.def("resetItemSelect", (void (ImageBox::*)())&ImageBox::resetItemSelect)
+			.def("insertItem", (void (ImageBox::*)(size_t,  const IntCoord &))&ImageBox::insertItem)
+			.def("addItem", (void (ImageBox::*)(const IntCoord &))&ImageBox::addItem)
+			.def("setItem", (void (ImageBox::*)(size_t,  const IntCoord &))&ImageBox::setItem)
+			.def("deleteItem", (void (ImageBox::*)(size_t))&ImageBox::deleteItem)
+			.def("deleteAllItems", (void (ImageBox::*)())&ImageBox::deleteAllItems)
+			.def("addItemFrame", (void (ImageBox::*)(size_t,  const IntCoord &))&ImageBox::addItemFrame)
+			.def("insertItemFrame", (void (ImageBox::*)(size_t,  size_t,  const IntCoord &))&ImageBox::insertItemFrame)
+			.def("addItemFrameDublicate", (void (ImageBox::*)(size_t,  size_t))&ImageBox::addItemFrameDublicate)
+			.def("insertItemFrameDublicate", (void (ImageBox::*)(size_t,  size_t,  size_t))&ImageBox::insertItemFrameDublicate)
+			.def("setItemFrame", (void (ImageBox::*)(size_t,  size_t,  const IntCoord &))&ImageBox::setItemFrame)
+			.def("deleteItemFrame", (void (ImageBox::*)(size_t,  size_t))&ImageBox::deleteItemFrame)
+			.def("deleteAllItemFrames", (void (ImageBox::*)(size_t))&ImageBox::deleteAllItemFrames)
+			.def("setItemFrameRate", (void (ImageBox::*)(size_t,  float))&ImageBox::setItemFrameRate)
+			.def("getItemFrameRate", (float (ImageBox::*)(size_t))&ImageBox::getItemFrameRate)
+			.def("setItemResource", (bool (ImageBox::*)(const std::string &))&ImageBox::setItemResource)
+			.def("setItemGroup", (void (ImageBox::*)(const std::string &))&ImageBox::setItemGroup)
+			.def("setItemName", (void (ImageBox::*)(const std::string &))&ImageBox::setItemName)
+			.def("setItemResourcePtr", (void (ImageBox::*)(ResourceImageSetPtr))&ImageBox::setItemResourcePtr)
+			.def("setItemResourceInfo", (void (ImageBox::*)(const MyGUI::ImageIndexInfo &))&ImageBox::setItemResourceInfo)
+			.def("getItemResource", (ResourceImageSetPtr (ImageBox::*)())&ImageBox::getItemResource)
+			.def("setItemResourceInfo", (void (ImageBox::*)(ResourceImageSetPtr,  const std::string &,  const std::string &))&ImageBox::setItemResourceInfo)
+		];
+	//<<----include/MyGUI/MyGUI_ImageBox.h
+}
+
+MyGUI::LayoutManager* getLayoutManager()
+{ return MyGUI::LayoutManager::getInstancePtr(); }
+
+void myguiExportMangers(lua_State* L)
+{
+	using namespace luabind;
+	using namespace MyGUI;
+
+	//---->>include/MyGUI/MyGUI_Gui.h 
+	module(L)
+		[
+			//--Gui
+			class_<Gui>("Gui")
+			.def("createWidgetT", (Widget* (Gui::*)(const std::string &,  const std::string &,  const IntCoord &,  MyGUI::Align,  const std::string &,  const std::string &))&Gui::createWidgetT)
+			.def("createWidgetT", (Widget* (Gui::*)(const std::string &,  const std::string &,  int,  int,  int,  int,  MyGUI::Align,  const std::string &,  const std::string &))&Gui::createWidgetT)
+			.def("createWidgetRealT", (Widget* (Gui::*)(const std::string &,  const std::string &,  const FloatCoord &,  MyGUI::Align,  const std::string &,  const std::string &))&Gui::createWidgetRealT)
+			.def("createWidgetRealT", (Widget* (Gui::*)(const std::string &,  const std::string &,  float,  float,  float,  float,  MyGUI::Align,  const std::string &,  const std::string &))&Gui::createWidgetRealT)
+			.def("destroyWidget", (void (Gui::*)(MyGUI::Widget *))&Gui::destroyWidget)
+			.def("destroyWidgets", (void (Gui::*)(const VectorWidgetPtr &))&Gui::destroyWidgets)
+			.def("destroyWidgets", (void (Gui::*)(EnumeratorWidgetPtr &))&Gui::destroyWidgets)
+			.def("findWidgetT", (Widget* (Gui::*)(const std::string &,  bool))&Gui::findWidgetT)
+			.def("findWidgetT", (Widget* (Gui::*)(const std::string &,  const std::string &,  bool))&Gui::findWidgetT)
+			.def("destroyChildWidget", (void (Gui::*)(MyGUI::Widget *))&Gui::destroyChildWidget)
+			.def("destroyAllChildWidget", (void (Gui::*)())&Gui::destroyAllChildWidget)
+			.def("getEnumerator", (EnumeratorWidgetPtr (Gui::*)())&Gui::getEnumerator)
+			.def("frameEvent", (void (Gui::*)(float))&Gui::frameEvent)
+			.def_readonly("eventFrameStart", &Gui::eventFrameStart)
+		];
+	//<<----include/MyGUI/MyGUI_Gui.h
+	//---->>include/MyGUI/MyGUI_LayoutManager.h 
+	module(L)
+		[
+			//--LayoutManager
+			class_<LayoutManager>("LayoutManager")
+			.def("loadLayout", (VectorWidgetPtr (LayoutManager::*)(const std::string &,  const std::string &,  MyGUI::Widget *))&LayoutManager::loadLayout)
+			.def("unloadLayout", (void (LayoutManager::*)(VectorWidgetPtr &))&LayoutManager::unloadLayout)
+			.def("getByName", (ResourceLayout* (LayoutManager::*)(const std::string &,  bool))&LayoutManager::getByName)
+			.def("isExist", (bool (LayoutManager::*)(const std::string &))&LayoutManager::isExist)
+			.def("getCurrentLayout", (const std::string& (LayoutManager::*)())&LayoutManager::getCurrentLayout)
+			.def_readonly("eventAddUserString", &LayoutManager::eventAddUserString)
+		];
+	//<<----include/MyGUI/MyGUI_LayoutManager.h
+
+	//---->>Helper Func
+	module(L)
+		[
+			def("getLayoutManager", getLayoutManager)
+		];
+	//<<----Helper Func
 }

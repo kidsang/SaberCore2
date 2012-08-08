@@ -3,6 +3,18 @@ function toString(num)
 	return string.format("%d", num)
 end
 
+function registerEvents(r)
+    gui = r:getGui()
+    lm = getLayoutManager()
+    lm:loadLayout("test.layout", "", nil)
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_MOVE, "onMouseMove");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_DRAG, "onMouseDrag");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_PRESSED, "onMousePressed");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_RELEASED, "onMouseReleased");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_CLICK, "onMouseClick");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
+end
+
 function onKeyGetFocus(sender, old)
 	--scErrMsg(sender:getName()..' get key focus')
 end
@@ -31,6 +43,7 @@ function onMouseMove(sender, left, top)
 	--scErrMsg(sender:getName()..' move at '..toString(left)..','..toString(top))
 	evt = scEvent("gui_mouse_over")
 	evt:putString("msg", "Gui "..sender:getName().." mouse over:")
+	--evt:putString("msg", "Gui mouse over:")
 	evt:putI32("x", left)
 	evt:putI32("y", top)
 	getEventRouter():putEvent(evt)

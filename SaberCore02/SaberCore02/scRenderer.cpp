@@ -82,11 +82,12 @@ scRenderer* scRenderer::getSingletonPtr( void )
 	return ms_Singleton;
 }
 
-void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackScript, string const& registerScript)
+void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& scriptName, string const& entry)
 {
 	scAssert(!mIsGuiInitialized, "GUI has already be initialized!");
 	mPlatform->initialise(mRoot->getAutoCreatedWindow(), mgr);
 	mGui->initialise();
+	mIsGuiInitialized = true;
 
 	try
 	{
@@ -101,19 +102,16 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& callbackSc
 		exportMyGuiWidget(mGuiL);
 		// 导出事件
 		exportScEvent(mGuiL);
+		// 导出自己
+		exportSelf(mGuiL);
 
 		int err;
-		err = luaL_dofile(mGuiL, callbackScript.c_str());
+		err = luaL_dofile(mGuiL, getScriptPath(scriptName).c_str());
 		if (err) throw luabind::error(mGuiL);
-		if (callbackScript != registerScript)
-		{
-			err = luaL_dofile(mGuiL, registerScript.c_str());
-			if (err) throw luabind::error(mGuiL);
-		}
+		call_function<void>(mGuiL, entry.c_str(), this);
 	}
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
-	mIsGuiInitialized = true;
 }
 
 void scRenderer::shutdownGui()
@@ -297,5 +295,44 @@ void scRenderer::onGuiMouseDrag( MyGUI::Widget* sender, int left, int top, MyGUI
 	{ luabind::call_function<void>(mGuiL, cb.c_str(), sender, left, top, id); }
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
+}
+
+void scRenderer::luaImport( string const& moduleName )
+{
+	using namespace luabind;
+	luaL_dofile(mGuiL, getScriptPath(moduleName + ".lua").c_str());
+}
+void scRenderer::exportSelf( lua_State* L )
+{
+	using namespace luabind;
+	//---->>../scRenderer.h 
+	module(L)
+		[
+			//--scRenderer
+			class_<scRenderer>("scRenderer")
+			.def("registerGuiEvent", (void (scRenderer::*)(const string &,  scRenderer::GuiEventType,  const string &))&scRenderer::registerGuiEvent)
+			.def("luaImport", (void (scRenderer::*)(const string &))&scRenderer::luaImport)
+			.def("getOgreRoot", (Ogre::Root* (scRenderer::*)())&scRenderer::getOgreRoot)
+			.def("getGui", (MyGUI::Gui* (scRenderer::*)())&scRenderer::getGui)
+			//----> GuiEventType
+			.enum_("constants")
+			[
+				value("UI_KEY_GET_FOCUS", 0),
+				value("UI_KEY_LOSE_FOCUS", 1),
+				value("UI_KEY_PRESSED", 2),
+				value("UI_KEY_RELEASED", 3),
+				value("UI_MOUSE_GET_FOCUS", 4),
+				value("UI_MOUSE_LOSE_FOCUS", 5),
+				value("UI_MOUSE_MOVE", 6),
+				value("UI_MOUSE_WHEEL", 7),
+				value("UI_MOUSE_DRAG", 8),
+				value("UI_MOUSE_PRESSED", 9),
+				value("UI_MOUSE_RELEASED", 10),
+				value("UI_MOUSE_CLICK", 11),
+				value("UI_MOUSE_DOUBLE_CLICK", 12)
+			]
+			//<---- GuiEventType
+		];
+	//<<----../scRenderer.h
 }
 

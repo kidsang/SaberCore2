@@ -141,69 +141,32 @@ bool scGameWorld::_run( u32 dtms )
 	return true;
 }
 
-void scGameWorld::iniScene( string const& fileName, string const& entry /*= "createScene"*/ )
+void scGameWorld::iniScene( string const& fileName, string const& entry )
 {
-	try
-	{
-		using namespace luabind;
-		lua_State* L = lua_open();
-		luaL_openlibs(L);
-		luabind::open(L);
-
-		// 导出Ogre向量和四元数
-		exportOgreMath(L);
-		// 导出Ogre Camera 
-		exportOgreCamera(L);
-		// 导出类
-		exportSelf(L);
-
-		// 加载地图文件
-		int i = luaL_dofile(L, fileName.c_str());
-		if (i)
-			throw luabind::error(L);
-		// 创建场景
-		call_function<void>(L, entry.c_str(), this);
-
-		lua_close(L);
-	}
-	catch (luabind::error& e)
-	{ scPrintLuaError(e); }
+	using namespace luabind;
+	int i = luaL_dofile(mL, getScriptPath(fileName).c_str());
+	if (i) throw luabind::error(mL);
+	call_function<void>(mL, entry.c_str(), this);
 }
 
-void scGameWorld::iniGui( string const& callbackScript, string const& registerScript )
+void scGameWorld::iniGui(string const& scriptName, string const& entry)
 {
-	scRenderer::getSingleton().initializeGui(mSceneManager, callbackScript, registerScript);
+	scRenderer::getSingleton().initializeGui(mSceneManager, scriptName, entry);
 	scInputManager::getSingleton().registerGuiEvents(MyGUI::InputManager::getInstancePtr());
 }
 
 void scGameWorld::iniEvent(string const& callbackScript, string const& callbackEntry,
-		string const& registerScript, string const& registerEntry)
+	string const& registerScript, string const& registerEntry)
 {
-	try
-	{
-		using namespace luabind;
-		mL = lua_open();
-		luaL_openlibs(mL);
-		luabind::open(mL);
-		// 导出类
-		exportSelf(mL);
-		// 导出事件系统
-		exportScEvent(mL);
-		// 导出错误
-		exportScError(mL);
+	using namespace luabind;
+	int i;
+	i = luaL_dofile(mL, getScriptPath(registerScript).c_str());
+	if (i) throw luabind::error(mL);
+	call_function<void>(mL, registerEntry.c_str(), this);
 
-		int i;
-		i = luaL_dofile(mL, registerScript.c_str());
-		if (i) throw luabind::error(mL);
-		call_function<void>(mL, registerEntry.c_str(), this);
-
-		i = luaL_dofile(mL, callbackScript.c_str());
-		if (i) throw luabind::error(mL);
-		mEventCallbackEntry = callbackEntry;
-	}
-	catch (luabind::error& e)
-	{ scPrintLuaError(e); }
-
+	i = luaL_dofile(mL, getScriptPath(callbackScript).c_str());
+	if (i) throw luabind::error(mL);
+	mEventCallbackEntry = callbackEntry;
 }
 
 void scGameWorld::addStatic(string const& meshName, Ogre::Vector3 const& position, Ogre::Quaternion const& orientation, Ogre::Vector3 const& scale)
@@ -267,6 +230,9 @@ void scGameWorld::exportSelf( lua_State* L )
 		[
 			//--scGameWorld
 			class_<scGameWorld>("scGameWorld")
+			.def("iniScene", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniScene)
+			.def("iniGui", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::iniGui)
+			.def("iniEvent", (void (scGameWorld::*)(const string &,  const string &,  const string &,  const string &))&scGameWorld::iniEvent)
 			.def("addStatic", (void (scGameWorld::*)(string const&, Ogre::Vector3 const&, Ogre::Quaternion const&, Ogre::Vector3 const&))&scGameWorld::addStatic)
 			.def("addCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::addCamera)
 			.def("getCamera", (Ogre::Camera* (scGameWorld::*)(const string &))&scGameWorld::getCamera)
@@ -286,18 +252,18 @@ void scGameWorld::exportSelf( lua_State* L )
 	//<<----../scGameWorld.h
 }
 
-string const scGameWorld::getScriptPath(string const& name )
-{
-	Ogre::ResourceGroupManager* mgr = Ogre::ResourceGroupManager::getSingletonPtr();
-	string group;
-	try
-	{ group = mgr->findGroupContainingResource(name); }
-	catch (...)
-	{ scAssert(0, "Can not locate lua script \"" + name + "\" in any group.");}
-	Ogre::FileInfoListPtr infos = mgr->findResourceFileInfo(group, name);
-	return infos->at(0).archive->getName() + "/" + name;
-}
-
+//string const scGameWorld::getScriptPath(string const& name )
+//{
+//	Ogre::ResourceGroupManager* mgr = Ogre::ResourceGroupManager::getSingletonPtr();
+//	string group;
+//	try
+//	{ group = mgr->findGroupContainingResource(name); }
+//	catch (...)
+//	{ scAssert(0, "Can not locate lua script \"" + name + "\" in any group.");}
+//	Ogre::FileInfoListPtr infos = mgr->findResourceFileInfo(group, name);
+//	return infos->at(0).archive->getName() + "/" + name;
+//}
+//
 void scGameWorld::luaImport( string const& moduleName )
 {
 	using namespace luabind;

@@ -51,13 +51,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OgreSDK\include;F:\boost_1_47_0;F:\Lua\5.1\include;F:\luabind-0.9.1;D:\OgreSDK\include;D:\boost_1_50_0;D:\luabind-0.9.1;D:\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\OgreSDK\include;F:\boost_1_47_0;F:\Lua\5.1\include;F:\luabind-0.9.1;E:\OgreBuild\include;E:\boost_1_50_0;E:\luabind-0.9.1;E:\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;F:\luabind-0.9.1\lib\$(Configuration);F:\Lua\5.1\lib;D:\OgreSDK\lib\$(Configuration);D:\boost_1_50_0\stage\lib;D:\luabind-0.9.1\lib\$(Configuration);D:\Lua\5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\OgreSDK\lib\$(Configuration);F:\boost_1_47_0\stage\lib;F:\luabind-0.9.1\lib\$(Configuration);F:\Lua\5.1\lib;E:\OgreBuild\lib\$(Configuration);E:\boost_1_50_0\stage\lib;E:\luabind-0.9.1\lib\$(Configuration);E:\Lua\5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;luabind.lib;lua51.lib;OIS_d.lib;MyGUIEngine_d.lib;MyGUI.OgrePlatform_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>false</Profile>
     </Link>
@@ -94,10 +94,17 @@
     <ClCompile Include="scLuaWrapperGui.cpp" />
     <ClCompile Include="scLuaWrapperInput.cpp" />
     <ClCompile Include="scLuaWrapperMath.cpp" />
+    <ClCompile Include="scLuaWrapperUtils.cpp" />
     <ClCompile Include="scRenderer.cpp" />
     <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
+    <ClCompile Include="scUiAlphaAnimation.cpp" />
+    <ClCompile Include="scUiAnimation.cpp" />
+    <ClCompile Include="scUiAnimationGroup.cpp" />
+    <ClCompile Include="scUiRotateAnimation.cpp" />
+    <ClCompile Include="scUiScaleAnimation.cpp" />
+    <ClCompile Include="scUiTranslateAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scEventQueue.h" />
@@ -116,6 +123,12 @@
     <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scTimeLineManager.h" />
     <ClInclude Include="scTypeDefine.h" />
+    <ClInclude Include="scUiAlphaAnimation.h" />
+    <ClInclude Include="scUiAnimation.h" />
+    <ClInclude Include="scUiAnimationGroup.h" />
+    <ClInclude Include="scUiRotateAnimation.h" />
+    <ClInclude Include="scUiScaleAnimation.h" />
+    <ClInclude Include="scUiTranslateAnimation.h" />
     <ClInclude Include="scUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

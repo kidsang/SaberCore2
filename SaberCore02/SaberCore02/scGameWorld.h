@@ -55,14 +55,17 @@ public:
 
 	/// 从lua文件中初始化场景
 	/// @param fileName lua文件名
-	/// @param entry lua入口函数名，形如void (scServerGameWorld* )
-	void iniScene(string const& fileName, string const& entry = "createScene");
+	/// @param entry lua入口函数名
+	/// 入口函数签名void (scServerGameWorld* )
+	void iniScene(string const& scriptName, string const& entry);
 
-	/// 从lua文件中初始化UI系统,主要是为UI注册事件响应函数
-	/// @param callbackScript 处理UI事件的lua脚本
-	/// @param registerScript 注册UI事件回调函数的lua脚本
-	void iniGui(string const& callbackScript, string const& registerScript);
+	/// 从lua文件中初始化UI系统,主要是为UI注册事件响应函数和处理函数
+	/// @param scriptName 处理UI事件的lua脚本
+	/// @param entry 入口函数名称
+	/// 入口函数签名：void(scRender*)
+	void iniGui(string const& scriptName, string const& entry);
 
+	// TODO: 这个地方很有问题，callback无法分散到几个脚本中写
 	/// 从lua文件中初始化事件系统
 	/// @param callbackScript 处理事件的lua脚本
 	/// @param callbackEntry 处理事件的函数入口
@@ -165,7 +168,7 @@ private:
 	void exportSelf(lua_State* L);
 
 	/// 辅助方法，查找对应名称脚本的路径
-	string const getScriptPath(string const& name);
+	//string const getScriptPath(string const& name);
 
 protected:
 	string mName;
