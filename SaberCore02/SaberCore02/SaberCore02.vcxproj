@@ -99,6 +99,12 @@
     <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
+    <ClCompile Include="scUiAlphaAnimation.cpp" />
+    <ClCompile Include="scUiAnimation.cpp" />
+    <ClCompile Include="scUiAnimationGroup.cpp" />
+    <ClCompile Include="scUiRotateAnimation.cpp" />
+    <ClCompile Include="scUiScaleAnimation.cpp" />
+    <ClCompile Include="scUiTranslateAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scEventQueue.h" />
@@ -117,6 +123,12 @@
     <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scTimeLineManager.h" />
     <ClInclude Include="scTypeDefine.h" />
+    <ClInclude Include="scUiAlphaAnimation.h" />
+    <ClInclude Include="scUiAnimation.h" />
+    <ClInclude Include="scUiAnimationGroup.h" />
+    <ClInclude Include="scUiRotateAnimation.h" />
+    <ClInclude Include="scUiScaleAnimation.h" />
+    <ClInclude Include="scUiTranslateAnimation.h" />
     <ClInclude Include="scUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
