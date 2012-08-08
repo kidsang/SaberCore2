@@ -10,7 +10,7 @@ function iniScene(s)
     --s:import "testinput"
     s:registerMouseMoved("testinput", "onMouseMoved")
     s:registerMousePressed("testinput", "onMousePressed")
-    --s:iniGui("testguievent.lua", "registerEvents")
+    s:iniGui("testguievent.lua", "registerEvents")
 end
 
 

@@ -87,6 +87,7 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& scriptName
 	scAssert(!mIsGuiInitialized, "GUI has already be initialized!");
 	mPlatform->initialise(mRoot->getAutoCreatedWindow(), mgr);
 	mGui->initialise();
+	mIsGuiInitialized = true;
 
 	try
 	{
@@ -111,7 +112,6 @@ void scRenderer::initializeGui(Ogre::SceneManager* mgr, string const& scriptName
 	}
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
-	mIsGuiInitialized = true;
 }
 
 void scRenderer::shutdownGui()

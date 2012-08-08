@@ -4,6 +4,9 @@ function toString(num)
 end
 
 function registerEvents(r)
+    gui = r:getGui()
+    lm = getLayoutManager()
+    lm:loadLayout("test.layout", "", nil)
 	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_MOVE, "onMouseMove");
 	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_DRAG, "onMouseDrag");
 	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_PRESSED, "onMousePressed");
@@ -40,6 +43,7 @@ function onMouseMove(sender, left, top)
 	--scErrMsg(sender:getName()..' move at '..toString(left)..','..toString(top))
 	evt = scEvent("gui_mouse_over")
 	evt:putString("msg", "Gui "..sender:getName().." mouse over:")
+	--evt:putString("msg", "Gui mouse over:")
 	evt:putI32("x", left)
 	evt:putI32("y", top)
 	getEventRouter():putEvent(evt)
