@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scAnimation.cpp" />
     <ClCompile Include="scCore.cpp" />
     <ClCompile Include="scEventQueue.cpp" />
     <ClCompile Include="scEventRouter.cpp" />
@@ -100,15 +101,18 @@
     <ClCompile Include="scTimeLine.cpp" />
     <ClCompile Include="scTimeLineManager.cpp" />
     <ClCompile Include="scUiAlphaAnimation.cpp" />
-    <ClCompile Include="scUiAnimation.cpp" />
     <ClCompile Include="scUiAnimationGroup.cpp" />
     <ClCompile Include="scUiRotateAnimation.cpp" />
     <ClCompile Include="scUiScaleAnimation.cpp" />
     <ClCompile Include="scUiTranslateAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scAnimation.h" />
     <ClInclude Include="scEventQueue.h" />
+    <ClInclude Include="scGenericAnimation.h" />
+    <ClInclude Include="scGenericKeyFrame.h" />
     <ClInclude Include="scInputManager.h" />
+    <ClInclude Include="scKeyFrame.h" />
     <ClInclude Include="scLuaWrapper.h" />
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />

@@ -1,7 +1,8 @@
 #include "scUiTranslateAnimation.h"
 
 
-scUiTranslateAnimation::scUiTranslateAnimation(void)
+scUiTranslateAnimation::scUiTranslateAnimation(bool isLoop)
+	: scUiAnimation(isLoop)
 {
 }
 

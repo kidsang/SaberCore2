@@ -1,7 +1,8 @@
 #include "scUiAnimationGroup.h"
 
 
-scUiAnimationGroup::scUiAnimationGroup(void)
+scUiAnimationGroup::scUiAnimationGroup(bool isLoop)
+	: scUiAnimation(isLoop)
 {
 }
 

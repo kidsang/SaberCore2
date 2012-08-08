@@ -12,7 +12,7 @@
 class scUiTranslateAnimation : public scUiAnimation
 {
 public:
-	scUiTranslateAnimation(void);
+	scUiTranslateAnimation(bool isLoop);
 	~scUiTranslateAnimation(void);
 };
 

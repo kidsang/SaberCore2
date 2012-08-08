@@ -94,7 +94,7 @@ void scAnimationTest::createScene(void)
 
 	tl = mTimeLineManager->getTimeLine("me");
 	// TODO: 为类型之间编写包装，让它们可以自由运算
-	scVector2Animation* ani3 = tl->createVector2Animation([button](Ogre::Vector2 const& pos){button->setPosition(pos);}, true);
+	scVector2Animation* ani3 = tl->createVector2Animation([button](Ogre::Vector2 const& pos){button->setPosition(pos.x, pos.y);}, true);
 	ani3->createKeyFrame(0, Ogre::Vector2(30, 30));
 	ani3->createKeyFrame(1500, Ogre::Vector2(300, 30));
 	ani3->createKeyFrame(3000, Ogre::Vector2(30, 30));

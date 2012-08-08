@@ -14,6 +14,9 @@
     <Filter Include="UiAnimation">
       <UniqueIdentifier>{c7f4a0eb-b2b2-4ed3-8fd2-3583c17af027}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{0b6dea71-1129-4777-b2e3-a81ebb3f576c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -53,18 +56,24 @@
     <ClCompile Include="scLuaWrapperUtils.cpp">
       <Filter>LuaWrapper</Filter>
     </ClCompile>
-    <ClCompile Include="scUiAnimation.cpp">
-      <Filter>UiAnimation</Filter>
-    </ClCompile>
     <ClCompile Include="scUiAlphaAnimation.cpp">
       <Filter>UiAnimation</Filter>
     </ClCompile>
     <ClCompile Include="scUiAnimationGroup.cpp">
       <Filter>UiAnimation</Filter>
     </ClCompile>
-    <ClCompile Include="scUiScaleAnimation.cpp" />
-    <ClCompile Include="scUiTranslateAnimation.cpp" />
-    <ClCompile Include="scUiRotateAnimation.cpp" />
+    <ClCompile Include="scAnimation.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="scUiRotateAnimation.cpp">
+      <Filter>UiAnimation</Filter>
+    </ClCompile>
+    <ClCompile Include="scUiScaleAnimation.cpp">
+      <Filter>UiAnimation</Filter>
+    </ClCompile>
+    <ClCompile Include="scUiTranslateAnimation.cpp">
+      <Filter>UiAnimation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -101,8 +110,26 @@
     <ClInclude Include="scUiAlphaAnimation.h">
       <Filter>UiAnimation</Filter>
     </ClInclude>
-    <ClInclude Include="scUiScaleAnimation.h" />
-    <ClInclude Include="scUiTranslateAnimation.h" />
-    <ClInclude Include="scUiRotateAnimation.h" />
+    <ClInclude Include="scAnimation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="scUiRotateAnimation.h">
+      <Filter>UiAnimation</Filter>
+    </ClInclude>
+    <ClInclude Include="scUiScaleAnimation.h">
+      <Filter>UiAnimation</Filter>
+    </ClInclude>
+    <ClInclude Include="scUiTranslateAnimation.h">
+      <Filter>UiAnimation</Filter>
+    </ClInclude>
+    <ClInclude Include="scKeyFrame.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="scGenericAnimation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="scGenericKeyFrame.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

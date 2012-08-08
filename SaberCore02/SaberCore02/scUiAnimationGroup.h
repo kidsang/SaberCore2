@@ -13,7 +13,7 @@
 class scUiAnimationGroup : public scUiAnimation
 {
 public:
-	scUiAnimationGroup(void);
+	scUiAnimationGroup(bool isLoop);
 	~scUiAnimationGroup(void);
 
 	/// 向动画组中加入动画
