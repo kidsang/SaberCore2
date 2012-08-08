@@ -3,6 +3,15 @@ function toString(num)
 	return string.format("%d", num)
 end
 
+function registerEvents(r)
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_MOVE, "onMouseMove");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_DRAG, "onMouseDrag");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_PRESSED, "onMousePressed");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_RELEASED, "onMouseReleased");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_CLICK, "onMouseClick");
+	r:registerGuiEvent("testbutton", scRenderer.UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
+end
+
 function onKeyGetFocus(sender, old)
 	--scErrMsg(sender:getName()..' get key focus')
 end

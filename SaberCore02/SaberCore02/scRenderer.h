@@ -46,9 +46,10 @@ public:
 
 	/// 初始化GUI
 	/// @param mgr 场景管理器
-	/// @param callbackScript 处理UI事件的lua脚本
-	/// @param registerScript 注册UI事件回调函数的lua脚本
-	void initializeGui(Ogre::SceneManager* mgr, string const& callbackScript, string const& registerScript);
+	/// @param scriptName 处理UI事件的lua脚本
+	/// @param entry 入口函数名称
+	/// 入口函数签名：void(scRender*)
+	void initializeGui(Ogre::SceneManager* mgr, string const& scriptName, string const& entry);
 
 	/// 关闭GUI
 	void shutdownGui();
@@ -60,6 +61,11 @@ public:
 	/// @param eventType 事件类型
 	/// @param callbackName lua中的回调函数名称
 	void registerGuiEvent(string const& widgetName, GuiEventType eventType, string const& callbackName);
+
+	/// 辅助方法，导入某个lua模块(文件)
+	/// 不需要带.lua后缀名
+	/// @param moduleName lua模块名
+	void luaImport(string const& moduleName);
 
 	// get/set
 public:
@@ -79,7 +85,7 @@ private:
 	/// @param widgetName ui元件名称
 	/// @param type 事件类型
 	/// @return 回调函数名称
-	inline string const& findWidgetCallback(string const& widgetName, GuiEventType type)
+	string const& findWidgetCallback(string const& widgetName, GuiEventType type)
 	{
 		string name = widgetName + scToString(type);
 		auto iter = mUIEventCallbackMap.find(name);
@@ -87,6 +93,9 @@ private:
 		scAssert(mGuiL != 0, "Gui lua state not initialized!");
 		return iter->second;
 	}
+
+	/// 辅助方法，导出自身类
+	void exportSelf(lua_State* L);
 
 	/// 事件：Gui键盘按下
 	/// @param sender 调用该事件的ui元件

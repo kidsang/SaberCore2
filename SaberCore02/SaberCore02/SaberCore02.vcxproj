@@ -94,6 +94,7 @@
     <ClCompile Include="scLuaWrapperGui.cpp" />
     <ClCompile Include="scLuaWrapperInput.cpp" />
     <ClCompile Include="scLuaWrapperMath.cpp" />
+    <ClCompile Include="scLuaWrapperUtils.cpp" />
     <ClCompile Include="scRenderer.cpp" />
     <ClCompile Include="scServerGameWorld.cpp" />
     <ClCompile Include="scTimeLine.cpp" />

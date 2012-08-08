@@ -47,6 +47,9 @@
     <ClCompile Include="scLuaWrapperEvent.cpp">
       <Filter>LuaWrapper</Filter>
     </ClCompile>
+    <ClCompile Include="scLuaWrapperUtils.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
