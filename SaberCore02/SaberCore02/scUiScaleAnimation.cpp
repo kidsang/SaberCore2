@@ -15,11 +15,11 @@ scUiScaleAnimation::~scUiScaleAnimation(void)
 {
 }
 
-void scUiScaleAnimation::runImpl( scKeyFrame* k0, scKeyFrame* k1 )
+void scUiScaleAnimation::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 )
 {
 	scContinuousKeyFrame<Ogre::Vector2> *tk0, *tk1;
-	tk0 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k0);
-	tk1 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k1);
+	tk0 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k0.get());
+	tk1 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k1.get());
 
 	Ogre::Vector2 value = tk0->getInterpolationFunc()(tk0->getTime(), getTime(), tk1->getTime(), tk0->getValue(), tk1->getValue());
 	getHost()->setSize((i32)(mOriginWidth * value.x), (i32)(mOriginHeight * value.y));
@@ -36,5 +36,5 @@ void scUiScaleAnimation::createKeyFrame( u32 time, f32 scaleX, f32 scaleY, scKey
 {
 	scContinuousKeyFrame<Ogre::Vector2>* keyFrame = new scContinuousKeyFrame<Ogre::Vector2>(time, Ogre::Vector2(scaleX, scaleY));
 	keyFrame->setInterpolationType(itype);
-	addKeyFrame(keyFrame);
+	addKeyFrame(scKeyFramePtr(keyFrame));
 }

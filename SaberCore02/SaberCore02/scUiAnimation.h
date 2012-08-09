@@ -35,7 +35,7 @@ protected:
 	/// 运行动画的实现
 	/// @param k0 当前所处时间段的前一个关键帧
 	/// @param k1 当前所处时间段的后一个关键帧
-	virtual void runImpl( scKeyFrame* k0, scKeyFrame* k1 ) = 0;
+	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 ) = 0;
 
 	/// 返回动画的宿主，一个UI元件
 	MyGUI::Widget* getHost()

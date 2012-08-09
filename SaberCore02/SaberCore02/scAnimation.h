@@ -9,8 +9,9 @@
 
 #include "scTypeDefine.h"
 #include <map>
-
 class scKeyFrame;
+
+typedef shared_ptr<scKeyFrame> scKeyFramePtr;
 
 /// 动画基类
 /// sc中的动画通过改变物体的属性来实现
@@ -23,7 +24,7 @@ class scKeyFrame;
 class scAnimation
 {
 public:
-	typedef std::map<u32, scKeyFrame*> KeyFrameList;
+	typedef std::map<u32, scKeyFramePtr> KeyFrameList;
 
 	enum AnimationState
 	{
@@ -43,12 +44,12 @@ public:
 	/// 删除关键帧
 	/// 将关键帧从列表中移除，并销毁
 	/// @param keyFrame 要销毁的关键帧
-	void destoryKeyFrame(scKeyFrame* keyFrame);
+	//void destoryKeyFrame(scKeyFramePtr keyFrame);
 
 	/// 删除关键帧
 	/// 将关键帧从列表中移除，并销毁
 	/// @param time 关键帧所在时间
-	void destoryKeyFrame(u32 time);
+	//void destoryKeyFrame(u32 time);
 
 	// get/set
 public:
@@ -88,13 +89,13 @@ protected:
 	/// 运行动画的实现
 	/// @param k0 当前所处时间段的前一个关键帧
 	/// @param k1 当前所处时间段的后一个关键帧
-	virtual void runImpl(scKeyFrame* k0, scKeyFrame* k1) = 0;
+	virtual void runImpl(scKeyFramePtr k0, scKeyFramePtr k1) = 0;
 
 	/// 添加关键帧
 	/// 该方法应该仅用于内部
 	/// 特定的子类通过编写自己的createKeyFrame来实现功能
 	/// 该方法仅为辅助方法
-	void addKeyFrame(scKeyFrame* keyFrame);
+	void addKeyFrame(scKeyFramePtr keyFrame);
 
 private:
 	bool mIsLoop;

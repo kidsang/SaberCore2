@@ -14,10 +14,10 @@ scUiTranslateAnimation::~scUiTranslateAnimation(void)
 {
 }
 
-void scUiTranslateAnimation::runImpl( scKeyFrame* k0, scKeyFrame* k1 ) {
+void scUiTranslateAnimation::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 ) {
 	scContinuousKeyFrame<Ogre::Vector2> *tk0, *tk1;
-	tk0 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k0);
-	tk1 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k1);
+	tk0 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k0.get());
+	tk1 = static_cast<scContinuousKeyFrame<Ogre::Vector2>*>(k1.get());
 
 	Ogre::Vector2 value = tk0->getInterpolationFunc()(tk0->getTime(), getTime(), tk1->getTime(), tk0->getValue(), tk1->getValue());
 	getHost()->setPosition(mOriginX + (i32)value.x, mOriginY + (i32)value.y);
@@ -34,5 +34,5 @@ void scUiTranslateAnimation::createKeyFrame( u32 time, i32 scaleX, i32 scaleY, s
 {
 	scContinuousKeyFrame<Ogre::Vector2>* keyFrame = new scContinuousKeyFrame<Ogre::Vector2>(time, Ogre::Vector2((f32)scaleX, (f32)scaleY));
 	keyFrame->setInterpolationType(itype);
-	addKeyFrame(keyFrame);
+	addKeyFrame(scKeyFramePtr(keyFrame));
 }

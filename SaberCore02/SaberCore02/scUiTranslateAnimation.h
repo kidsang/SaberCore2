@@ -30,7 +30,7 @@ public:
 	void createKeyFrame(u32 time, i32 offsetX, i32 offsetY, scKeyFrame::InterpolationType itype = scKeyFrame::IT_LINEAR);
 
 protected:
-	virtual void runImpl( scKeyFrame* k0, scKeyFrame* k1 );
+	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
 
 private:
 	int mOriginX;

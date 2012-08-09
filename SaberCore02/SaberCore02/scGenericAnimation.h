@@ -37,13 +37,13 @@ public:
 	{
 		scContinuousKeyFrame<T>* keyFrame = new scContinuousKeyFrame<T>(time, value);
 		keyFrame->setInterpolationType(itype);
-		addKeyFrame(keyFrame);
+		addKeyFrame(scKeyFramePtr(keyFrame));
 		return keyFrame;
 	}
 
 private:
 	/// @see scAnimation::runImpl
-	virtual void runImpl( scKeyFrame* k0, scKeyFrame* k1 );
+	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
 
 private:
 	std::function<void (T const&)> mSetter;
@@ -51,11 +51,11 @@ private:
 };
 
 template <typename T>
-void scContinuousAnimation<T>::runImpl( scKeyFrame* k0, scKeyFrame* k1 )
+void scContinuousAnimation<T>::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 )
 {
 	scContinuousKeyFrame<T> *mk0, *mk1;
-	mk0 = static_cast<scContinuousKeyFrame<T>*>(k0);
-	mk1 = static_cast<scContinuousKeyFrame<T>*>(k1);
+	mk0 = static_cast<scContinuousKeyFrame<T>*>(k0.get());
+	mk1 = static_cast<scContinuousKeyFrame<T>*>(k1.get());
 
 	T value = mk0->getInterpolationFunc()(mk0->getTime(), getTime(), mk1->getTime(), mk0->getValue(), mk1->getValue());
 	mSetter(value);
@@ -86,13 +86,13 @@ public:
 	scDiscreteKeyFrame<T>* createKeyFrame(u32 time, T const& value)
 	{
 		scDiscreteKeyFrame<T>* keyFrame = new scDiscreteKeyFrame<T>(time, value);
-		addKeyFrame(keyFrame);
+		addKeyFrame(scKeyFramePtr(keyFrame));
 		return keyFrame;
 	}
 
 private:
 	/// @see scAnimation::runImpl
-	virtual void runImpl( scKeyFrame* k0, scKeyFrame* k1 );
+	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
 
 private:
 	std::function<void (T const&)> mSetter;
@@ -100,11 +100,11 @@ private:
 };
 
 template <typename T>
-void scDiscreteAnimation<T>::runImpl( scKeyFrame* k0, scKeyFrame* k1 )
+void scDiscreteAnimation<T>::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 )
 {
 	scDiscreteKeyFrame<T> *mk0, *mk1;
-	mk0 = static_cast<scDiscreteKeyFrame<T>*>(k0);
-	mk1 = static_cast<scDiscreteKeyFrame<T>*>(k1);
+	mk0 = static_cast<scDiscreteKeyFrame<T>*>(k0.get());
+	mk1 = static_cast<scDiscreteKeyFrame<T>*>(k1.get());
 
 	T value = mk0->getInterpolationFunc()(mk0->getTime(), getTime(), mk1->getTime(), mk0->getValue(), mk1->getValue());
 	mSetter(value);

@@ -25,7 +25,7 @@ public:
 	void createKeyFrame(u32 time, f32 alpha, scKeyFrame::InterpolationType itype = scKeyFrame::IT_LINEAR);
 
 protected:
-	virtual void runImpl( scKeyFrame* k0, scKeyFrame* k1 );
+	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
 
 
 };

@@ -15,11 +15,11 @@ scUiRotateAnimation::~scUiRotateAnimation(void)
 {
 }
 
-void scUiRotateAnimation::runImpl( scKeyFrame* k0, scKeyFrame* k1 )
+void scUiRotateAnimation::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 )
 {
 	scContinuousKeyFrame<f32> *tk0, *tk1;
-	tk0 = static_cast<scContinuousKeyFrame<f32>*>(k0);
-	tk1 = static_cast<scContinuousKeyFrame<f32>*>(k1);
+	tk0 = static_cast<scContinuousKeyFrame<f32>*>(k0.get());
+	tk1 = static_cast<scContinuousKeyFrame<f32>*>(k1.get());
 
 	f32 value = tk0->getInterpolationFunc()(tk0->getTime(), getTime(), tk1->getTime(), tk0->getValue(), tk1->getValue());
 
@@ -32,5 +32,5 @@ void scUiRotateAnimation::createKeyFrame( u32 time, f32 radian, scKeyFrame::Inte
 {
 	scContinuousKeyFrame<f32>* keyFrame = new scContinuousKeyFrame<f32>(time, radian);
 	keyFrame->setInterpolationType(itype);
-	addKeyFrame(keyFrame);
+	addKeyFrame(scKeyFramePtr(keyFrame));
 }

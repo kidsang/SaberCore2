@@ -70,11 +70,9 @@ scAnimation::scAnimation( bool isLoop )
 
 scAnimation::~scAnimation()
 {
-	for (auto iter = mKeyFrameList.begin(); iter != mKeyFrameList.end(); ++iter)
-		delete iter->second;
 }
 
-void scAnimation::addKeyFrame( scKeyFrame* keyFrame )
+void scAnimation::addKeyFrame( scKeyFramePtr keyFrame )
 {
 	auto iter = mKeyFrameList.find(keyFrame->getTime());
 	if (iter != mKeyFrameList.end())
@@ -83,25 +81,25 @@ void scAnimation::addKeyFrame( scKeyFrame* keyFrame )
 	mKeyFrameList.insert(std::make_pair(keyFrame->getTime(), keyFrame));
 }
 
-void scAnimation::destoryKeyFrame( u32 time )
-{
-	auto iter = mKeyFrameList.find(time);
-	if (iter != mKeyFrameList.end())
-	{
-		delete iter->second;
-		mKeyFrameList.erase(iter);
-	}
-}
-
-void scAnimation::destoryKeyFrame( scKeyFrame* keyFrame )
-{
-	auto iter = mKeyFrameList.begin();
-	for (; iter != mKeyFrameList.end(); ++iter)
-		if (iter->second == keyFrame)
-			break;
-	if (iter != mKeyFrameList.end())
-	{
-		delete iter->second;
-		mKeyFrameList.erase(iter);
-	}
-}
+//void scAnimation::destoryKeyFrame( u32 time )
+//{
+//	auto iter = mKeyFrameList.find(time);
+//	if (iter != mKeyFrameList.end())
+//	{
+//		delete iter->second;
+//		mKeyFrameList.erase(iter);
+//	}
+//}
+//
+//void scAnimation::destoryKeyFrame( scKeyFramePtr keyFrame )
+//{
+//	auto iter = mKeyFrameList.begin();
+//	for (; iter != mKeyFrameList.end(); ++iter)
+//		if (iter->second == keyFrame)
+//			break;
+//	if (iter != mKeyFrameList.end())
+//	{
+//		delete iter->second;
+//		mKeyFrameList.erase(iter);
+//	}
+//}
