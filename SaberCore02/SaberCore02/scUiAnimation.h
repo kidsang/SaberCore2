@@ -13,6 +13,9 @@ namespace MyGUI {
 	class Widget;
 }
 
+class scUiAnimation;
+typedef shared_ptr<scUiAnimation> scUiAnimationPtr;
+
 /// ui动画接口类
 class scUiAnimation : public scAnimation
 {

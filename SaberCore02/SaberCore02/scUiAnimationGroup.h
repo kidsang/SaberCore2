@@ -7,11 +7,14 @@
  */
 
 #include "scUiAnimation.h"
+#include <vector>
 
 /// UI动画组
 /// 动画组可以将多个动画组合在一起应用于UI元件
 class scUiAnimationGroup : public scUiAnimation
 {
+	typedef std::vector<scUiAnimationPtr> AnimationList;
+
 public:
 	explicit scUiAnimationGroup(bool isLoop);
 	~scUiAnimationGroup(void);
@@ -31,7 +34,10 @@ public:
 	/// 向动画组中加入动画
 	/// 特别地，动画组可以嵌套添加
 	/// @param ani 需要加入的动画
-	void addAnimation(scUiAnimation const& ani);
+	void addAnimation(scUiAnimationPtr ani);
+
+private:
+	AnimationList mAnimations;
 };
 
 #endif // scUiAnimationGroup_h__

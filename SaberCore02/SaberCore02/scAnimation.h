@@ -97,6 +97,10 @@ protected:
 	/// 该方法仅为辅助方法
 	void addKeyFrame(scKeyFramePtr keyFrame);
 
+	/// 设置当前状态
+	void setCurrentState(AnimationState state)
+	{mCurrentState = state;}
+
 private:
 	bool mIsLoop;
 	KeyFrameList mKeyFrameList;
