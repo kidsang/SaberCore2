@@ -8,6 +8,7 @@
 
 #include "scTypeDefine.h"
 #include "scAnimation.h"
+#include "scError.h"
 namespace MyGUI {
 	class Widget;
 }
@@ -19,7 +20,7 @@ public:
 	/// 构造函数
 	/// @param isLoop 动画是否循环播放
 	explicit scUiAnimation(bool isLoop)
-		: scAnimation(isLoop)
+		: scAnimation(isLoop), mHost(0)
 	{ }
 	virtual ~scUiAnimation(void)
 	{ }
@@ -38,7 +39,10 @@ protected:
 
 	/// 返回动画的宿主，一个UI元件
 	MyGUI::Widget* getHost()
-	{ return mHost; }
+	{ 
+		scAssert(mHost != 0, "Host not exist, do you foget to call \"_registerWidget()\" ?");
+		return mHost;
+	}
 
 private:
 	MyGUI::Widget* mHost;

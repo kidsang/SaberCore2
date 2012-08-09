@@ -11,11 +11,11 @@
     <Filter Include="EventSystem">
       <UniqueIdentifier>{680906c6-2574-4671-a58a-c3eef95376d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UiAnimation">
-      <UniqueIdentifier>{c7f4a0eb-b2b2-4ed3-8fd2-3583c17af027}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Animation">
       <UniqueIdentifier>{0b6dea71-1129-4777-b2e3-a81ebb3f576c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation\UiAnimation">
+      <UniqueIdentifier>{c7f4a0eb-b2b2-4ed3-8fd2-3583c17af027}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,22 +57,22 @@
       <Filter>LuaWrapper</Filter>
     </ClCompile>
     <ClCompile Include="scUiAlphaAnimation.cpp">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
     <ClCompile Include="scUiAnimationGroup.cpp">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
     <ClCompile Include="scAnimation.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
     <ClCompile Include="scUiRotateAnimation.cpp">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
     <ClCompile Include="scUiScaleAnimation.cpp">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
     <ClCompile Include="scUiTranslateAnimation.cpp">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,25 +102,25 @@
       <Filter>EventSystem</Filter>
     </ClInclude>
     <ClInclude Include="scUiAnimation.h">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClInclude>
     <ClInclude Include="scUiAnimationGroup.h">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClInclude>
     <ClInclude Include="scUiAlphaAnimation.h">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClInclude>
     <ClInclude Include="scAnimation.h">
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="scUiRotateAnimation.h">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClInclude>
     <ClInclude Include="scUiScaleAnimation.h">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClInclude>
     <ClInclude Include="scUiTranslateAnimation.h">
-      <Filter>UiAnimation</Filter>
+      <Filter>Animation\UiAnimation</Filter>
     </ClInclude>
     <ClInclude Include="scKeyFrame.h">
       <Filter>Animation</Filter>

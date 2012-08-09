@@ -86,14 +86,14 @@ scTimeLine* scTimeLineManager::getTimeLine( std::string const& name )
 	return iter->second;
 }
 
-template<> scTimeLineManager* Ogre::Singleton<scTimeLineManager>::ms_Singleton = 0;
+template<> scTimeLineManager* Ogre::Singleton<scTimeLineManager>::msSingleton = 0;
 scTimeLineManager& scTimeLineManager::getSingleton( void )
 {
-	assert( ms_Singleton );  return ( *ms_Singleton ); 
+	assert( msSingleton );  return ( *msSingleton ); 
 }
 scTimeLineManager* scTimeLineManager::getSingletonPtr( void )
 {
-	return ms_Singleton;
+	return msSingleton;
 }
 
 scTimeLineManager::~scTimeLineManager()

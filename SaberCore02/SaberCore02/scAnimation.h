@@ -38,7 +38,7 @@ public:
 	/// 运行动画
 	/// 仅供内部使用，该函数应该由scTimeLine调用
 	/// @param dtms 上一次调用到这次调用所经过的时间间隔，以毫秒计算
-	void _run(u32 dtms);
+	virtual void _run(u32 dtms);
 
 	/// 删除关键帧
 	/// 将关键帧从列表中移除，并销毁
