@@ -8,6 +8,7 @@
 #include "scServerGameWorld.h"
 #include "scTimeLineManager.h"
 #include "scTimeLine.h"
+#include "scAnimationTimeLine.h"
 #include "scEventRouter.h"
 #include "scEvent.h"
 
@@ -49,6 +50,8 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	scTimeLinePtr tl = mTimeLineManager->createTimeLine("Render", 60);
 	tl->addRunCallBack("Render", [&](u32 dtms)->bool{return mRenderer->_run(dtms);});
 	tl->addRunCallBack("Input", [&](u32 dtms)->bool{mInputManager->_run(); return true;});
+	// 创建动画时间轴，60hz
+	tl = mTimeLineManager->createAnimationTimeLine("Animation", 60);
 	// 创建事件路由时间轴, 无时间间隔(新线程)
 	tl = mTimeLineManager->createTimeLine("Event", 1000, 0, true);
 	tl->addRunCallBack("Event", [&](u32 dtms)->bool{mEventRouter->_run(); return true;});

@@ -15,6 +15,7 @@
 #include <boost/thread.hpp>
 
 class scTimeLine;
+class scAnimationTimeLine;
 typedef shared_ptr<scTimeLine> scTimeLinePtr;
 
 /// 时间轴管理类
@@ -40,6 +41,16 @@ public:
 	/// @param threading 时间轴是否要运行于单独的线程，默认运行于主线程
 	/// @return 创建好的时间轴实例
 	scTimeLinePtr const& createTimeLine(const string& name, u32 invokeRate, i32 priority = 0, bool threading = false);
+
+	/// 创建动画时间轴
+	/// 该时间轴将自动加入scTimeLineManager的管理队列中
+	/// 如需删除该时间轴，请调用scTimeLineManager::destroyTimeLine()
+	/// 动画时间轴只能运行于主线程
+	/// @param name 该时间轴的名称
+	/// @param invokeRate 该时间轴的调用频率。例如：60Hz，就是每秒调用60次。
+	/// @param priority 时间轴的优先级，数字越小优先级越高，优先级高的时间轴会被优先调用
+	/// @return 创建好的时间轴实例
+	scTimeLinePtr const& createAnimationTimeLine(const string& name, u32 invokeRate, i32 priority = 0);
 
 	/// 销毁一条时间轴，这将会附带销毁上面附着的任何时间剪辑
 	/// @param timeLine 时间轴的实例指针。如果不存在则会报错

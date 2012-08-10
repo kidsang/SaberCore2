@@ -1,5 +1,6 @@
 #include "scTimeLineManager.h"
 #include "scTimeLine.h"
+#include "scAnimationTimeLine.h"
 #include "scError.h"
 
 
@@ -19,6 +20,20 @@ scTimeLinePtr const& scTimeLineManager::createTimeLine( const string& name, u32 
 	if (threading)
 		mThreadingTimeLines.push_back(name);
 
+	return tliter->second;
+}
+
+scTimeLinePtr const& scTimeLineManager::createAnimationTimeLine( const string& name, u32 invokeRate, i32 priority /*= 0*/ )
+{
+	// 首先检查有没有名字冲突
+	auto iter = mTimeLines.begin();
+	for (; iter != mTimeLines.end(); ++iter)
+		if (iter->second->getName() == name)
+			break;
+	scAssert(mTimeLines.empty() || iter == mTimeLines.end(), "Time line name \"" + name +"\" already exist.");
+
+	scTimeLinePtr tl = scTimeLinePtr(new scAnimationTimeLine(name, invokeRate));
+	auto tliter = mTimeLines.insert(std::make_pair(priority, tl));
 	return tliter->second;
 }
 

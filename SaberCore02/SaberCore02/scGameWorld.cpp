@@ -7,6 +7,13 @@
 #include "scEventRouter.h"
 #include "scEvent.h"
 #include "scEventQueue.h"
+#include "scTimeLineManager.h"
+#include "scAnimationTimeLine.h"
+#include "scUiAnimationGroup.h"
+#include "scUiRotateAnimation.h"
+#include "scUiAlphaAnimation.h"
+#include "scUiScaleAnimation.h"
+#include "scUiTranslateAnimation.h"
 
 u32 scGameWorld::sNextViewportZOder = 0;
 
@@ -58,38 +65,18 @@ void scGameWorld::initialize()
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
 
-
-
-	// 测试一下事件路由
-	//iniEvent(getScriptPath("testevent.lua"), "callbackEntry", getScriptPath("testevent.lua"), "registerEntry");
+	// 测试UI动画
+	scTimeLineManager* tlmgr = scTimeLineManager::getSingletonPtr();
+	scTimeLinePtr tl = tlmgr->getTimeLine("Animation");
+	scAnimationTimeLine* anitl = static_cast<scAnimationTimeLine*>(tl.get());
 	
-	// 测试鼠标按键事件
-	//inputMgr->registerMouseMoved(getScriptPath("testinput.lua"), "onMouseMoved");
-
-	// 测试装载场景
-	//iniScene(getScriptPath("testscene.lua"));
-
-	// 测试初始化GUI
-	//iniGui(getScriptPath("testguievent.lua"), getScriptPath("testguievent.lua"));
-	
-	// 测试GUI
-//	MyGUI::Gui* gui = renderer->getGui();
-//	MyGUI::ButtonPtr button = gui->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main", "testbutton");
-//	button->setCaption("button");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_GET_FOCUS, "onKeyGetFocus");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_LOSE_FOCUS, "onKeyLoseFocus");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_PRESSED, "onKeyPressed");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_KEY_RELEASED, "onKeyReleased");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_GET_FOCUS, "onMouseGetFocus");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_LOSE_FOCUS, "onMouseLoseFocus");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_MOVE, "onMouseMove");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DRAG, "onMouseDrag");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_PRESSED, "onMousePressed");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_RELEASED, "onMouseReleased");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_CLICK, "onMouseClick");
-//	renderer->registerGuiEvent("testbutton", scRenderer::UI_MOUSE_DOUBLE_CLICK, "onMouseDoubleClick");
-//
-
+	// TODO: 将指针换成智能的，使用dynamic_pointer_cast进行down cast
+	scUiTranslateAnimation* ani = new scUiTranslateAnimation(true);
+	ani->createKeyFrame(0, 0, 0);
+	ani->createKeyFrame(1000, 100, 0);
+	ani->createKeyFrame(2000, 0, 0);
+	ani->_registerWidget(scRenderer::getSingleton().getGui()->findWidgetT("testbutton"));
+	anitl->addAnimation(shared_ptr<scUiTranslateAnimation>(ani));
 }
 
 void scGameWorld::release()

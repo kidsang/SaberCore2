@@ -74,6 +74,7 @@
     <ClCompile Include="scUiTranslateAnimation.cpp">
       <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
+    <ClCompile Include="scAnimationTimeLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
@@ -131,5 +132,6 @@
     <ClInclude Include="scGenericKeyFrame.h">
       <Filter>Animation</Filter>
     </ClInclude>
+    <ClInclude Include="scAnimationTimeLine.h" />
   </ItemGroup>
 </Project>
