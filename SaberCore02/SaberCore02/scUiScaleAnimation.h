@@ -28,8 +28,10 @@ public:
 	/// @param time 关键帧时间, 单位为毫秒
 	/// @param scaleX UI元件在X轴方向上的伸缩量
 	/// @param scaleY UI元件在Y轴方向上的伸缩量
+	/// @param centerX 缩放中心x坐标，0.5即为元件中心
+	/// @param centerY 缩放中心y坐标，0.5即为元件中心
 	/// @param itype 插值方法类型
-	void createKeyFrame(u32 time, f32 scaleX, f32 scaleY, scKeyFrame::InterpolationType itype = scKeyFrame::IT_LINEAR);
+	void createKeyFrame(u32 time, f32 scaleX, f32 scaleY, f32 centerX = 0.5f, f32 centerY = 0.5f, scKeyFrame::InterpolationType itype = scKeyFrame::IT_LINEAR);
 
 protected:
 	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
@@ -37,6 +39,8 @@ protected:
 private:
 	int mOriginWidth;
 	int mOriginHeight;
+	int mOriginX;
+	int mOriginY;
 };
 
 class scUiScaleAnimationFactory : public scAnimationFactory

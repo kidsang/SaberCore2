@@ -127,7 +127,7 @@ void exportGuiAnimation(lua_State* L)
 		[
 			//--scUiScaleAnimation
 			class_<scUiScaleAnimation, scUiAnimation>("scUiScaleAnimation")
-			.def("createKeyFrame", (void (scUiScaleAnimation::*)(u32,  f32,  f32,  scKeyFrame::InterpolationType))&scUiScaleAnimation::createKeyFrame)
+			.def("createKeyFrame", (void (scUiScaleAnimation::*)(u32, f32, f32, f32, f32, scKeyFrame::InterpolationType))&scUiScaleAnimation::createKeyFrame)
 		];
 	//<<----../scUiScaleAnimation.h
 	//---->>../scUiRotateAnimation.h 

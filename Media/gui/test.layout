@@ -3,7 +3,7 @@
     <Widget layer="Main" type="Button" skin="Button" position="14 85 160 26" name="testbutton">
         <Property key="Caption" value="button"/>
     </Widget>
-    <Widget layer="Main" type="ImageBox" skin="RotatingSkin" position="20 180 36 36" name="testimg">
+    <Widget layer="Main" type="ImageBox" skin="RotatingSkin" position="40 180 36 36" name="testimg">
         <Property key="ImageTexture" value="check_selected.png"/>
     </Widget>
 </MyGUI>
