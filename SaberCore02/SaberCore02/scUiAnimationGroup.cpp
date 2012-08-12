@@ -39,3 +39,8 @@ void scUiAnimationGroup::addAnimation( scUiAnimationPtr ani )
 {
 	mAnimations.push_back(ani);
 }
+
+scAnimationPtr scUiAnimationGroupFactory::createAnimation( bool isLoop )
+{
+	return scAnimationPtr(new scUiAnimationGroup(isLoop));
+}

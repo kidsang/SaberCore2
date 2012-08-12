@@ -16,6 +16,7 @@ class scInputManager;
 class scGameWorldManager;
 class scTimeLineManager;
 class scEventRouter;
+class scAnimationManager;
 
 /// SaberCoreÒıÇæÈë¿Ú
 class scCore
@@ -40,6 +41,7 @@ private:
 	scEventRouter* mEventRouter;
 	scGameWorldManager* mGameWorldManager;
 	scTimeLineManager* mTimeLineManager;
+	scAnimationManager* mAnimationManager;
 };
 
 #endif // scCore_h__

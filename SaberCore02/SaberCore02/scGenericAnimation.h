@@ -7,9 +7,10 @@
  * 作者：kid
  */
 
+#include <functional>
+#include "scTypeDefine.h"
 #include "scAnimation.h"
 #include "scGenericKeyFrame.h"
-#include <functional>
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +61,25 @@ void scContinuousAnimation<T>::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 )
 	T value = mk0->getInterpolationFunc()(mk0->getTime(), getTime(), mk1->getTime(), mk0->getValue(), mk1->getValue());
 	mSetter(value);
 }
+	
+//////////////////////////////////////////////////////////////////////////
+
+//typedef shared_ptr<scContinuousAnimation> scContinuousAnimationPtr;
+//
+///// 连续型动画工厂类
+//class scContinuousAnimationFactory : public scAnimationFactory
+//{
+//public:
+//	scContinuousAnimationFactory(string const& name)
+//		: scAnimationFactory(name)
+//	{}
+//
+//	virtual scContinuousAnimationPtr createAnimation( bool isLoop ) 
+//	{
+//		throw std::exception("The method or operation is not implemented.");
+//	}
+//
+//};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -112,7 +132,6 @@ void scDiscreteAnimation<T>::runImpl( scKeyFramePtr k0, scKeyFramePtr k1 )
 
 //////////////////////////////////////////////////////////////////////////
 
-#include <string>
 #include "OgreVector2.h"
 #include "OgreVector3.h"
 #include "OgreVector4.h"
@@ -125,7 +144,7 @@ typedef std::function<void (i32)> I32Setter;
 typedef std::function<void (u32)> U32Setter;
 typedef std::function<void (f32)> F32Setter;
 typedef std::function<void (bool)> BoolSetter;
-typedef std::function<void (std::string const&)> StringSetter;
+typedef std::function<void (string const&)> StringSetter;
 
 // 动画模板定义
 typedef scContinuousAnimation<Ogre::Vector2> scVector2Animation;
@@ -135,7 +154,7 @@ typedef scContinuousAnimation<i32> scI32Animation;
 typedef scContinuousAnimation<u32> scU32Animation;
 typedef scContinuousAnimation<f32> scF32Animation;
 typedef scDiscreteAnimation<bool> scBoolAnimation;
-typedef scDiscreteAnimation<std::string> scStringAnimation;
+typedef scDiscreteAnimation<string> scStringAnimation;
 
 // 关键帧模板定义
 typedef scContinuousKeyFrame<Ogre::Vector2> scVector2KeyFrame;
@@ -145,6 +164,6 @@ typedef scContinuousKeyFrame<i32> scI32KeyFrame;
 typedef scContinuousKeyFrame<u32> scU32KeyFrame;
 typedef scContinuousKeyFrame<f32> scF32KeyFrame;
 typedef scDiscreteKeyFrame<bool> scBoolKeyFrame;
-typedef scDiscreteKeyFrame<std::string> scStringKeyFrame;
+typedef scDiscreteKeyFrame<string> scStringKeyFrame;
 
 #endif // scGenericAnimation_h__

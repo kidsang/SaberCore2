@@ -37,28 +37,22 @@ protected:
 private:
 	int mOriginWidth;
 	int mOriginHeight;
+};
 
-	//struct ScaleParams
-	//{
-	//	f32 scaleX;
-	//	f32 scaleY;
+class scUiScaleAnimationFactory : public scAnimationFactory
+{
+public:
+	/// 构造函数
+	/// @param name 每个工厂都有一个独一无二的名字
+	/// 以供AnimationManager类标识
+	scUiScaleAnimationFactory(string const& name)
+		: scAnimationFactory(name)
+	{}
 
-	//	ScaleParams(f32 sX, f32 sY)
-	//		: scaleX(sX), scaleY(sY)
-	//	{}
-
-	//	ScaleParams operator + (ScaleParams const& s)
-	//	{ return ScaleParams(scaleX + s.scaleX, scaleY + s.scaleY);	}
-
-	//	ScaleParams operator - (ScaleParams const& s)
-	//	{ return ScaleParams(scaleX - s.scaleX, scaleY - s.scaleY);	}
-
-	//	ScaleParams operator * (ScaleParams const& s)
-	//	{ return ScaleParams(scaleX * s.scaleX, scaleY * s.scaleY);	}
-
-	//	ScaleParams operator / (ScaleParams const& s)
-	//	{ return ScaleParams(scaleX / s.scaleX, scaleY / s.scaleY);	}
-	//};
+	/// 创建动画的具体实现
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画指针
+	virtual scAnimationPtr createAnimation( bool isLoop );
 };
 
 #endif // scUiScaleAnimation_h__

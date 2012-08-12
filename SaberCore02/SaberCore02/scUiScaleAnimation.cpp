@@ -38,3 +38,8 @@ void scUiScaleAnimation::createKeyFrame( u32 time, f32 scaleX, f32 scaleY, scKey
 	keyFrame->setInterpolationType(itype);
 	addKeyFrame(scKeyFramePtr(keyFrame));
 }
+
+scAnimationPtr scUiScaleAnimationFactory::createAnimation( bool isLoop )
+{
+	return scAnimationPtr(new scUiScaleAnimation(isLoop));
+}

@@ -1,5 +1,6 @@
 #include "scRenderer.h"
 #include "scLuaWrapper.h"
+#include "scUiAnimation.h"
 
 scRenderer::scRenderer( string const& resourceCfgPath, string const& pluginCfgPath )
 	: mRoot(0),mPlatform(0), mGui(0), mIsGuiInitialized(false), mGuiL(0)
@@ -314,6 +315,7 @@ void scRenderer::exportSelf( lua_State* L )
 			.def("luaImport", (void (scRenderer::*)(const string &))&scRenderer::luaImport)
 			.def("getOgreRoot", (Ogre::Root* (scRenderer::*)())&scRenderer::getOgreRoot)
 			.def("getGui", (MyGUI::Gui* (scRenderer::*)())&scRenderer::getGui)
+			.def("bindGuiAnimation", (void (scRenderer::*)(string const&, scUiAnimationPtr))&scRenderer::bindGuiAnimation)
 			//----> GuiEventType
 			.enum_("constants")
 			[
@@ -334,5 +336,10 @@ void scRenderer::exportSelf( lua_State* L )
 			//<---- GuiEventType
 		];
 	//<<----../scRenderer.h
+}
+
+void scRenderer::bindGuiAnimation( string const& widgetName, scUiAnimationPtr ani )
+{
+	ani->_registerWidget(mGui->findWidgetT(widgetName));
 }
 

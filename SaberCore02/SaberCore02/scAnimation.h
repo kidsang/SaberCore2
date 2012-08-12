@@ -10,8 +10,9 @@
 #include "scTypeDefine.h"
 #include <map>
 class scKeyFrame;
-
+class scAnimation;
 typedef shared_ptr<scKeyFrame> scKeyFramePtr;
+typedef shared_ptr<scAnimation> scAnimationPtr;
 
 /// 动画基类
 /// sc中的动画通过改变物体的属性来实现
@@ -107,6 +108,33 @@ private:
 	u32 mCurrentTime;
 	u32 mRepeatTimes;
 	AnimationState mCurrentState;
+};
+
+/// 动画工厂类
+/// 负责创建各种不同的动画
+class scAnimationFactory
+{
+public:
+	/// 构造函数
+	/// @param name 每个工厂都有一个独一无二的名字
+	/// 以供AnimationManager类标识
+	explicit scAnimationFactory(string const& name)
+		: mName(name)
+	{}
+	virtual ~scAnimationFactory()
+	{}
+
+	/// 创建动画的具体实现
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画指针
+	virtual scAnimationPtr createAnimation(bool isLoop) = 0;
+
+	/// 返回该工厂的名字
+	string const& getName()
+	{ return mName; }
+
+private:
+	string mName;
 };
 
 #endif // scAnimation_h__

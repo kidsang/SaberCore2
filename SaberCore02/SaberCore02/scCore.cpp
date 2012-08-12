@@ -11,6 +11,7 @@
 #include "scAnimationTimeLine.h"
 #include "scEventRouter.h"
 #include "scEvent.h"
+#include "scAnimationManager.h"
 
 scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	: mUseConsole(useConsole), mRenderer(0), mGameWorldManager(0), mTimeLineManager(0),
@@ -42,6 +43,8 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 	mEventRouter = new scEventRouter();
 	// 初始化游戏世界管理类
 	mGameWorldManager = new scGameWorldManager();
+	// 初始化动画管理类
+	mAnimationManager = new scAnimationManager();
 
 
 	// 创建时间轴管理类
@@ -69,6 +72,9 @@ scCore::scCore(string const& cfgFilePath, bool useConsole/*= false*/)
 
 scCore::~scCore(void)
 {
+	if (mAnimationManager)
+	{ delete mAnimationManager; mAnimationManager = 0; }
+
 	if (mTimeLineManager)
 	{ delete mTimeLineManager; mTimeLineManager = 0; }
 

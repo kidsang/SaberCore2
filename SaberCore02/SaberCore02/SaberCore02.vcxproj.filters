@@ -17,12 +17,13 @@
     <Filter Include="Animation\UiAnimation">
       <UniqueIdentifier>{c7f4a0eb-b2b2-4ed3-8fd2-3583c17af027}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TimeLine">
+      <UniqueIdentifier>{db60c60f-0da9-4f15-919e-f49cd9910f08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scCore.cpp" />
-    <ClCompile Include="scTimeLine.cpp" />
-    <ClCompile Include="scTimeLineManager.cpp" />
     <ClCompile Include="scRenderer.cpp" />
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
@@ -74,14 +75,24 @@
     <ClCompile Include="scUiTranslateAnimation.cpp">
       <Filter>Animation\UiAnimation</Filter>
     </ClCompile>
-    <ClCompile Include="scAnimationTimeLine.cpp" />
+    <ClCompile Include="scTimeLine.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="scTimeLineManager.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="scAnimationTimeLine.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="scAnimationManager.cpp" />
+    <ClCompile Include="scLuaWrapperAnimation.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scCore.h" />
     <ClInclude Include="scError.h" />
     <ClInclude Include="scTypeDefine.h" />
-    <ClInclude Include="scTimeLineManager.h" />
-    <ClInclude Include="scTimeLine.h" />
     <ClInclude Include="scSingleton.h" />
     <ClInclude Include="scRenderer.h" />
     <ClInclude Include="scGameWorld.h" />
@@ -132,6 +143,15 @@
     <ClInclude Include="scGenericKeyFrame.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="scAnimationTimeLine.h" />
+    <ClInclude Include="scTimeLineManager.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="scTimeLine.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="scAnimationTimeLine.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="scAnimationManager.h" />
   </ItemGroup>
 </Project>

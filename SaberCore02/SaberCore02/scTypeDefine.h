@@ -33,4 +33,22 @@ using boost::shared_ptr;
 #define ms_Singleton msSingleton 
 #endif
 
+// ¶¯»­
+class scAnimation;
+typedef shared_ptr<scAnimation> scAnimationPtr;
+class scAnimationFactory;
+typedef shared_ptr<scAnimationFactory> scAnimationFactoryPtr;
+class scUiAnimation;
+typedef shared_ptr<scUiAnimation> scUiAnimationPtr;
+class scUiTranslateAnimation;
+typedef shared_ptr<scUiTranslateAnimation> scUiTranslateAnimationPtr;
+class scUiScaleAnimation;
+typedef shared_ptr<scUiScaleAnimation> scUiScaleAnimationPtr;
+class scUiRotateAnimation;
+typedef shared_ptr<scUiRotateAnimation> scUiRotateAnimationPtr;
+class scUiAlphaAnimation;
+typedef shared_ptr<scUiAlphaAnimation> scUiAlphaAnimationPtr;
+class scUiAnimationGroup;
+typedef shared_ptr<scUiAnimationGroup> scUiAnimationGroupPtr;
+
 #endif // scTypeDefine_h__

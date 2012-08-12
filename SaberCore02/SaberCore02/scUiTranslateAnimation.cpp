@@ -36,3 +36,8 @@ void scUiTranslateAnimation::createKeyFrame( u32 time, i32 scaleX, i32 scaleY, s
 	keyFrame->setInterpolationType(itype);
 	addKeyFrame(scKeyFramePtr(keyFrame));
 }
+
+scAnimationPtr scUiTranslateAnimationFactory::createAnimation( bool isLoop )
+{
+	return scAnimationPtr(new scUiTranslateAnimation(isLoop));
+}

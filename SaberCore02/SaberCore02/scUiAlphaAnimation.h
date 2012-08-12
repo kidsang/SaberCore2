@@ -26,7 +26,22 @@ public:
 
 protected:
 	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
+};
 
+class scUiAlphaAnimationFactory : public scAnimationFactory
+{
+public:
+	/// 构造函数
+	/// @param name 每个工厂都有一个独一无二的名字
+	/// 以供AnimationManager类标识
+	scUiAlphaAnimationFactory(string const& name)
+		: scAnimationFactory(name)
+	{}
+
+	/// 创建动画的具体实现
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画指针
+	virtual scAnimationPtr createAnimation( bool isLoop );
 
 };
 

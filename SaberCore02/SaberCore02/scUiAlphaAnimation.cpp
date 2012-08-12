@@ -32,3 +32,8 @@ void scUiAlphaAnimation::createKeyFrame( u32 time, f32 alpha, scKeyFrame::Interp
 	keyFrame->setInterpolationType(itype);
 	addKeyFrame(scKeyFramePtr(keyFrame));
 }
+
+scAnimationPtr scUiAlphaAnimationFactory::createAnimation( bool isLoop )
+{
+	return scAnimationPtr(new scUiAlphaAnimation(isLoop));
+}

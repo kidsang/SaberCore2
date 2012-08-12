@@ -34,3 +34,8 @@ void scUiRotateAnimation::createKeyFrame( u32 time, f32 radian, scKeyFrame::Inte
 	keyFrame->setInterpolationType(itype);
 	addKeyFrame(scKeyFramePtr(keyFrame));
 }
+
+scAnimationPtr scUiRotateAnimationFactory::createAnimation( bool isLoop )
+{
+	return scAnimationPtr(new scUiRotateAnimation(isLoop));
+}

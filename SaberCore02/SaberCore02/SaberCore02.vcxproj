@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scAnimation.cpp" />
+    <ClCompile Include="scAnimationManager.cpp" />
     <ClCompile Include="scAnimationTimeLine.cpp" />
     <ClCompile Include="scCore.cpp" />
     <ClCompile Include="scEventQueue.cpp" />
@@ -90,6 +91,7 @@
     <ClCompile Include="scGameWorld.cpp" />
     <ClCompile Include="scGameWorldManager.cpp" />
     <ClCompile Include="scInputManager.cpp" />
+    <ClCompile Include="scLuaWrapperAnimation.cpp" />
     <ClCompile Include="scLuaWrapperCamera.cpp" />
     <ClCompile Include="scLuaWrapperError.cpp" />
     <ClCompile Include="scLuaWrapperEvent.cpp" />
@@ -109,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scAnimation.h" />
+    <ClInclude Include="scAnimationManager.h" />
     <ClInclude Include="scAnimationTimeLine.h" />
     <ClInclude Include="scEventQueue.h" />
     <ClInclude Include="scGenericAnimation.h" />

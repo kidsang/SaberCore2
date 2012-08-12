@@ -13,9 +13,6 @@ namespace MyGUI {
 	class Widget;
 }
 
-class scUiAnimation;
-typedef shared_ptr<scUiAnimation> scUiAnimationPtr;
-
 /// ui动画接口类
 class scUiAnimation : public scAnimation
 {
@@ -43,7 +40,7 @@ protected:
 	/// 返回动画的宿主，一个UI元件
 	MyGUI::Widget* getHost()
 	{ 
-		scAssert(mHost != 0, "Host not exist, do you foget to call \"_registerWidget()\" ?");
+		scAssert(mHost != 0, "Host not exist, do you forget to bind it with a widget?");
 		return mHost;
 	}
 

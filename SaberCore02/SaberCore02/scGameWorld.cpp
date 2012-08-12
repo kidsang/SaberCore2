@@ -9,6 +9,7 @@
 #include "scEventQueue.h"
 #include "scTimeLineManager.h"
 #include "scAnimationTimeLine.h"
+#include "scAnimationManager.h"
 #include "scUiAnimationGroup.h"
 #include "scUiRotateAnimation.h"
 #include "scUiAlphaAnimation.h"
@@ -70,13 +71,31 @@ void scGameWorld::initialize()
 	scTimeLinePtr tl = tlmgr->getTimeLine("Animation");
 	scAnimationTimeLine* anitl = static_cast<scAnimationTimeLine*>(tl.get());
 	
-	// TODO: 将指针换成智能的，使用dynamic_pointer_cast进行down cast
-	scUiTranslateAnimation* ani = new scUiTranslateAnimation(true);
+	scAnimationManager* animgr = scAnimationManager::getSingletonPtr();
+	scUiTranslateAnimationPtr ani = animgr->createUiTranslateAnimation(true);
 	ani->createKeyFrame(0, 0, 0);
 	ani->createKeyFrame(1000, 100, 0);
 	ani->createKeyFrame(2000, 0, 0);
-	ani->_registerWidget(scRenderer::getSingleton().getGui()->findWidgetT("testbutton"));
-	anitl->addAnimation(shared_ptr<scUiTranslateAnimation>(ani));
+	scUiScaleAnimationPtr ani2 = animgr->createUiScaleAnimation(true);
+	ani2->createKeyFrame(0, 1, 1);
+	ani2->createKeyFrame(1000, 2, 2);
+	ani2->createKeyFrame(2000, 1, 1);
+	scUiAlphaAnimationPtr ani3 = animgr->createUiAlphaAnimation(true);
+	ani3->createKeyFrame(0, 1);
+	ani3->createKeyFrame(1000, 0.5);
+	ani3->createKeyFrame(2000, 1);
+	scUiAnimationGroupPtr anig = animgr->createUiAnimationGroup(true);
+	anig->addAnimation(ani);
+	anig->addAnimation(ani2);
+	anig->addAnimation(ani3);
+	renderer->bindGuiAnimation("testbutton", anig);
+	anitl->addAnimation(anig);
+	//scUiRotateAnimationPtr ani4 = animgr->createUiRotateAnimation(true);
+	//ani4->createKeyFrame(0, 0);
+	//ani4->createKeyFrame(1000, 1.57);
+	//ani4->createKeyFrame(2000, 3.14);
+	//renderer->bindGuiAnimation("testbutton", ani4);
+	//anitl->addAnimation(ani4);
 }
 
 void scGameWorld::release()
