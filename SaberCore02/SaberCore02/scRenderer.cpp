@@ -338,7 +338,7 @@ void scRenderer::exportSelf( lua_State* L )
 	//<<----../scRenderer.h
 }
 
-void scRenderer::bindGuiAnimation( string const& widgetName, scUiAnimationPtr ani )
+void scRenderer::bindGuiAnimation( string const& widgetName, scUiAnimationPtr const& ani )
 {
 	ani->_registerWidget(mGui->findWidgetT(widgetName));
 }

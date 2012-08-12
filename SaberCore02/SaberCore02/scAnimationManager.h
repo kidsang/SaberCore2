@@ -60,7 +60,37 @@ public:
 	/// 创建GUI动画组
 	/// @param isLoop 动画是否循环播放
 	/// @return 创建好的动画实例
-	scUiAnimationGroupPtr createUiAnimationGroup(bool isLoop);
+	scUiAnimationGroupPtr createUiAnimationGroup();
+
+	/// 创建GUI透明度动画
+	/// 仅供内部使用，用于lua包装
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画实例
+	scUiAnimationPtr _createUiAlphaAnimation(bool isLoop);
+
+	/// 创建GUI平移动画
+	/// 仅供内部使用，用于lua包装
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画实例
+	scUiAnimationPtr _createUiTranslateAnimation(bool isLoop);
+
+	/// 创建GUI缩放动画
+	/// 仅供内部使用，用于lua包装
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画实例
+	scUiAnimationPtr _createUiScaleAnimation(bool isLoop);
+
+	/// 创建GUI旋转动画
+	/// 仅供内部使用，用于lua包装
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画实例
+	scUiAnimationPtr _createUiRotateAnimation(bool isLoop);
+
+	/// 创建GUI动画组
+	/// 仅供内部使用，用于lua包装
+	/// @param isLoop 动画是否循环播放
+	/// @return 创建好的动画实例
+	scUiAnimationPtr _createUiAnimationGroup();
 
 private:
 	/// 辅助方法，用以创建内建的动画工厂

@@ -155,6 +155,11 @@ public:
 	/// @param entry 入口函数名称
 	void registerMouseReleased(string const& moduleName, string const& entry);
 
+	/// 将UI元件与某个UI动画绑定
+	/// @param widgetName UI元件的名称
+	/// @param ani UI动画
+	void bindGuiAnimation(string const& widgetName, scUiAnimationPtr const& ani);
+
 public:
 	/// 返回游戏世界的名称
 	string const& getName()

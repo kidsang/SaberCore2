@@ -65,7 +65,7 @@ public:
 	/// 将UI元件与某个UI动画绑定
 	/// @param widgetName UI元件的名称
 	/// @param ani UI动画
-	void bindGuiAnimation(string const& widgetName, scUiAnimationPtr ani);
+	void bindGuiAnimation(string const& widgetName, scUiAnimationPtr const& ani);
 
 	/// 辅助方法，导入某个lua模块(文件)
 	/// 不需要带.lua后缀名

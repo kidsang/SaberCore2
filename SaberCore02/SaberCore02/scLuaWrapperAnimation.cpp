@@ -6,7 +6,13 @@
 #include "scUiRotateAnimation.h"
 #include "scUiScaleAnimation.h"
 #include "scUiAnimationGroup.h"
+#include "scKeyFrame.h"
 
+// 辅助方法，返回动画管理类实例
+scAnimationManager* getAnimationManager()
+{ return scAnimationManager::getSingletonPtr(); }
+
+void exportKeyFrame(lua_State* L);
 void exportGuiAnimation(lua_State* L);
 
 void exportScAnimation(lua_State* L)
@@ -44,16 +50,52 @@ void exportScAnimation(lua_State* L)
 			class_<scAnimationManager>("scAnimationManager")
 			.def("addFactory", (void (scAnimationManager::*)(int))&scAnimationManager::addFactory)
 			.def("createAnimation", (scAnimationPtr (scAnimationManager::*)(const string &,  bool))&scAnimationManager::createAnimation)
-			.def("createUiAlphaAnimation", (scUiAlphaAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::createUiAlphaAnimation)
-			.def("createUiTranslateAnimation", (scUiTranslateAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::createUiTranslateAnimation)
-			.def("createUiScaleAnimation", (scUiScaleAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::createUiScaleAnimation)
-			.def("createUiRotateAnimation", (scUiRotateAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::createUiRotateAnimation)
-			.def("createUiAnimationGroup", (scUiAnimationGroupPtr (scAnimationManager::*)(bool))&scAnimationManager::createUiAnimationGroup)
+			.def("createUiAlphaAnimation", (scUiAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::_createUiAlphaAnimation)
+			.def("createUiTranslateAnimation", (scUiAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::_createUiTranslateAnimation)
+			.def("createUiScaleAnimation", (scUiAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::_createUiScaleAnimation)
+			.def("createUiRotateAnimation", (scUiAnimationPtr (scAnimationManager::*)(bool))&scAnimationManager::_createUiRotateAnimation)
+			.def("createUiAnimationGroup", (scUiAnimationPtr (scAnimationManager::*)())&scAnimationManager::_createUiAnimationGroup)
 		];
 	//<<----../scAnimationManager.h
+	//---->>helper funcs
+	module(L)
+		[
+			def("getAnimationManager", getAnimationManager)
+		];
+	//<<----helper funcs
 
+	exportKeyFrame(L);
 	exportGuiAnimation(L);
 }
+void exportKeyFrame(lua_State* L)
+{
+	using namespace luabind;
+
+	//---->>../scKeyFrame.h 
+	module(L)
+		[
+			//--scKeyFrame
+			class_<scKeyFrame>("scKeyFrame")
+			.def("getTime", (u32 (scKeyFrame::*)())&scKeyFrame::getTime)
+			.def("getInterpolationType", (scKeyFrame::InterpolationType (scKeyFrame::*)())&scKeyFrame::getInterpolationType)
+			.def("setInterpolationType", (void (scKeyFrame::*)(scKeyFrame::InterpolationType))&scKeyFrame::setInterpolationType)
+			//----> InterpolationType
+			.enum_("constants")
+			[
+				value("IT_NONE", 0),
+				value("IT_LINEAR", 1),
+				value("IT_SQUARE_IN", 2),
+				value("IT_SQUARE_OUT", 3),
+				value("IT_CUBIC_IN", 4),
+				value("IT_CUBIC_OUT", 5),
+				value("IT_EXP_IN", 6),
+				value("IT_EXP_OUT", 7)
+			]
+			//<---- InterpolationType
+		];
+	//<<----../scKeyFrame.h
+}
+
 void exportGuiAnimation(lua_State* L)
 {
 	using namespace luabind;
@@ -61,14 +103,14 @@ void exportGuiAnimation(lua_State* L)
 	module(L)
 		[
 			//--scUiAnimation
-			class_<scUiAnimation>("scUiAnimation")
+			class_<scUiAnimation, scAnimation>("scUiAnimation")
 		];
 	//<<----../scUiAnimation.h
 	//---->>../scUiAlphaAnimation.h 
 	module(L)
 		[
 			//--scUiAlphaAnimation
-			class_<scUiAlphaAnimation>("scUiAlphaAnimation")
+			class_<scUiAlphaAnimation, scUiAnimation>("scUiAlphaAnimation")
 			.def("createKeyFrame", (void (scUiAlphaAnimation::*)(u32,  f32,  scKeyFrame::InterpolationType))&scUiAlphaAnimation::createKeyFrame)
 		];
 	//<<----../scUiAlphaAnimation.h
@@ -76,7 +118,7 @@ void exportGuiAnimation(lua_State* L)
 	module(L)
 		[
 			//--scUiTranslateAnimation
-			class_<scUiTranslateAnimation>("scUiTranslateAnimation")
+			class_<scUiTranslateAnimation, scUiAnimation>("scUiTranslateAnimation")
 			.def("createKeyFrame", (void (scUiTranslateAnimation::*)(u32,  i32,  i32,  scKeyFrame::InterpolationType))&scUiTranslateAnimation::createKeyFrame)
 		];
 	//<<----../scUiTranslateAnimation.h
@@ -84,7 +126,7 @@ void exportGuiAnimation(lua_State* L)
 	module(L)
 		[
 			//--scUiScaleAnimation
-			class_<scUiScaleAnimation>("scUiScaleAnimation")
+			class_<scUiScaleAnimation, scUiAnimation>("scUiScaleAnimation")
 			.def("createKeyFrame", (void (scUiScaleAnimation::*)(u32,  f32,  f32,  scKeyFrame::InterpolationType))&scUiScaleAnimation::createKeyFrame)
 		];
 	//<<----../scUiScaleAnimation.h
@@ -92,16 +134,16 @@ void exportGuiAnimation(lua_State* L)
 	module(L)
 		[
 			//--scUiRotateAnimation
-			class_<scUiRotateAnimation>("scUiRotateAnimation")
-			.def("createKeyFrame", (void (scUiRotateAnimation::*)(u32,  f32,  scKeyFrame::InterpolationType))&scUiRotateAnimation::createKeyFrame)
+			class_<scUiRotateAnimation, scUiAnimation>("scUiRotateAnimation")
+			.def("createKeyFrame", (void (scUiRotateAnimation::*)(u32, f32, f32, f32, scKeyFrame::InterpolationType))&scUiRotateAnimation::createKeyFrame)
 		];
 	//<<----../scUiRotateAnimation.h
 	//---->>../scUiAnimationGroup.h 
 	module(L)
 		[
 			//--scUiAnimationGroup
-			class_<scUiAnimationGroup>("scUiAnimationGroup")
-			.def("addAnimation", (void (scUiAnimationGroup::*)(int))&scUiAnimationGroup::addAnimation)
+			class_<scUiAnimationGroup, scUiAnimation>("scUiAnimationGroup")
+			.def("addAnimation", (void (scUiAnimationGroup::*)(scUiAnimationPtr))&scUiAnimationGroup::addAnimation)
 		];
 	//<<----../scUiAnimationGroup.h
 }

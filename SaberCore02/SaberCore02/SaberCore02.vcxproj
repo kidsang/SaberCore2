@@ -108,6 +108,7 @@
     <ClCompile Include="scUiRotateAnimation.cpp" />
     <ClCompile Include="scUiScaleAnimation.cpp" />
     <ClCompile Include="scUiTranslateAnimation.cpp" />
+    <ClCompile Include="scLuaWrapperTimeLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scAnimation.h" />

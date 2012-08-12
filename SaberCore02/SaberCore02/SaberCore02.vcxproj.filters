@@ -84,9 +84,14 @@
     <ClCompile Include="scAnimationTimeLine.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
-    <ClCompile Include="scAnimationManager.cpp" />
     <ClCompile Include="scLuaWrapperAnimation.cpp">
       <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="scLuaWrapperTimeLine.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="scAnimationManager.cpp">
+      <Filter>Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +157,8 @@
     <ClInclude Include="scAnimationTimeLine.h">
       <Filter>TimeLine</Filter>
     </ClInclude>
-    <ClInclude Include="scAnimationManager.h" />
+    <ClInclude Include="scAnimationManager.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

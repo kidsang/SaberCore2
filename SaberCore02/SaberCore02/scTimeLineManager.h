@@ -75,6 +75,12 @@ public:
 	/// @return 时间轴实例指针
 	scTimeLinePtr const& getTimeLine(string const& name);
 
+	/// 获取指定名称的时间轴
+	/// 仅供内部使用，因为其返回的是原始指针
+	/// @param name 时间轴的名称。如果不存在则会报错
+	/// @return 时间轴实例指针
+	scTimeLine* _getTimeLine(string const& name);
+
 	/// 运行所有主线程时间轴
 	/// 该函数会调用每个时间轴的run()函数，并为它们增加时间
 	void startMain();

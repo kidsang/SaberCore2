@@ -1,8 +1,8 @@
 #include "scUiAnimationGroup.h"
 
 
-scUiAnimationGroup::scUiAnimationGroup(bool isLoop)
-	: scUiAnimation(isLoop)
+scUiAnimationGroup::scUiAnimationGroup()
+	: scUiAnimation(true)
 {
 }
 
@@ -42,5 +42,5 @@ void scUiAnimationGroup::addAnimation( scUiAnimationPtr ani )
 
 scAnimationPtr scUiAnimationGroupFactory::createAnimation( bool isLoop )
 {
-	return scAnimationPtr(new scUiAnimationGroup(isLoop));
+	return scAnimationPtr(new scUiAnimationGroup());
 }

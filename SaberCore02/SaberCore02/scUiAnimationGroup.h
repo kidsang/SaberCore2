@@ -11,12 +11,14 @@
 
 /// UI动画组
 /// 动画组可以将多个动画组合在一起应用于UI元件
+/// 动画组的循环与否取决于其内部的动画
 class scUiAnimationGroup : public scUiAnimation
 {
 	typedef std::vector<scUiAnimationPtr> AnimationList;
 
 public:
-	explicit scUiAnimationGroup(bool isLoop);
+	/// 构造函数
+	explicit scUiAnimationGroup();
 	~scUiAnimationGroup(void);
 
 	/// 运行动画

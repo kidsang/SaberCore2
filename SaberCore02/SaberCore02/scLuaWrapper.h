@@ -19,6 +19,7 @@ string const getScriptPath(string const& name);
 void exportScError(lua_State* L);
 void exportScEvent(lua_State* L);
 void exportScAnimation(lua_State* L);
+void exportScTimeLine(lua_State* L);
 void exportOgreMath(lua_State* L);
 void exportOgreCamera(lua_State* L);
 void exportOISMouseEvent(lua_State* L);

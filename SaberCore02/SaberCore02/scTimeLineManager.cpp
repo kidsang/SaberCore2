@@ -104,6 +104,11 @@ scTimeLinePtr const& scTimeLineManager::getTimeLine( string const& name )
 	return iter->second;
 }
 
+scTimeLine* scTimeLineManager::_getTimeLine( string const& name )
+{
+	return getTimeLine(name).get();
+}
+
 template<> scTimeLineManager* Ogre::Singleton<scTimeLineManager>::ms_Singleton = 0;
 scTimeLineManager& scTimeLineManager::getSingleton( void )
 {

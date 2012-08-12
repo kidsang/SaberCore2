@@ -32,7 +32,7 @@ scGameWorld::~scGameWorld(void)
 void scGameWorld::initialize()
 {
 	scRenderer* renderer = scRenderer::getSingletonPtr();
-	scInputManager* inputMgr = scInputManager::getSingletonPtr();
+	//scInputManager* inputMgr = scInputManager::getSingletonPtr();
 
 	// 创建场景管理器
 	mSceneManager = renderer->getOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
@@ -52,6 +52,10 @@ void scGameWorld::initialize()
 		exportOgreCamera(mL);
 		// 导出事件系统
 		exportScEvent(mL);
+		// 导出时间轴
+		exportScTimeLine(mL);
+		// 导出动画系统
+		exportScAnimation(mL);
 		// 导出错误
 		exportScError(mL);
 		// 导出类
@@ -66,36 +70,11 @@ void scGameWorld::initialize()
 	catch (luabind::error& e)
 	{ scPrintLuaError(e); }
 
-	// 测试UI动画
-	scTimeLineManager* tlmgr = scTimeLineManager::getSingletonPtr();
-	scTimeLinePtr tl = tlmgr->getTimeLine("Animation");
-	scAnimationTimeLine* anitl = static_cast<scAnimationTimeLine*>(tl.get());
-	
-	scAnimationManager* animgr = scAnimationManager::getSingletonPtr();
-	scUiTranslateAnimationPtr ani = animgr->createUiTranslateAnimation(true);
-	ani->createKeyFrame(0, 0, 0);
-	ani->createKeyFrame(1000, 100, 0);
-	ani->createKeyFrame(2000, 0, 0);
-	scUiScaleAnimationPtr ani2 = animgr->createUiScaleAnimation(true);
-	ani2->createKeyFrame(0, 1, 1);
-	ani2->createKeyFrame(1000, 2, 2);
-	ani2->createKeyFrame(2000, 1, 1);
-	scUiAlphaAnimationPtr ani3 = animgr->createUiAlphaAnimation(true);
-	ani3->createKeyFrame(0, 1);
-	ani3->createKeyFrame(1000, 0.5);
-	ani3->createKeyFrame(2000, 1);
-	scUiAnimationGroupPtr anig = animgr->createUiAnimationGroup(true);
-	anig->addAnimation(ani);
-	anig->addAnimation(ani2);
-	anig->addAnimation(ani3);
-	renderer->bindGuiAnimation("testbutton", anig);
-	anitl->addAnimation(anig);
-	//scUiRotateAnimationPtr ani4 = animgr->createUiRotateAnimation(true);
-	//ani4->createKeyFrame(0, 0);
-	//ani4->createKeyFrame(1000, 1.57);
-	//ani4->createKeyFrame(2000, 3.14);
-	//renderer->bindGuiAnimation("testbutton", ani4);
-	//anitl->addAnimation(ani4);
+	//MyGUI::StaticImagePtr img = renderer->getGui()->createWidget<MyGUI::ImageBox>("RotatingSkin", 0, 0, 36, 36, MyGUI::Align::Default, "Main");
+	//img->setImageTexture("check_selected.png");
+	//auto m = img->getSubWidgetMain();
+	//auto r = m->castType<MyGUI::RotatingSkin>();
+	//r->setAngle(1);
 }
 
 void scGameWorld::release()
@@ -254,6 +233,7 @@ void scGameWorld::exportSelf( lua_State* L )
 			.def("registerMouseReleased", (void (scGameWorld::*)(const string &,  const string &))&scGameWorld::registerMouseReleased)
 			.def("getName", (string const& (scGameWorld::*)())&scGameWorld::getName)
 			.def("getEventQueueName", (string const& (scGameWorld::*)())&scGameWorld::getEventQueueName)
+			.def("bindGuiAnimation", (void (scGameWorld::*)(const string &,  scUiAnimationPtr const&))&scGameWorld::bindGuiAnimation)
 		];
 	//<<----../scGameWorld.h
 }
@@ -299,4 +279,9 @@ void scGameWorld::registerMousePressed( string const& moduleName, string const& 
 void scGameWorld::registerMouseReleased( string const& moduleName, string const& entry )
 {
 	scInputManager::getSingleton().registerMouseReleased(getScriptPath(moduleName + ".lua"), entry);
+}
+
+void scGameWorld::bindGuiAnimation( string const& widgetName, scUiAnimationPtr const& ani )
+{
+	scRenderer::getSingleton().bindGuiAnimation(widgetName, ani);
 }

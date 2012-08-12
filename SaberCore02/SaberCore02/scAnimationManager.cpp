@@ -69,7 +69,32 @@ scUiRotateAnimationPtr scAnimationManager::createUiRotateAnimation( bool isLoop 
 	return boost::dynamic_pointer_cast<scUiRotateAnimation>(createAnimation("UiRotate", isLoop));
 }
 
-scUiAnimationGroupPtr scAnimationManager::createUiAnimationGroup( bool isLoop )
+scUiAnimationGroupPtr scAnimationManager::createUiAnimationGroup()
 {
-	return boost::dynamic_pointer_cast<scUiAnimationGroup>(createAnimation("UiGroup", isLoop));
+	return boost::dynamic_pointer_cast<scUiAnimationGroup>(createAnimation("UiGroup", true));
+}
+
+scUiAnimationPtr scAnimationManager::_createUiAlphaAnimation( bool isLoop )
+{
+	return boost::dynamic_pointer_cast<scUiAnimation>(createAnimation("UiAlpha", isLoop));
+}
+
+scUiAnimationPtr scAnimationManager::_createUiTranslateAnimation( bool isLoop )
+{
+	return boost::dynamic_pointer_cast<scUiAnimation>(createAnimation("UiTranslate", isLoop));
+}
+
+scUiAnimationPtr scAnimationManager::_createUiScaleAnimation( bool isLoop )
+{
+	return boost::dynamic_pointer_cast<scUiAnimation>(createAnimation("UiScale", isLoop));
+}
+
+scUiAnimationPtr scAnimationManager::_createUiRotateAnimation( bool isLoop )
+{
+	return boost::dynamic_pointer_cast<scUiAnimation>(createAnimation("UiRotate", isLoop));
+}
+
+scUiAnimationPtr scAnimationManager::_createUiAnimationGroup()
+{
+	return boost::dynamic_pointer_cast<scUiAnimation>(createAnimation("UiGroup", true));
 }

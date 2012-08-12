@@ -11,7 +11,7 @@
 
 /// UI 旋转动画
 /// 注意，并不是所有UI元件都支持旋转
-/// 支持列表：ImageBox
+/// 支持列表：ImageBox(skin为RotatingSkin)
 class scUiRotateAnimation : public scUiAnimation
 {
 public:
@@ -23,8 +23,10 @@ public:
 	/// 创建一个关键帧，并将其加入关键帧列表
 	/// @param time 关键帧时间, 单位为毫秒
 	/// @param radian UI元件的旋转角度，以弧度制为单位，可以为负数
+	/// @param centerX 旋转中心x坐标，0.5即为元件中心
+	/// @param centerY 旋转中心y坐标，0.5即为元件中心
 	/// @param itype 插值方法类型
-	void createKeyFrame(u32 time, f32 radian, scKeyFrame::InterpolationType itype = scKeyFrame::IT_LINEAR);
+	void createKeyFrame(u32 time, f32 radian, f32 centerX = 0.5f, f32 centerY = 0.5f, scKeyFrame::InterpolationType itype = scKeyFrame::IT_LINEAR);
 
 protected:
 	virtual void runImpl( scKeyFramePtr k0, scKeyFramePtr k1 );
